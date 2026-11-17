@@ -164,25 +164,58 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="font-bold text-slate-700 block mb-1">Nome Completo *</label>
-            <input required type="text" placeholder="Seu nome" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
+            <input id="prodChkNome" required type="text" placeholder="Seu nome" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">WhatsApp com DDD *</label>
-            <input required type="tel" placeholder="(11) 99999-9999" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
+            <input id="prodChkTel" required type="tel" placeholder="(11) 99999-9999" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">CEP *</label>
+            <input id="prodChkCep" required type="text" maxlength="9" placeholder="00000-000" onblur="lookupCepProd(this.value)" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
+          </div>
+          <div class="col-span-2">
+            <label class="font-bold text-slate-700 block mb-1">Cidade / UF</label>
+            <input id="prodChkCidade" type="text" placeholder="Preenchido pelo CEP" class="w-full bg-slate-50 border border-bordaLoja rounded-xl px-3.5 py-2.5">
           </div>
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Endereço Completo com CEP *</label>
-          <input required type="text" placeholder="Rua, número, bairro, cidade e CEP" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
+          <label class="font-bold text-slate-700 block mb-1">Endereço de Entrega *</label>
+          <input id="prodChkEnd" required type="text" placeholder="Rua, número e complemento" class="w-full border border-bordaLoja rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-verdeArena">
         </div>
         <button type="submit" class="w-full bg-verdeArena hover:bg-verdeArenaHover text-white font-heading font-black uppercase text-sm py-4 rounded-xl shadow-lg transition">
           Confirmar Pedido & Gerar PIX (R$ 200,00)
         </button>
       </form>
 
-      <div id="sucessoBoxProduto" class="hidden p-4 rounded-2xl bg-slate-900 text-white text-center space-y-2">
-        <span class="inline-block px-3 py-1 rounded-full bg-verdeArena/20 text-verdeArena text-[11px] font-bold">✓ Pedido Demonstrativo Confirmado!</span>
-        <p class="text-xs text-slate-300">Código gerado: <strong id="codGeradoProd" class="text-verdeArena font-mono"></strong></p>
+      <div id="sucessoBoxProduto" class="hidden p-5 rounded-2xl bg-slate-900 text-white text-center space-y-4">
+        <span class="inline-block px-3 py-1 rounded-full bg-verdeArena/20 text-verdeArena text-[11px] font-bold">✓ Pedido Confirmado & PIX Gerado!</span>
+
+        <div class="bg-white text-slate-900 rounded-2xl p-4 max-w-xs mx-auto space-y-2.5 shadow-lg">
+          <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">QR Code PIX Instantâneo</p>
+          <div class="w-32 h-32 mx-auto p-2 bg-white border-2 border-verdeArena rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-slate-900">
+              <path d="M5,5 h28 v28 h-28 z M11,11 v16 h16 v-16 z M15,15 h8 v8 h-8 z M67,5 h28 v28 h-28 z M73,11 v16 h16 v-16 z M77,15 h8 v8 h-8 z M5,67 h28 v28 h-28 z M11,73 v16 h16 v-16 z M15,77 h8 v8 h-8 z M40,5 h8 v8 h-8 z M52,13 h8 v12 h-8 z M40,25 h8 v8 h-8 z M5,40 h12 v8 h-12 z M25,44 h16 v8 h-16 z M48,40 h12 v12 h-12 z M68,40 h8 v16 h-8 z M84,44 h11 v8 h-11 z M40,60 h16 v8 h-16 z M64,64 h12 v12 h-12 z M84,60 h11 v16 h-11 z M40,76 h8 v19 h-8 z M56,84 h16 v11 h-16 z M80,84 h15 v11 h-15 z"/>
+            </svg>
+          </div>
+          <p class="text-xs text-slate-600">Código de Rastreio: <strong id="codGeradoProd" class="text-verdeArena font-mono text-sm"></strong></p>
+        </div>
+
+        <div class="pt-3 border-t border-white/15 text-left bg-gradient-to-br from-purple-950/80 to-slate-900 p-4 rounded-2xl border border-purple-400/30 space-y-2.5">
+          <p class="text-[11px] font-bold text-purple-200 flex items-center gap-1.5">
+            <span>💡</span> Visitando pelo Portfólio Torugo Dev?
+          </p>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Gostou da velocidade desse checkout com busca automática de CEP e geração de PIX + Rastreio?
+          </p>
+          <a href="https://wa.me/5521970453147?text=Ol%C3%A1%20Torugo!%20Acabei%20de%20testar%20a%20compra%20na%20loja%20Supremo%203D%20do%20seu%20portf%C3%B3lio%20e%20quero%20fazer%20um%20or%C3%A7amento!"
+             target="_blank" rel="noopener"
+             class="w-full block text-center bg-[#00cc6a] hover:bg-[#00b35c] text-slate-950 font-heading font-black text-xs uppercase py-3 px-4 rounded-xl shadow-lg transition">
+            👉 Quero uma loja assim • Falar com Torugo Dev
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -282,9 +315,39 @@
       m.classList.remove('flex');
     }
 
+    async function lookupCepProd(cepVal) {
+      const clean = String(cepVal || '').replace(/\D/g, '');
+      if (clean.length !== 8) return;
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
+        const data = await res.json();
+        if (!data.erro) {
+          document.getElementById('prodChkCidade').value = `${data.localidade} / ${data.uf}`;
+          if (data.logradouro) document.getElementById('prodChkEnd').value = `${data.logradouro}, ${data.bairro}`;
+        }
+      } catch (e) {}
+    }
+
     function confirmarPedidoProduto(e) {
       e.preventDefault();
-      document.getElementById('codGeradoProd').innerText = 'SUP-' + Math.floor(1000 + Math.random() * 9000);
+      const code = 'SUP-' + Math.floor(1000 + Math.random() * 9000);
+      const nome = (document.getElementById('prodChkNome').value || 'Visitante').trim();
+      const cidade = (document.getElementById('prodChkCidade').value || 'Brasil').trim();
+      const endereco = (document.getElementById('prodChkEnd').value || '').trim();
+
+      const pedidosSalvos = JSON.parse(localStorage.getItem('supremo3d_orders') || '{}');
+      pedidosSalvos[code] = {
+        code,
+        nome,
+        cidade,
+        endereco,
+        itens: `1x ${mascoteAtivo.nome}`,
+        total: formatadorBRL.format(mascoteAtivo.precoAtual),
+        data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      };
+      localStorage.setItem('supremo3d_orders', JSON.stringify(pedidosSalvos));
+
+      document.getElementById('codGeradoProd').innerText = code;
       document.getElementById('sucessoBoxProduto').classList.remove('hidden');
     }
 
