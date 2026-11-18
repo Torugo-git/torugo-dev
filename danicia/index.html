@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Danícia - Prazer que faz bem | Gelato Saudável</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&amp;family=Open+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Schoolbell&amp;display=swap" rel="stylesheet"/>
+    <!-- Link para o seu arquivo CSS externo -->
+    <link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <img alt="Danícia" class="logo-img" src="logo.jpg"/>
+            </div>
+            <!-- Botão Hamburger (Mobile) -->
+            <button aria-label="Abrir menu" class="hamburger-btn" id="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <!-- Menu Desktop -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#historia">História</a></li>
+                    <li><a href="#produtos">Produtos</a></li>
+                    <li><a href="#mantras">Valores</a></li>
+                    <li><a href="#tabela-nutricional">Informação Nutricional</a></li>
+                    <li><a href="https://www.instagram.com/daniciahk/" target="_blank">Instagram</a></li>
+                    <li><a href="https://wa.me/5522992518234" target="_blank">WhatsApp</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Menu Mobile Drawer -->
+    <div class="mobile-menu-drawer" id="mobile-menu-drawer">
+        <div class="drawer-header">
+            <img alt="Danícia" class="drawer-logo" src="logo.jpg"/>
+            <button aria-label="Fechar menu" class="close-btn" id="close-btn">×</button>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a class="mobile-nav-link" href="#historia">História</a></li>
+                <li><a class="mobile-nav-link" href="#produtos">Produtos</a></li>
+                <li><a class="mobile-nav-link" href="#mantras">Valores</a></li>
+                <li><a class="mobile-nav-link" href="#tabela-nutricional">Informação Nutricional</a></li>
+                <li><a class="mobile-nav-link" href="https://www.instagram.com/daniciahk/" target="_blank">Instagram</a></li>
+                <li><a class="mobile-nav-link" href="https://wa.me/5522992518234" target="_blank">WhatsApp</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Em cada colherada,<br/>uma história de tradição saudável.</h1>
+                    <a class="btn-dourado" href="#produtos">Conheça os Sabores</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUTOS -->
+        <section class="produtos-section" id="produtos">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Conheça nossos produtos <br/>
+                        <div class="loader-text">
+                            <div class="words-wrapper">
+                                <span class="word-item">artesanais</span>
+                                <span class="word-item">saudáveis</span>
+                                <span class="word-item">proteicos</span>
+                                <span class="word-item">sem açúcar</span>
+                                <span class="word-item">sem lactose</span>
+                                <span class="word-item">artesanais</span>
+                            </div>
+                        </div>
+                    </h2>
+                </div>
+                <!-- LINHA PROTEICA (CARD EXPANSIVO) -->
+                <div class="linha-categoria">
+                    <!-- PRIMEIRA LINHA DE PRODUTOS -->
+                    <div class="containerCards" style="margin-bottom: 2rem;">
+                        <div class="card-expand" style="background-image: url('avelate.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Avelate</h3>
+                                <p>Textura cremosa com sabor intenso de avelã e cacau 100% alcalino. Rico em proteínas e fibras.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Avelate">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <div class="card-expand" style="background-image: url('danvanila.jpg');">
+                            <div class="card-expand-overlay">
+                                <h3>Dan Vanilla</h3>
+                                <p>Sabor da baunilha em um gelato cremoso, enriquecido com whey protein e colágeno.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Dan Vanilla">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <div class="card-expand" style="background-image: url('moratto.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Moratto</h3>
+                                <p>Refrescante elaborado com morangos reais. Alta concentração de fibras e proteínas.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Moratto">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <div class="card-expand" style="background-image: url('pomella.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Pomella</h3>
+                                <p>Sabor autêntico da maçã, refrescante e nutritivo. Rico em fibras naturais.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Pomella">Pedir Agora</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SEGUNDA LINHA DE PRODUTOS -->
+                    <div class="containerCards">
+                        <div class="card-expand" style="background-image: url('churros.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Churros</h3>
+                                <p>Com doce de leite artesanal zero lactose e um toque especial de canela.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Churros">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <div class="card-expand" style="background-image: url('banoffee.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Banoffee</h3>
+                                <p>Banana prata fresca, doce de leite e marshmallow artesanal finalizando.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Banoffee">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <!-- OBS: Mantive a referência da imagem como 'YogoBerry.png' para não quebrar o link, atualizando apenas o texto para Yofrutella -->
+                        <div class="card-expand" style="background-image: url('YogoBerry.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Yofrutella</h3>
+                                <p>Iogurte natural integral com frutas vermelhas. Equilíbrio perfeito, leve e refrescante.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Yofrutella">Pedir Agora</button>
+                            </div>
+                        </div>
+                        <div class="card-expand" style="background-image: url('paconica.png');">
+                            <div class="card-expand-overlay">
+                                <h3>Paçonícia</h3>
+                                <p>Uma verdadeira bomba de energia com amendoim torrado e pasta de amendoim integral.</p>
+                                <button class="btn-pedir-outline btn-pedir" data-produto="Gelato Paçonícia">Pedir Agora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PILARES DA MARCA (ENGENHARIA BORELLI 5 ITENS) -->
+        <div class="feature-one-wrapper" id="mantras">
+            <section class="feature-one">
+                <div class="feature-one__bg"></div>
+                <div class="container">
+                    <div class="feature-row gutter-y-30">
+                        <h4 class="video-one__title">5 Pilares Danícia</h4>
+                        <!-- Item 1 -->
+                        <div class="feature-col-xl-4">
+                            <div class="feature-one__item">
+                                <h3 class="feature-one__item__title">1. Ingredientes Selecionados</h3>
+                                <p class="feature-one__item__text">
+                                    <span>O melhor da natureza</span>
+                                    Buscamos proporcionar uma jornada completa para os sentidos, utilizando ingredientes reais e limpos. Uma experiência sem conservantes e totalmente fiel ao seu bem-estar.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="feature-col-xl-4">
+                            <div class="feature-one__item">
+                                <h3 class="feature-one__item__title">2. Receitas Equilibradas</h3>
+                                <p class="feature-one__item__text">
+                                    <span>Inovação com propósito</span>
+                                    Nossas fórmulas são desenhadas para garantir textura e cremosidade incomparáveis, unindo o melhor do whey protein, colágeno e fibras, sem adição de açúcares.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Item 3 -->
+                        <div class="feature-col-xl-4">
+                            <div class="feature-one__item">
+                                <h3 class="feature-one__item__title">3. Prazer sem Excessos</h3>
+                                <p class="feature-one__item__text">
+                                    <span>Liberdade em cada pote</span>
+                                    Sabemos que nossos clientes buscam mais do que um doce, buscam uma sobremesa segura. Por isso, entregamos o padrão premium com zero culpa.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Linha Interna para itens 4 e 5 (Centralizados) -->
+                        <div class="feature-row justify-content-md-center">
+                            <!-- Item 4 -->
+                            <div class="feature-col-xl-4 secondary-margin">
+                                <div class="feature-one__item">
+                                    <h3 class="feature-one__item__title">4. Qualidade Inigualável</h3>
+                                    <p class="feature-one__item__text">
+                                        <span>Uma colherada, um sorriso</span>
+                                        A qualidade é a pedra angular de nossa excelência. Cada detalhe, desde a seleção da matéria-prima até a entrega, é pensado para surpreender você.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Item 5 -->
+                            <div class="feature-col-xl-4 secondary-margin">
+                                <div class="feature-one__item">
+                                    <h3 class="feature-one__item__title">5. Produção Artesanal</h3>
+                                    <p class="feature-one__item__text">
+                                        <span>Feito com intenção</span>
+                                        Nossos lotes são produzidos diariamente e de forma cuidadosa. Cada pote reflete nossa paixão por entregar saúde, qualidade e sabor inigualável.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- HISTÓRIA DA MARCA -->
+        <section class="historia-section" id="historia">
+            <div class="container">
+                <div class="historia-container">
+                    <div class="historia-img-wrapper">
+                        <img alt="História Danícia" class="historia-img" src="foto-historia.jpg"/>
+                    </div>
+                    <div class="historia-text">
+                        <h2>Nossa História</h2>
+                        <p>A Danícia nasceu do desejo de recomeçar.</p>
+                        <p>Antes da pandemia, comecei a produzir sacolés artesanais e dei à marca um nome inspirado no meu: Daniela Cianela. O sonho estava apenas começando quando precisou ser interrompido.</p>
+                        <p>Algum tempo depois, a vida me apresentou desafios que mudaram completamente a minha forma de enxergar o cuidado e a alimentação. Durante o tratamento contra um câncer de mama e, mais tarde, cuidando da minha mãe, que hoje tem 94 anos e passou a depender de mim, percebi que precisava encontrar uma forma de cuidar de quem eu amava, sem deixar de cuidar de mim.</p>
+                        <p>Foi nesse momento que a Danícia encontrou seu verdadeiro propósito.</p>
+                        <p>A Danícia nasceu do cuidado: cuidado comigo, com a minha mãe e com todas as pessoas que, por qualquer motivo, precisaram mudar sua forma de se alimentar sem abrir mão do prazer.</p>
+                        <p>Foi desse cuidado que ela floresceu, levando acolhimento através da alimentação.</p>
+                        <p>Assim nasceram os gelatos da Danícia: artesanais, nutritivos e preparados com ingredientes cuidadosamente selecionados para mostrar que uma alimentação equilibrada também pode ser surpreendentemente saborosa.</p>
+                        <p>Hoje, a Danícia é a expressão da minha história de superação, cuidado e recomeço. Mais do que produzir gelatos, nosso propósito é fazer com que cada pessoa se sinta incluída e descubra que cuidar da saúde não significa abrir mão do prazer.</p>
+                        <p>Porque a vida precisa ter sabor. Precisa ter cor.</p>
+                        <p>Danícia. Prazer que faz bem.</p>
+                        <a class="btn-dourado" href="#produtos">Ver Cardápio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABELA NUTRICIONAL PADRÃO ANVISA -->
+        <section class="nutricional-section" id="tabela-nutricional">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Tabela Nutricional</h2>
+                    <span class="subtitulo fonte-detalhe">Transparência em cada detalhe</span>
+                </div>
+                <div class="accordion-container">
+                    <!-- Produto 1: Gelato Avelate -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal Proteico - Avelate</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 unidade)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD*</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético (kcal)</td>
+                                            <td data-label="100 g" style="text-align: center;">176</td>
+                                            <td data-label="150 g" style="text-align: center;">264</td>
+                                            <td data-label="%VD*" style="text-align: center;">13</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">23,7</td>
+                                            <td data-label="150 g" style="text-align: center;">35,5</td>
+                                            <td data-label="%VD*" style="text-align: center;">12</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">4,0</td>
+                                            <td data-label="150 g" style="text-align: center;">6,0</td>
+                                            <td data-label="%VD*" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">0</td>
+                                            <td data-label="150 g" style="text-align: center;">0</td>
+                                            <td data-label="%VD*" style="text-align: center;">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Polidextrose (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">7,0</td>
+                                            <td data-label="150 g" style="text-align: center;">10,5</td>
+                                            <td data-label="%VD*" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">9,9</td>
+                                            <td data-label="150 g" style="text-align: center;">14,9</td>
+                                            <td data-label="%VD*" style="text-align: center;">30</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">12,0</td>
+                                            <td data-label="150 g" style="text-align: center;">18,0</td>
+                                            <td data-label="%VD*" style="text-align: center;">28</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">2,0</td>
+                                            <td data-label="150 g" style="text-align: center;">3,0</td>
+                                            <td data-label="%VD*" style="text-align: center;">15</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras trans (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">0</td>
+                                            <td data-label="150 g" style="text-align: center;">0</td>
+                                            <td data-label="%VD*" style="text-align: center;">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibras alimentares (g)</td>
+                                            <td data-label="100 g" style="text-align: center;">5,0</td>
+                                            <td data-label="150 g" style="text-align: center;">7,5</td>
+                                            <td data-label="%VD*" style="text-align: center;">30</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio (mg)</td>
+                                            <td data-label="100 g" style="text-align: center;">60</td>
+                                            <td data-label="150 g" style="text-align: center;">90</td>
+                                            <td data-label="%VD*" style="text-align: center;">5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--verde-borelli); margin-top: 10px; font-style: italic;">*Percentual de valores diários fornecidos pela porção.</p>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, avelã, leite em pó zero lactose, polidextrose, isomalto-oligossacarídeo (IMO), proteína concentrada do soro do leite (whey protein), cacau em pó 100% alcalino, colágeno hidrolisado, óleo de abacate, estabilizante Cremobene, edulcorante natural glicosídeos de esteviol (stevia).
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E AVELÃ. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 2: Gelato Dan Vanilla -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal Proteico - Dan Vanilla</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">137 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">205 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">10%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">28,5 g</td>
+                                            <td data-label="150 g" style="text-align: center;">42,7 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">3,4 g</td>
+                                            <td data-label="150 g" style="text-align: center;">5,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">11,4 g</td>
+                                            <td data-label="150 g" style="text-align: center;">17,1 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">34%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">7,1 g</td>
+                                            <td data-label="150 g" style="text-align: center;">10,7 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">16%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">1,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">2,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">11%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">13,1 g</td>
+                                            <td data-label="150 g" style="text-align: center;">19,6 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">78%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">36 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">54 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">3%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, leite em pó zero lactose, polidextrose (fibra alimentar), IMO (isomalto-oligossacarídeo), whey protein concentrado, colágeno hidrolisado, óleo de abacate, estabilizante Cremobene, extrato de baunilha, edulcorante natural glicosídeos de esteviol (stevia).
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 3: Gelato Moratto -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal Proteico - Moratto</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">235 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">353 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">18%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">44,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">65,9 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">22%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">22,2 g</td>
+                                            <td data-label="150 g" style="text-align: center;">33,3 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">9,8 g</td>
+                                            <td data-label="150 g" style="text-align: center;">14,6 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">29%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">6,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">9,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">2,5 g</td>
+                                            <td data-label="150 g" style="text-align: center;">3,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">17%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">19,2 g</td>
+                                            <td data-label="150 g" style="text-align: center;">28,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">115%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">50 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">75 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">4%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, morangos congelados, maçã em pó, leite em pó zero lactose, polidextrose (fibra alimentar), IMO (isomalto-oligossacarídeo), proteína concentrada do soro do leite (whey protein), colágeno hidrolisado, óleo de abacate, estabilizante Cremobene, edulcorante natural glicosídeos de esteviol (stevia).
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 4: Gelato Pomella -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal - Pomella</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">204 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">306 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">15%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">34,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">52,1 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">17%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">24,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">37,1 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">3,1 g</td>
+                                            <td data-label="150 g" style="text-align: center;">4,7 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">9%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">4,9 g</td>
+                                            <td data-label="150 g" style="text-align: center;">7,4 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">11%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">1,4 g</td>
+                                            <td data-label="150 g" style="text-align: center;">2,1 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">10%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">8,5 g</td>
+                                            <td data-label="150 g" style="text-align: center;">12,7 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">51%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">38 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">57 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">3%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, maçã, maçã em pó, leite em pó zero lactose, polidextrose (fibra alimentar), óleo de abacate, estabilizante Cremobene, extrato de baunilha.
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 5: Gelato Churros -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal - Churros</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">187 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">280 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">21,8 g</td>
+                                            <td data-label="150 g" style="text-align: center;">32,7 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">11%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">16,9 g</td>
+                                            <td data-label="150 g" style="text-align: center;">25,4 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">4,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">7,1 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">6,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">10,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">15%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">2,3 g</td>
+                                            <td data-label="150 g" style="text-align: center;">3,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">16%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">4,3 g</td>
+                                            <td data-label="150 g" style="text-align: center;">6,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">26%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">57 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">85 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">4%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, maçã em pó, leite em pó zero lactose, doce de leite zero lactose artesanal (leite em pó zero lactose, maçã em pó, água e extrato de baunilha), óleo de abacate, canela em pó, estabilizante Cremobene, extrato de baunilha.
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 6: Gelato Banoffee -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal - Banoffee</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">183 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">274 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">28,6 g</td>
+                                            <td data-label="150 g" style="text-align: center;">43,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">14%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">17,2 g</td>
+                                            <td data-label="150 g" style="text-align: center;">25,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">4,3 g</td>
+                                            <td data-label="150 g" style="text-align: center;">6,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">13%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">5,1 g</td>
+                                            <td data-label="150 g" style="text-align: center;">7,6 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">12%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">1,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">2,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">11%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">6,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">9,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">36%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">27 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">40 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">2%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, banana prata, maçã em pó, leite em pó zero lactose, marshmallow artesanal (água, maçã em pó, clara de ovo, extrato de baunilha), doce de leite zero lactose artesanal (leite em pó zero lactose, maçã em pó, água e extrato de baunilha), gema de ovo, polidextrose (fibra alimentar), óleo de abacate, estabilizante Cremobene.
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM OVO, LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 7: Gelato Yofrutella -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal - Yofrutella</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">96 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">144 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">7%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">11,3 g</td>
+                                            <td data-label="150 g" style="text-align: center;">17,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">8,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">12,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">4,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">6,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">12%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">3,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">4,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">7%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">1,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">2,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">11%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">2,0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">3,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">12%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">50 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">75 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">3%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Leite semidesnatado zero lactose, iogurte natural integral zero lactose, frutas vermelhas congeladas, maçã em pó, leite em pó zero lactose, óleo de abacate, estabilizante Cremobene.
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Produto 8: Gelato Paçonícia -->
+                    <details class="accordion">
+                        <summary>Gelato Artesanal - Paçonícia</summary>
+                        <div class="nutri-content">
+                            <p class="nutri-info-extra">Porção: 150 g (1 pote)</p>
+                            <div style="overflow-x: auto;">
+                                <table class="nutri-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 45%;">INFORMAÇÃO NUTRICIONAL</th>
+                                            <th style="text-align: center; width: 15%;">100 g</th>
+                                            <th style="text-align: center; width: 15%;">150 g</th>
+                                            <th style="text-align: center; width: 25%;">%VD (*)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: 500;">Valor energético</td>
+                                            <td data-label="100 g" style="text-align: center;">280 kcal</td>
+                                            <td data-label="150 g" style="text-align: center;">420 kcal</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">21%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Carboidratos</td>
+                                            <td data-label="100 g" style="text-align: center;">24,8 g</td>
+                                            <td data-label="150 g" style="text-align: center;">37,3 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">12%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares totais</td>
+                                            <td data-label="100 g" style="text-align: center;">17,2 g</td>
+                                            <td data-label="150 g" style="text-align: center;">25,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Açúcares adicionados</td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Proteínas</td>
+                                            <td data-label="100 g" style="text-align: center;">7,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">11,5 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">23%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Gorduras totais</td>
+                                            <td data-label="100 g" style="text-align: center;">14,5 g</td>
+                                            <td data-label="150 g" style="text-align: center;">21,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">40%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras saturadas</td>
+                                            <td data-label="100 g" style="text-align: center;">2,7 g</td>
+                                            <td data-label="150 g" style="text-align: center;">4,0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">18%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-left: 1.5rem; font-size: 0.9em;">Gorduras <em>trans</em></td>
+                                            <td data-label="100 g" style="text-align: center;">0 g</td>
+                                            <td data-label="150 g" style="text-align: center;">0 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Fibra alimentar</td>
+                                            <td data-label="100 g" style="text-align: center;">4,5 g</td>
+                                            <td data-label="150 g" style="text-align: center;">6,8 g</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">27%</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left;">Sódio</td>
+                                            <td data-label="100 g" style="text-align: center;">48 mg</td>
+                                            <td data-label="150 g" style="text-align: center;">72 mg</td>
+                                            <td data-label="%VD (*)" style="text-align: center;">3%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--verde-borelli);">INGREDIENTES:</strong> Água, maçã em pó, leite em pó zero lactose, pasta de amendoim integral, farinha de amendoim, amendoim torrado, óleo de abacate, estabilizante Cremobene.
+                                </p>
+                                <p style="font-size: 0.85rem; color: var(--text-escuro); line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong style="color: var(--dourado);">ALÉRGICOS:</strong> CONTÉM AMENDOIM, LEITE E DERIVADOS. PODE CONTER SOJA. NÃO CONTÉM GLÚTEN. NÃO CONTÉM LACTOSE.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ E ENCOMENDAS -->
+    <footer id="encomendas">
+        <div class="container">
+            <div class="entrega-badge">
+                <p>📍 Entregas sob encomenda na região de <strong>Extensão do Bosque, Rio das Ostras</strong> e proximidades.</p>
+            </div>
+            <div class="footer-nav">
+                <a href="#produtos">Menu</a>
+                <a href="#mantras">Valores</a>
+                <a href="#tabela-nutricional">Inf. Nutricional</a>
+                <a href="https://www.instagram.com/daniciahk/" target="_blank">Instagram</a>
+                <a href="#" id="btn-encomenda-geral">Atendimento WhatsApp</a>
+            </div>
+            <p class="footer-logo-text">Danícia. Prazer que faz bem.</p>
+            <p style="font-size: 0.78rem; opacity: 0.75; margin-top: 0.75rem;">
+                &copy; 2026 Danícia Gelato Saudável • Desenvolvido por <a href="https://torugo-git.github.io/torugo-dev/" target="_blank" rel="noopener" style="color: var(--dourado, #d4af37); font-weight: 700; text-decoration: underline;">Torugo Dev</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica do Menu Mobile
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const closeBtn = document.getElementById('close-btn');
+            const mobileMenuDrawer = document.getElementById('mobile-menu-drawer');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            function toggleMenu() {
+                mobileMenuDrawer.classList.toggle('active');
+                document.body.classList.toggle('menu-open');
+            }
+
+            hamburgerBtn.addEventListener('click', toggleMenu);
+            closeBtn.addEventListener('click', toggleMenu);
+
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuDrawer.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+
+            // Lógica do WhatsApp
+            const numeroWhatsApp = '5522992518234'; 
+
+            const botoesPedir = document.querySelectorAll('.btn-pedir');
+            botoesPedir.forEach(botao => {
+                botao.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const produto = botao.getAttribute('data-produto');
+                    const textoMsg = `Olá! Gostaria de encomendar o doce saudável: *${produto}*. Como posso proceder com o pedido?`;
+                    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMsg)}`, '_blank');
+                });
+            });
+
+            const btnGeral = document.getElementById('btn-encomenda-geral');
+            const msgGeral = `Olá! Gostaria de conhecer o cardápio completo da Danícia e verificar as taxas de entrega para Rio das Ostras.`;
+
+            if (btnGeral) {
+                btnGeral.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(msgGeral)}`, '_blank');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

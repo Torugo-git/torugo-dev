@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cianela Doceria - Doces Feitos à Mão</title>
+    
+    <meta name="description" content="Nascida do amor pela confeitaria artesanal. Conheça nossos doces gourmet feitos à mão com ingredientes premium e monte seu pedido.">
+    <meta property="og:title" content="Cianela Doceria - Doces Feitos à Mão">
+    <meta property="og:description" content="Nascida do amor pela confeitaria artesanal. Conheça nossos doces gourmet e faça seu pedido direto via WhatsApp.">
+    <meta property="og:image" content="pastelninho.jpg">
+    <meta property="og:url" content="https://cianeladoceria.com.br">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Bakery",
+      "name": "Cianela Doceria",
+      "image": "pastelninho.jpg",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Rio das Ostras",
+        "addressRegion": "RJ",
+        "addressCountry": "BR"
+      },
+      "url": "https://cianeladoceria.com.br"
+    }
+    </script>
+
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '0000000000000000'); // Substitua pelos números do seu Pixel ID quando possuir
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=0000000000000000&ev=PageView&noscript=1"/>
+    </noscript>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. VARIÁVEIS DE CORES E PALETA PREMIUM (BORDEAUX & DOURADO)
+           ========================================================================== */
+        :root {
+            --bordeaux: #8B1E24;
+            --bright-red: #C0392B;
+            --creme: #F7E6D9;
+            --gold: #C79A63; 
+            --soft-brown: #BA6A4F;
+            --white-pure: #FFFFFF;
+            --white-creme: #FCF6F0;
+            --dark-text: #2C1113;
+            
+            --font-title: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        /* ==========================================================================
+           2. CONFIGURAÇÕES GERAIS E RESETS
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--white-pure);
+            color: var(--dark-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Dividers Elegantes (Dourado / Bordeaux) */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 1px;
+            background-color: var(--gold);
+        }
+        .divider-bordeaux::before, .divider-bordeaux::after {
+            background-color: var(--bordeaux);
+        }
+        .divider-heart {
+            color: var(--gold);
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        .divider-heart-bordeaux {
+            color: var(--bordeaux);
+        }
+
+        /* ==========================================================================
+           3. CABEÇALHO & NAVEGAÇÃO (TOTALMENTE LIMPO E CENTRALIZADO)
+           ========================================================================== */
+        header {
+            background-color: var(--bordeaux);
+            border-bottom: 2px solid var(--gold);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .nav-menu a {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--creme);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--gold);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Menu Mobile */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1001;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background-color: var(--creme);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* ==========================================================================
+           4. SECÇÃO HERÓI (LIMPA, PADRÃO BRANCO PREMIUM COM LOGO PURA)
+           ========================================================================== */
+        .hero {
+            position: relative;
+            padding: 90px 20px;
+            background-color: var(--white-pure);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 30, 36, 0.08);
+        }
+
+        .hero-content {
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Logotipo puro e mesclado com o fundo */
+        .hero-mini-logo {
+            width: 160px; /* Tamanho ajustado para dar presença sem a borda */
+            height: auto;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+            /* A propriedade abaixo remove fundos brancos de JPGs em fundos claros */
+            mix-blend-mode: multiply; 
+        }
+
+        .hero-mini-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .hero h1 {
+            font-family: var(--font-title);
+            color: var(--bordeaux);
+            font-size: 46px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-family: var(--font-body);
+            color: var(--dark-text);
+            font-size: 20px;
+            font-style: italic;
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        /* Botão Dourado Premium */
+        .btn-gold {
+            display: inline-block;
+            background-color: var(--gold);
+            color: var(--bordeaux);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            padding: 15px 45px;
+            border-radius: 50px;
+            border: 2px solid var(--gold);
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 15px rgba(199, 154, 99, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background-color: transparent;
+            color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(199, 154, 99, 0.25);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           5. SECÇÃO PRODUTOS (TOTALMENTE BRANCA E LIMPA)
+           ========================================================================== */
+        .products-section {
+            width: 100%;
+            max-width: 1200px;
+            padding: 80px 20px;
+            margin: 0 auto;
+            background-color: var(--white-pure);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-title);
+            color: var(--bordeaux);
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .product-card {
+            background-color: var(--white-pure);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 30, 36, 0.1);
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(44, 17, 19, 0.04);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 30px rgba(139, 30, 36, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            height: 260px;
+            overflow: hidden;
+            border-bottom: 3px solid var(--gold);
+            background-color: var(--white-creme);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.06);
+        }
+
+        /* Animação Crossfade Inteligente para a Surpresa de Morango */
+        .img-crossfade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: crossFadeAnim 6s infinite ease-in-out;
+        }
+
+        @keyframes crossFadeAnim {
+            0%, 40% { opacity: 1; }
+            50%, 90% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(139, 30, 36, 0.95);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--gold);
+            z-index: 2;
+        }
+
+        .product-info-box {
+            padding: 25px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-family: var(--font-title);
+            color: var(--bordeaux);
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .product-desc {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: #5A5252;
+            margin-bottom: 22px;
+            min-height: 45px;
+        }
+
+        /* Variações de Sabores e Tamanhos */
+        .product-variations {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 10px 0 25px 0;
+            width: 100%;
+            text-align: left;
+        }
+        .variation-field {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .variation-field label {
+            font-family: var(--font-body);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #635A5A;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .variation-select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(139, 30, 36, 0.15);
+            border-radius: 25px; 
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--dark-text);
+            background-color: var(--white-pure);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            appearance: none; 
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0l5 5 5-5z' fill='%238B1E24'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+        }
+        .variation-select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(199, 154, 99, 0.2);
+        }
+
+        .product-meta {
+            margin-top: auto;
+        }
+
+        .product-price {
+            font-family: var(--font-title);
+            color: var(--bordeaux);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .btn-card-order {
+            display: block;
+            width: 100%;
+            background-color: var(--white-pure);
+            color: var(--bordeaux);
+            border: 2px solid var(--bordeaux);
+            padding: 11px 25px;
+            border-radius: 25px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .btn-card-order {
+            background-color: var(--gold);
+            border-color: var(--gold);
+            color: var(--bordeaux);
+            box-shadow: 0 4px 12px rgba(199, 154, 99, 0.2);
+        }
+
+        .btn-card-order:hover {
+            transform: scale(1.02);
+        }
+
+        /* ==========================================================================
+           6. SECÇÃO SOBRE NÓS
+           ========================================================================== */
+        .about-section {
+            background-color: var(--bordeaux);
+            color: var(--creme);
+            padding: 95px 20px;
+            text-align: center;
+            position: relative;
+            border-top: 3px solid var(--gold);
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .about-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .about-decor-icon {
+            margin-bottom: 20px;
+        }
+
+        .about-section h2 {
+            font-family: var(--font-title);
+            font-size: 38px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .about-lead {
+            font-family: var(--font-title);
+            font-size: 22px;
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 35px;
+            color: var(--white-creme);
+        }
+
+        .about-text {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.9;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .about-border-box {
+            border: 1px dashed var(--gold);
+            padding: 50px 40px;
+            border-radius: 8px;
+        }
+
+        /* ==========================================================================
+           7. SISTEMA DE CARRINHO DE COMPRAS MULTI-ITENS
+           ========================================================================== */
+        .cart-floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            background-color: var(--gold);
+            color: var(--bordeaux);
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .cart-floating-btn:hover {
+            transform: scale(1.08);
+            background-color: var(--white-creme);
+        }
+        .cart-badge-count {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background-color: var(--bordeaux);
+            color: #fff;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: var(--white-pure);
+            box-shadow: -6px 0 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+        }
+        .cart-drawer.active {
+            right: 0;
+        }
+
+        .cart-drawer-header {
+            background-color: var(--bordeaux);
+            color: var(--creme);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--gold);
+        }
+        .cart-drawer-header h3 {
+            font-family: var(--font-title);
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+        .cart-close-btn {
+            background: none;
+            border: none;
+            color: var(--creme);
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .cart-close-btn:hover {
+            color: var(--gold);
+        }
+
+        .cart-items-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .empty-cart-text {
+            text-align: center;
+            color: #7A7272;
+            font-style: italic;
+            margin-top: 40px;
+            font-size: 15px;
+        }
+
+        .cart-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(139, 30, 36, 0.12);
+        }
+        .cart-item-details {
+            flex-grow: 1;
+            padding-right: 15px;
+        }
+        .cart-item-name {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bordeaux);
+        }
+        .cart-item-price {
+            font-size: 13px;
+            color: #635A5A;
+            font-weight: 500;
+        }
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-qty {
+            background-color: var(--bordeaux);
+            color: #fff;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        .btn-qty:hover {
+            background-color: var(--gold);
+        }
+        .cart-item-qty {
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 15px;
+            text-align: center;
+        }
+
+        .cart-drawer-footer {
+            background-color: #fff;
+            padding: 25px;
+            border-top: 1px solid rgba(139, 30, 36, 0.1);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+        }
+        .cart-total-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--bordeaux);
+            margin-bottom: 20px;
+        }
+        .btn-send-cart-whatsapp {
+            display: block;
+            width: 100%;
+            background-color: var(--gold);
+            color: var(--bordeaux);
+            border: 2px solid var(--gold);
+            padding: 14px;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(199, 154, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-send-cart-whatsapp:hover {
+            background-color: var(--bordeaux);
+            border-color: var(--bordeaux);
+            color: var(--creme);
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 17, 19, 0.4);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .cart-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ==========================================================================
+           8. RODAPÉ (FOOTER)
+           ========================================================================== */
+        footer {
+            background-color: var(--bordeaux);
+            color: var(--creme);
+            padding: 50px 20px 30px 20px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 45px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .social-link-btn {
+            background-color: var(--gold);
+            color: var(--bordeaux);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .social-link-btn:hover {
+            background-color: var(--white-creme);
+            color: var(--bordeaux);
+            transform: translateY(-2px);
+        }
+
+        .footer-tagline {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .footer-copyright {
+            font-family: var(--font-body);
+            font-size: 12px;
+            opacity: 0.6;
+            border-top: 1px solid rgba(247, 230, 217, 0.15);
+            width: 100%;
+            padding-top: 25px;
+            color: var(--white-creme);
+        }
+
+        /* ==========================================================================
+           9. RESPONSIVIDADE (MEDIA QUERIES)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 25px 20px;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--bordeaux);
+                padding: 25px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                gap: 20px;
+                text-align: center;
+                border-bottom: 2px solid var(--gold);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .hero-mini-logo {
+                width: 120px;
+                margin-bottom: 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .cart-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cart-floating-btn" id="cart-toggle-btn">
+        🛒 <span class="cart-badge-count" id="cart-badge-count">0</span>
+    </div>
+
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-drawer-header">
+            <h3>Seu Pedido</h3>
+            <button class="cart-close-btn" id="cart-close-btn">&times;</button>
+        </div>
+        <div class="cart-items-container" id="cart-items-list">
+            </div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total-box">
+                <span>Total:</span>
+                <span id="cart-total-price">R$ 0,00</span>
+            </div>
+            <button class="btn-send-cart-whatsapp" onclick="enviarCarrinhoWhatsApp()">Enviar Pedido no WhatsApp</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <header>
+        <div class="nav-container">
+            <button class="menu-toggle" id="mobile-menu-btn" aria-label="Abrir menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="nav-menu" id="nav-menu-links">
+                <a href="#doces">Nossos Doces</a>
+                <a href="#encomendas">Faça seu Pedido</a>
+                <a href="#sobre-nos">Sobre Nós</a>
+                <a href="#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <img src="logo.jpg" alt="Logotipo Cianela" class="hero-mini-logo">
+            <h1>Pequenos detalhes, GRANDES SABORES.</h1>
+            <div class="divider">
+                <span class="divider-heart">❤</span>
+            </div>
+            <p>Doces feitos à mão, com amor em cada detalhe.</p>
+            <button class="btn-gold" onclick="document.getElementById('doces').scrollIntoView();">Faça sua encomenda!</button>
+        </div>
+    </section>
+
+    <section class="products-section" id="doces">
+        <div class="section-header">
+            <h2>Nossos Doces Gourmet</h2>
+            <div class="divider divider-bordeaux">
+                <span class="divider-heart divider-heart-bordeaux">❤</span>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            
+            <div class="product-card" id="prod-1">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="pastelninho.jpg" alt="Pastel de Leite Ninho" class="product-img" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Pastel de Leite Ninho</h3>
+                    <p class="product-desc">Deliciosa massa aveludada purinha de Leite Ninho, recheada generosamente com recheios nobres cremosos.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Escolha o Recheio</label>
+                            <select class="variation-select sabor">
+                                <option value="Nutella Tradicional">Nutella Tradicional</option>
+                                <option value="Brigadeiro de Chocolate">Brigadeiro de Chocolate</option>
+                                <option value="Doce de Leite Caseiro">Doce de Leite Caseiro</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Opção / Tamanho</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Unidade Padrão" data-price="14.00">Unidade Padrão — R$ 14,00</option>
+                                <option value="Combo c/ 3 unidades" data-price="38.00">Combo c/ 3 un. — R$ 38,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 14,00</span>
+                        <button class="btn-card-order" onclick="adicionarCardAoCarrinho('prod-1', 'Pastel de Leite Ninho')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="prod-2">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="copodafelicidade.jpg" alt="Copo da Felicidade" class="product-img" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Copo da Felicidade</h3>
+                    <p class="product-desc">Camadas irresistíveis de cremes nobres, pedaços de brownie artesanal, morangos frescos e raspas.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Combinação de Sabores</label>
+                            <select class="variation-select sabor">
+                                <option value="Morango com Nutella">Morango com Nutella</option>
+                                <option value="Brownie com Laka / Ouro Branco">Brownie com Laka / Ouro Branco</option>
+                                <option value="Supremo Dois Amores">Supremo Dois Amores</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Tamanho do Copo</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Copo Média 300ml" data-price="16.00">Média 300ml — R$ 16,00</option>
+                                <option value="Copo Grande 500ml" data-price="22.00">Grande 500ml — R$ 22,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 16,00</span>
+                        <button class="btn-card-order" onclick="document.getElementById('prod-2').scrollIntoView(); adicionarCardAoCarrinho('prod-2', 'Copo da Felicidade')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="prod-3">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="brownies.jpg" alt="Brownie Gourmet" class="product-img" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Brownie Gourmet</h3>
+                    <p class="product-desc">Intenso sabor de chocolate, textura super cremosa por dentro e aquela casquinha craquelada perfeita por fora.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Cobertura / Recheio</label>
+                            <select class="variation-select sabor">
+                                <option value="Tradicional Puro">Tradicional Puro (Sem Recheio)</option>
+                                <option value="Com Recheio de Nutella">Recheio de Nutella</option>
+                                <option value="Com Recheio de Doce de Leite">Recheio de Doce de Leite</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Porção / Embalagem</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Pedaço Individual" data-price="10.00">Pedaço Individual — R$ 10,00</option>
+                                <option value="Caixa Presente c/ 4 un." data-price="42.00">Caixa Presente c/ 4 un. — R$ 42,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 10,00</span>
+                        <button class="btn-card-order" onclick="adicionarCardAoCarrinho('prod-3', 'Brownie Gourmet')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="prod-4">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="bolodepote.jpg" alt="Bolo de Pote" class="product-img" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Bolo de Pote</h3>
+                    <p class="product-desc">Massa super molhadinha intercalada com recheios artesanais cremosos de dar água na boca.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Sabor do Bolo</label>
+                            <select class="variation-select sabor">
+                                <option value="Ninho com Morango">Leite Ninho com Morango</option>
+                                <option value="Cenoura com Brigadeiro">Cenoura com Brigadeiro</option>
+                                <option value="Red Velvet Premium">Red Velvet Premium</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Tamanho do Pote</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Pote Padrão 250g" data-price="12.00">Pote Padrão 250g — R$ 12,00</option>
+                                <option value="Pote Família 400g" data-price="18.00">Pote Família 400g — R$ 18,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 12,00</span>
+                        <button class="btn-card-order" onclick="adicionarCardAoCarrinho('prod-4', 'Bolo de Pote')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="prod-5">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="supresademorango2.jpg" alt="Surpresa de Morango" class="product-img" loading="lazy">
+                    <img src="surpresademorango1.jpg" alt="Surpresa de Morango" class="product-img img-crossfade" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Surpresa de Morango</h3>
+                    <p class="product-desc">Um morango inteiro, fresco e suculento, envolto por um brigadeiro nobre e casquinha fina de chocolate.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Massa Envolvente</label>
+                            <select class="variation-select sabor">
+                                <option value="Massa de Leite Ninho">Massa Pura de Leite Ninho</option>
+                                <option value="Massa de Brigadeiro Belga">Massa de Brigadeiro Tradicional Belga</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Quantidade</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Unidade Especial" data-price="8.50">Unidade Especial — R$ 8,50</option>
+                                <option value="Caixa c/ 4 unidades" data-price="32.00">Caixa Degustação c/ 4 un. — R$ 32,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 8,50</span>
+                        <button class="btn-card-order" onclick="adicionarCardAoCarrinho('prod-5', 'Surpresa de Morango')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="prod-6">
+                <div class="product-img-wrapper">
+                    <div class="card-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#C79A63"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="bombomaberto.jpg" alt="Bombom Aberto" class="product-img" loading="lazy">
+                </div>
+                <div class="product-info-box">
+                    <h3 class="product-title">Bombom Aberto</h3>
+                    <p class="product-desc">A sofisticação servida na taça: creme belga aveludado, frutas frescas fatiadas e ganache artesanal de chocolate nobre puro.</p>
+                    
+                    <div class="product-variations">
+                        <div class="variation-field">
+                            <label>Fruta Selecionada</label>
+                            <select class="variation-select sabor">
+                                <option value="Morangos Frescos">Morangos Frescos</option>
+                                <option value="Uva Itália Sem Semente">Uva Itália (Sem Semente)</option>
+                                <option value="Misto Morango e Uva">Misto (Morango e Uva)</option>
+                            </select>
+                        </div>
+                        <div class="variation-field">
+                            <label>Porção de Entrega</label>
+                            <select class="variation-select tamanho" onchange="alterarPrecoCard(this)">
+                                <option value="Taça Individual" data-price="16.00">Taça Individual — R$ 16,00</option>
+                                <option value="Travessa Família" data-price="55.00">Travessa Família — R$ 55,00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-price">R$ 16,00</span>
+                        <button class="btn-card-order" onclick="adicionarCardAoCarrinho('prod-6', 'Bombom Aberto')">Adicionar ao Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="about-section" id="sobre-nos">
+        <div class="about-container">
+            <div class="about-border-box">
+                <div class="about-decor-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="#C79A63">
+                        <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6 8H6c-2.21 0-4 1.79-4 4v1h20v-1c0-2.21-1.79-4-4-4zm-6 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-5 7.5l1.5 3h11l1.5-3H7z"/>
+                    </svg>
+                </div>
+                
+                <h2>Nossa História</h2>
+                <div class="divider"><span class="divider-heart">❤</span></div>
+                
+                <p class="about-lead">
+                    "Na Cianela Doceria, cada receita é feita com ingredientes selecionados, carinho e dedicação para adoçar os seus melhores momentos."
+                </p>
+                
+                <p class="about-text">
+                    Nascida do sonho compartilhado entre mim e minha esposa, a Cianela Doceria transforma ingredientes premium em memórias inesquecíveis. Buscamos resgatar o carinho das receitas feitas à mão combinando com a sofisticação da confeitaria gourmet. Cada detalhe, do laço de fita ao recheio generoso, é pensado para levar um pedacinho de felicidade em forma de doce diretamente para o seu dia.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contato">
+        <div class="footer-container">
+            <div class="footer-socials" id="encomendas">
+                <a href="https://www.instagram.com/victor.cianela/" target="_blank" class="social-link-btn">
+                    <span>Instagram (@cianela.doceria)</span>
+                </a>
+                <a href="https://wa.me/5521970453147?text=Ol%C3%A1%2C+Torugo+Dev%21+Vi+o+card%C3%A1pio+da+Cianela+Doceria+no+portf%C3%B3lio+e+quero+or%C3%A7ar+um+site+parecido." target="_blank" class="social-link-btn" style="background-color: #C79A63; color: #8B1E24;">
+                    <span>Quero um Cardápio Assim (WhatsApp)</span>
+                </a>
+            </div>
+
+            <p class="footer-tagline">ARTESANAL • FEITO COM AMOR • PARA ADOÇAR SEUS DIAS</p>
+            
+            <p class="footer-copyright">
+                &copy; 2026 Cianela Doceria. Todos os direitos reservados. | Desenvolvido por <a href="https://torugo-git.github.io/torugo-dev/" target="_blank" rel="noopener noreferrer" style="color: #C79A63; font-weight: 700; text-decoration: none;">Torugo Dev</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal Demonstrativo de Pedido (Portfólio Torugo Dev) -->
+    <div id="demo-order-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(43,10,13,0.82); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFFDF9; border:2px solid #C79A63; border-radius:20px; max-width:480px; width:100%; padding:28px 24px; box-shadow:0 24px 60px rgba(0,0,0,0.45); text-align:left; font-family:'Montserrat',sans-serif; position:relative;">
+            <button onclick="document.getElementById('demo-order-modal').style.display='none'" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:24px; color:#8B1E24; cursor:pointer; font-weight:700;">&times;</button>
+            <div style="display:inline-block; background:#FDF3E7; color:#8B1E24; border:1px solid #C79A63; font-size:11px; font-weight:700; text-transform:uppercase; padding:4px 10px; border-radius:99px; letter-spacing:1px; margin-bottom:10px;">
+                ✨ Simulação de Pedido • Portfólio Torugo Dev
+            </div>
+            <h3 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#8B1E24; margin:0 0 8px 0;">Pedido Pronto para Envio!</h3>
+            <p style="font-size:13px; color:#5C4338; line-height:1.5; margin-bottom:14px;">
+                Veja como o pedido do cliente chega <strong>organizado e calculado automaticamente</strong> no WhatsApp da confeitaria:
+            </p>
+            <pre id="demo-whatsapp-preview" style="background:#F7EFE4; border:1px dashed #C79A63; border-radius:12px; padding:14px; font-size:12px; color:#3A2318; white-space:pre-wrap; max-height:210px; overflow-y:auto; font-family:monospace; margin-bottom:18px;"></pre>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <a href="https://wa.me/5521970453147?text=Ol%C3%A1%2C+Torugo+Dev%21+Testei+o+card%C3%A1pio+gourmet+da+Cianela+Doceria+no+portf%C3%B3lio+e+quero+um+or%C3%A7amento+para+o+meu+neg%C3%B3cio%21" target="_blank" style="display:block; text-align:center; background:#8B1E24; color:#FFFDF9; text-decoration:none; font-weight:700; font-size:13px; padding:14px; border-radius:10px; text-transform:uppercase; letter-spacing:0.8px;">
+                    🚀 Quero um Cardápio Digital Assim (Falar com Torugo Dev)
+                </a>
+                <button onclick="document.getElementById('demo-order-modal').style.display='none'" style="background:transparent; border:1px solid #C79A63; color:#8B1E24; font-weight:600; font-size:12px; padding:10px; border-radius:10px; cursor:pointer;">
+                    Continuar Testando o Cardápio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu Responsivo Mobile
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu-links');
+
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuBtn.classList.remove('active');
+            });
+        });
+
+        /* ==========================================================================
+           LOGICA DE ATUALIZAÇÃO DINÂMICA DE PREÇO NO CARD
+           ========================================================================== */
+        function alterarPrecoCard(selectElement) {
+            const option = selectElement.options[selectElement.selectedIndex];
+            const preco = parseFloat(option.getAttribute('data-price'));
+            const card = selectElement.closest('.product-card');
+            const priceSpan = card.querySelector('.product-price');
+            priceSpan.textContent = `R$ ${preco.toFixed(2).replace('.', ',')}`;
+        }
+
+        /* ==========================================================================
+           LOGICA DO CARRINHO EM JAVASCRIPT PURO COM SUPORTE A VARIAÇÕES MÚLTIPLAS
+           ========================================================================== */
+        let carrinho = [];
+
+        const cartToggleBtn = document.getElementById('cart-toggle-btn');
+        const cartCloseBtn = document.getElementById('cart-close-btn');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartBadgeCount = document.getElementById('cart-badge-count');
+        const cartItemsList = document.getElementById('cart-items-list');
+        const cartTotalPrice = document.getElementById('cart-total-price');
+
+        // Abrir e Fechar Carrinho
+        cartToggleBtn.addEventListener('click', () => toggleCarrinho(true));
+        cartCloseBtn.addEventListener('click', () => toggleCarrinho(false));
+        cartOverlay.addEventListener('click', () => toggleCarrinho(false));
+
+        function toggleCarrinho(abrir) {
+            if (abrir) {
+                cartDrawer.classList.add('active');
+                cartOverlay.classList.add('active');
+            } else {
+                cartDrawer.classList.remove('active');
+                cartOverlay.classList.remove('active');
+            }
+        }
+
+        // Ler os seletores do card e disparar a adição estruturada
+        function adicionarCardAoCarrinho(cardId, nomeBase) {
+            const card = document.getElementById(cardId);
+            const saborSelect = card.querySelector('.sabor');
+            const tamanhoSelect = card.querySelector('.tamanho');
+            
+            const sabor = saborSelect ? saborSelect.value : 'Padrão';
+            const tamanhoOption = tamanhoSelect.options[tamanhoSelect.selectedIndex];
+            const tamanho = tamanhoOption.value;
+            const preco = parseFloat(tamanhoOption.getAttribute('data-price'));
+            
+            adicionarAoCarrinho(nomeBase, preco, sabor, tamanho);
+        }
+
+        // Adicionar item estruturado ao carrinho
+        function adicionarAoCarrinho(nome, preco, sabor, tamanho) {
+            // Um item só é duplicado se tiver exatamente o mesmo Nome, Sabor e Tamanho
+            const itemExistente = carrinho.find(item => item.nome === nome && item.sabor === sabor && item.tamanho === tamanho);
+            
+            if (itemExistente) {
+                itemExistente.quantidade += 1;
+            } else {
+                carrinho.push({ nome, preco, sabor, tamanho, quantidade: 1 });
+            }
+
+            // Disparar evento do Meta Pixel passando a especificação completa
+            if(typeof fbq === 'function') {
+                fbq('track', 'AddToCart', { content_names: [`${nome} (${sabor} | ${tamanho})`], value: preco, currency: 'BRL' });
+            }
+
+            atualizarInterfaceCarrinho();
+            toggleCarrinho(true); // Abre o drawer lateral para feedback visual imediato
+        }
+
+        // Alterar quantidade de uma variação específica
+        function alterarQuantidadeEspecifica(nome, sabor, tamanho, mudanca) {
+            const item = carrinho.find(item => item.nome === nome && item.sabor === sabor && item.tamanho === tamanho);
+            if (!item) return;
+
+            item.quantidade += mudanca;
+
+            if (item.quantidade <= 0) {
+                carrinho = carrinho.filter(i => !(i.nome === nome && i.sabor === sabor && i.tamanho === tamanho));
+            }
+
+            atualizarInterfaceCarrinho();
+        }
+
+        // Atualiza a listagem visual do carrinho de forma limpa e organizada
+        function atualizarInterfaceCarrinho() {
+            const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+            cartBadgeCount.textContent = totalItens;
+
+            cartItemsList.innerHTML = '';
+
+            if (carrinho.length === 0) {
+                cartItemsList.innerHTML = '<p class="empty-cart-text">Seu carrinho está vazio.<br>Escolha seus doces acima! 🍪</p>';
+                cartTotalPrice.textContent = 'R$ 0,00';
+                return;
+            }
+
+            let valorTotalGeral = 0;
+
+            carrinho.forEach(item => {
+                const subtotalItem = item.preco * item.quantidade;
+                valorTotalGeral += subtotalItem;
+
+                const row = document.createElement('div');
+                row.className = 'cart-item-row';
+                row.style.flexDirection = 'column'; 
+                row.style.alignItems = 'flex-start';
+                row.style.gap = '6px';
+                
+                row.innerHTML = `
+                    <div class="cart-item-details" style="width: 100%; padding-right: 0;">
+                        <div class="cart-item-name" style="font-size: 16px;">${item.nome}</div>
+                        <div style="font-size: 11px; color: var(--gold); font-weight: 600; text-transform: uppercase; margin: 2px 0; letter-spacing: 0.5px;">
+                            ${item.sabor} | ${item.tamanho}
+                        </div>
+                        <div class="cart-item-price">R$ ${item.preco.toFixed(2).replace('.', ',')} cada</div>
+                    </div>
+                    <div class="cart-item-actions" style="width: 100%; justify-content: space-between; margin-top: 4px; align-items: center;">
+                        <span style="font-weight: 700; color: var(--bordeaux); font-size: 14px;">Subtotal: R$ ${subtotalItem.toFixed(2).replace('.', ',')}</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button class="btn-qty" onclick="alterarQuantidadeEspecifica('${item.nome}', '${item.sabor}', '${item.tamanho}', -1)">-</button>
+                            <span class="cart-item-qty">${item.quantidade}</span>
+                            <button class="btn-qty" onclick="alterarQuantidadeEspecifica('${item.nome}', '${item.sabor}', '${item.tamanho}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+                cartItemsList.appendChild(row);
+            });
+
+            cartTotalPrice.textContent = `R$ ${valorTotalGeral.toFixed(2).replace('.', ',')}`;
+        }
+
+        // Compila o carrinho completo e exibe o Modal Demonstrativo de Portfólio
+        function enviarCarrinhoWhatsApp() {
+            if (carrinho.length === 0) {
+                alert('Seu carrinho está vazio! Adicione algum doce antes de enviar.');
+                return;
+            }
+
+            let textoMensagem = `Olá, Cianela Doceria! Gostaria de fazer um pedido gourmet: ✨\n\n`;
+            let valorTotalGeral = 0;
+
+            carrinho.forEach(item => {
+                const subtotal = item.preco * item.quantidade;
+                valorTotalGeral += subtotal;
+                textoMensagem += `• *${item.quantidade}x ${item.nome}*\n  ↳ _Sabor: ${item.sabor}_\n  ↳ _Opção: ${item.tamanho}_\n  ↳ Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}\n\n`;
+            });
+
+            textoMensagem += `*Total do Pedido:* R$ ${valorTotalGeral.toFixed(2).replace('.', ',')}\n\n`;
+            textoMensagem += `Como posso prosseguir com o pagamento e a entrega?`;
+
+            if(typeof fbq === 'function') {
+                fbq('track', 'InitiateCheckout', { value: valorTotalGeral, currency: 'BRL' });
+            }
+
+            toggleCarrinho(false);
+            document.getElementById('demo-whatsapp-preview').textContent = textoMensagem;
+            document.getElementById('demo-order-modal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

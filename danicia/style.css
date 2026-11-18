@@ -1,0 +1,938 @@
+/* ==========================================================================
+   Variáveis de Cores e Fontes
+   ========================================================================== */
+:root {
+    --bg-creme: #F9F6ED;         
+    --verde-borelli: #5A6B53; 
+    --dourado: #c59e58;       
+    --dourado-hover: #b8924e;    
+    --text-escuro: #313131;      
+    --text-claro: #FFFFFF;
+    --bege-card: #EBE5DB; 
+    
+    --font-titulos: 'Nunito', sans-serif;
+    --font-textos: 'Open Sans', sans-serif;
+    --font-serif: 'Playfair Display', serif; 
+    --font-animada: 'Schoolbell', cursive;
+    
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ==========================================================================
+   Reset Estrutural
+   ========================================================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--font-textos);
+    background-color: var(--bg-creme);
+    color: var(--text-escuro);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-titulos);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.fonte-detalhe {
+    font-family: var(--font-titulos);
+    font-style: italic;
+    color: var(--dourado);
+    font-weight: 600;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* ==========================================================================
+   Botões
+   ========================================================================== */
+.btn-dourado {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background-color: var(--dourado);
+    color: var(--text-claro);
+    font-family: var(--font-titulos);
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.btn-dourado:hover {
+    background-color: var(--dourado-hover);
+    transform: scale(1.02);
+}
+
+/* ==========================================================================
+   Cabeçalho
+   ========================================================================== */
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.logo-img {
+    max-height: 85px; 
+    background-color: #FFFFFF; /* Devolve o branco apenas atrás da imagem */
+    border-radius: 50%; /* Força o fundo branco a ficar com o formato oval exato */
+    padding: 2px; /* Garante que o fundo cubra até a bordinha acobreada */
+    filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.4));
+    transition: var(--transition);
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+}
+
+.desktop-nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+}
+
+.desktop-nav a {
+    font-size: 0.95rem;
+    font-family: var(--font-titulos);
+    font-weight: 600;
+    color: var(--text-claro);
+    text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+    transition: var(--transition);
+}
+
+.desktop-nav a:hover {
+    color: var(--dourado);
+}
+
+/* ==========================================================================
+   Menu Mobile Drawer & Hamburger
+   ========================================================================== */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.hamburger-btn span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--text-claro);
+    border-radius: 3px;
+    transition: var(--transition);
+}
+
+.mobile-menu-drawer {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background-color: var(--verde-borelli);
+    z-index: 200;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+    transition: left 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.mobile-menu-drawer.active {
+    left: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 1rem;
+}
+
+.drawer-logo {
+    max-height: 60px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-claro);
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    color: var(--dourado);
+}
+
+.mobile-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mobile-nav a {
+    font-size: 1.2rem;
+    font-family: var(--font-titulos);
+    font-weight: 600;
+    color: var(--text-claro);
+    text-transform: uppercase;
+    transition: var(--transition);
+    display: block;
+}
+
+.mobile-nav a:hover {
+    color: var(--dourado);
+    padding-left: 10px;
+}
+
+/* Fundo Escuro ao abrir o menu (Overlay) */
+body.menu-open {
+    overflow: hidden;
+}
+
+body.menu-open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 150;
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   Capa (Hero) 
+   ========================================================================== */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px; 
+    display: flex;
+    align-items: center;
+    background-color: #333; 
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('capa1.jpg'); 
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 650px;
+    color: var(--text-claro);
+    text-align: left;
+}
+
+.hero-section h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem); 
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    text-shadow: 0px 4px 10px rgba(0,0,0,0.6);
+    letter-spacing: -1px;
+}
+
+/* ==========================================================================
+   Produtos e Animação de Texto
+   ========================================================================== */
+.produtos-section {
+    padding: 8rem 0;
+    background-color: var(--bg-creme);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-header h2 {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    color: var(--verde-borelli);
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+}
+
+.loader-text {
+    display: inline-block;
+    vertical-align: top;
+    height: 1.2em;
+    overflow: hidden;
+    color: var(--dourado);
+    font-family: var(--font-animada);
+    font-weight: 400;
+}
+
+.words-wrapper {
+    display: block;
+    animation: spin_4991 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.word-item {
+    display: block;
+    height: 1.2em;
+    line-height: 1.2em;
+}
+
+@keyframes spin_4991 {
+    0%, 15% { transform: translateY(0); }
+    20%, 35% { transform: translateY(-1.2em); }
+    40%, 55% { transform: translateY(-2.4em); }
+    60%, 75% { transform: translateY(-3.6em); }
+    80%, 95% { transform: translateY(-4.8em); }
+    100% { transform: translateY(-6.0em); } 
+}
+
+/* Vitrine Expansiva */
+.containerCards {
+    display: flex; 
+    flex-direction: row;
+    border-radius: 16px; 
+    overflow: hidden;
+    height: 500px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    margin-bottom: 6rem;
+}
+
+.card-expand {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    border-right: 2px solid var(--bg-creme);
+    display: flex;
+    align-items: flex-end;
+}
+
+.card-expand:last-child { border-right: none; }
+
+.card-expand:hover { flex: 3.5; }
+
+.card-expand-overlay {
+    width: 100%;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+    color: var(--text-claro);
+    opacity: 0.8;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.card-expand:hover .card-expand-overlay { opacity: 1; }
+
+.card-expand-overlay h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    white-space: nowrap; 
+}
+
+.card-expand-overlay p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    opacity: 0; 
+    transition: opacity 0.4s ease 0.2s; 
+    display: none; 
+}
+
+.card-expand:hover .card-expand-overlay p {
+    opacity: 0.9;
+    display: block; 
+}
+
+.btn-pedir-outline {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--text-claro);
+    font-family: var(--font-textos);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    width: fit-content;
+}
+
+.btn-pedir-outline:hover {
+    background-color: var(--dourado);
+    border-color: var(--dourado);
+}
+
+/* Card Clássico Danícia */
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card-danicia {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    transition: var(--transition);
+}
+
+.card-danicia:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.card-top-bg {
+    height: 200px;
+    background-color: var(--bege-card);
+    background-size: cover;
+    background-position: center;
+}
+
+.card-logo-circle {
+    width: 90px;
+    height: 90px;
+    background: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 155px; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.card-logo-circle span {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-style: italic;
+    color: var(--dourado);
+    line-height: 1;
+    margin-top: 5px;
+}
+
+.card-logo-circle small {
+    font-size: 0.4rem;
+    letter-spacing: 1.5px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.card-content {
+    padding: 4.5rem 2rem 2.5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-content h3 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    color: var(--text-escuro);
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+}
+
+.card-content .subtitle {
+    font-family: var(--font-textos);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--verde-borelli);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.card-content p {
+    font-size: 0.85rem;
+    color: #777;
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    flex-grow: 1;
+}
+
+.btn-pedir-escuro {
+    display: inline-block;
+    width: 100%;
+    padding: 0.9rem 0;
+    border: 1px solid #A69C8A;
+    border-radius: 50px;
+    background: transparent;
+    color: var(--text-escuro);
+    font-family: var(--font-textos);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-pedir-escuro:hover {
+    background-color: var(--verde-borelli);
+    border-color: var(--verde-borelli);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   PILARES DA MARCA (ENGENHARIA BORELLI 5 ITENS)
+   ========================================================================== */
+.feature-one-wrapper {
+    background-color: var(--bg-creme);
+    padding-bottom: 4rem; 
+}
+
+.feature-one {
+    position: relative;
+    display: block;
+    z-index: 2;
+    padding: 75px 0 80px;
+    margin: 0 30px; 
+    background-color: var(--verde-borelli); 
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.feature-one__bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-size: auto;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.feature-one .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+.feature-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+/* 
+  Correção para alinhamento dos pilares no mobile. 
+  Isso remove a margem negativa dobrada quando uma row 
+  está dentro da outra, resolvendo o problema da imagem. 
+*/
+.feature-row .feature-row {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
+.gutter-y-30 {
+    margin-top: -30px;
+}
+
+.gutter-y-30 > [class*="feature-col-"] {
+    margin-top: 30px;
+    padding: 0 15px;
+}
+
+.justify-content-md-center {
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.secondary-margin {
+    margin-top: 35px !important;
+}
+
+.video-one__title {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-titulos);
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: var(--text-claro);
+    margin-bottom: 15px;
+}
+
+.feature-one__item {
+    position: relative;
+}
+
+.feature-one__item__title {
+    font-family: var(--font-titulos);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 1px;
+    color: var(--text-claro);
+    margin-bottom: 0;
+}
+
+.feature-one__item__text {
+    font-family: var(--font-textos);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--text-claro);
+    padding-right: 15px;
+    margin-top: 10px;
+}
+
+.feature-one__item__text span {
+    display: block;
+    color: var(--dourado);
+    font-family: var(--font-titulos);
+    font-weight: 800;
+    line-height: 22px;
+    margin-bottom: 8px;
+}
+
+.feature-one__item__text br {
+    display: none;
+}
+
+.feature-col-xl-4 {
+    position: relative;
+    width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .feature-col-xl-4 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+    .feature-one__item__text br { display: block; }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .feature-col-xl-4 { flex: 0 0 50%; max-width: 50%; }
+    .video-one__title { font-size: 42px; }
+}
+
+@media (max-width: 767px) {
+    .feature-one {
+        margin: 0 10px;
+        padding: 50px 20px;
+        border-radius: 20px;
+    }
+    .video-one__title { font-size: 32px; }
+    .feature-col-xl-4 { flex: 0 0 100%; max-width: 100%; padding-bottom: 20px; }
+}
+
+@media (max-width: 1299px) {
+    .feature-one { margin-left: 15px; margin-right: 15px; }
+}
+
+/* ==========================================================================
+   História da Marca
+   ========================================================================== */
+.historia-section {
+    padding: 8rem 0;
+    background-color: var(--bg-creme);
+}
+
+.historia-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.historia-img-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.historia-img {
+    width: 100%;
+    max-width: 450px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.historia-text h2 {
+    font-size: clamp(2.2rem, 3vw, 2.8rem);
+    color: var(--verde-borelli);
+    margin-bottom: 1.5rem;
+}
+
+.historia-text p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-escuro);
+}
+
+/* ==========================================================================
+   Tabela Nutricional (Acordeão)
+   ========================================================================== */
+.nutricional-section {
+    padding: 6rem 0;
+    background-color: #F1EDE2; 
+}
+
+.accordion-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+details.accordion {
+    background: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(92, 100, 71, 0.1);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+details.accordion summary {
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    font-family: var(--font-titulos);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-borelli);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+details.accordion summary::-webkit-details-marker { display: none; }
+
+details.accordion summary::after {
+    content: '+';
+    font-size: 1.5rem;
+    color: var(--dourado);
+    font-weight: 400;
+}
+
+details.accordion[open] summary::after { content: '−'; }
+
+.nutri-content {
+    padding: 2rem;
+    background: #fff;
+    border-top: 1px solid rgba(92, 100, 71, 0.1);
+}
+
+.nutri-info-extra {
+    font-size: 0.9rem;
+    color: var(--verde-borelli);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.nutri-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: var(--text-escuro);
+}
+
+.nutri-table th, .nutri-table td {
+    border-bottom: 1px solid #eaeaea;
+    padding: 0.8rem 0;
+    text-align: left;
+}
+
+.nutri-table th {
+    font-weight: 700;
+    color: var(--text-escuro);
+    width: 45%;
+}
+
+.nutri-table td { 
+    text-align: center; 
+}
+
+/* ==========================================================================
+   Rodapé / Encomendas
+   ========================================================================== */
+footer {
+    background-color: var(--verde-borelli);
+    color: var(--text-claro);
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.entrega-badge {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.footer-nav a {
+    font-size: 0.85rem;
+    font-family: var(--font-titulos);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: var(--transition);
+}
+
+.footer-nav a:hover { color: var(--dourado); }
+
+.footer-logo-text {
+    font-family: var(--font-titulos);
+    font-size: 1.4rem;
+    color: var(--dourado);
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Media Queries (Gerais)
+   ========================================================================== */
+@media (max-width: 991px) {
+    .historia-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .hero-content {
+        text-align: center;
+        margin: 0 auto;
+    }
+    .hero-section::after {
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 100%);
+    }
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding: 0 20px;
+    }
+    .header-container {
+        flex-direction: row;
+        gap: 1.5rem;
+        padding-top: 1.5rem;
+    }
+    .desktop-nav { display: none; }
+    .hamburger-btn { display: flex; }
+    .hero-section { min-height: 500px; height: 80vh; }
+    
+    .containerCards {
+        flex-direction: column;
+        height: auto;
+    }
+    .card-expand {
+        height: 150px;
+        border-right: none;
+        border-bottom: 2px solid var(--bg-creme);
+    }
+    .card-expand:last-child { border-bottom: none; }
+    .card-expand:hover {
+        flex: 1;
+        height: 350px; 
+    }
+
+    /* Tabela Nutricional Mobile */
+    .nutri-table {
+        font-size: 0.75rem;
+        width: 100%;
+    }
+
+    .nutri-table th, .nutri-table td {
+        padding: 0.4rem 0.2rem;
+        white-space: nowrap;
+    }
+
+    .nutri-table th:first-child, .nutri-table td:first-child {
+        white-space: normal;
+    }
+}
