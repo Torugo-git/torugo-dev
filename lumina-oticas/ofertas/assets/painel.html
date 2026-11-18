@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Gestão - Leads</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <img src="images/raza_logo.png" alt="Lumina Óticas" class="logo">
+            <div class="user-info">
+                <span id="user-email"></span>
+                <button id="logout-button" class="btn btn-logout">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <h2 id="kpi-total-leads">--</h2>
+                    <p>Total de Leads</p>
+                </div>
+                <div class="kpi-card">
+                    <h2 id="kpi-leads-today">--</h2>
+                    <p>Leads Hoje</p>
+                </div>
+                <div class="kpi-card">
+                    <h2 id="kpi-best-unit">--</h2>
+                    <p>Melhor Unidade</p>
+                </div>
+                <div class="kpi-card">
+                    <h2 id="kpi-best-campaign">--</h2>
+                    <p>Melhor Campanha</p>
+                </div>
+            </div>
+
+            <div class="filters-container">
+                <form id="filters-form">
+                    <div class="filter-group">
+                        <label for="start-date">De:</label>
+                        <input type="date" id="start-date" name="start-date">
+                    </div>
+                    <div class="filter-group">
+                        <label for="end-date">Até:</label>
+                        <input type="date" id="end-date" name="end-date">
+                    </div>
+                    <div class="filter-group">
+                        <label for="unit-filter">Unidade:</label>
+                        <select id="unit-filter" name="unit-filter">
+                            <option value="">Todas</option>
+                            <option value="rio-das-ostras-rj">Rio das Ostras - RJ</option>
+                            <option value="laranjeiras-es">Laranjeiras - ES</option>
+                            <option value="campo-grande-es">Campo Grande - ES</option>
+                            <option value="cabo-frio-rj">Cabo Frio - RJ</option>
+                            <option value="macae-rj">Macaé - RJ</option>
+                            <option value="belo-horizonte-mg">Belo Horizonte - MG</option>
+                            <option value="juiz-de-fora-mg">Juiz de Fora - MG</option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons">
+                        <button type="reset" id="clear-filters" class="btn btn-secondary">Limpar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="actions-container">
+                <div class="search-group">
+                    <input type="search" id="search-input" placeholder="Pesquisar por nome, email ou telefone...">
+                </div>
+                <button id="export-csv" class="btn btn-secondary">Exportar CSV</button>
+            </div>
+
+            <h1>Leads Capturados</h1>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-sort="dataCadastro" class="sortable">Data de Cadastro <span class="sort-arrow"></span></th>
+                            <th data-sort="nome" class="sortable">Nome <span class="sort-arrow"></span></th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th data-sort="unidade" class="sortable">Unidade <span class="sort-arrow"></span></th>
+                            <th data-sort="campanha" class="sortable">Campanha (UTM) <span class="sort-arrow"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-table-body">
+                        </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-container">
+                <button id="prev-page" class="btn btn-secondary">Anterior</button>
+                <span id="page-info"></span>
+                <button id="next-page" class="btn btn-secondary">Próxima</button>
+            </div>
+
+            <div id="loading-spinner" class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="painel.js"></script>
+<!-- LUMINA-PORTFOLIO-WIDGET-START -->
+<style>
+#lumina-portfolio-bar {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 99999;
+    background: rgba(20, 20, 20, 0.96);
+    border: 1px solid rgba(255, 140, 0, 0.45);
+    border-radius: 14px;
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    font-family: 'Montserrat', 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
+    max-width: calc(100vw - 100px);
+}
+#lumina-portfolio-bar a, #lumina-portfolio-bar select {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-family: inherit;
+}
+#lumina-portfolio-bar a:hover, #lumina-portfolio-bar select:hover {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar a.lp-back-torugo {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar select option {
+    background: #222;
+    color: #fff;
+}
+@media (max-width: 768px) {
+    #lumina-portfolio-bar {
+        bottom: 10px;
+        left: 10px;
+        padding: 6px 8px;
+        gap: 4px;
+    }
+    #lumina-portfolio-bar a, #lumina-portfolio-bar select {
+        font-size: 10px;
+        padding: 5px 7px;
+    }
+}
+</style>
+<div id="lumina-portfolio-bar">
+    <a href="../../../index.html" class="lp-back-torugo">← Portfólio Torugo</a>
+    <a href="../../index.html">🏠 Site Principal</a>
+    <a href="../../franqueado.html">🤝 Seja Franqueado</a>
+    <select onchange="if(this.value) window.location.href=this.value" aria-label="Escolher Landing Page de Campanha">
+        <option value="">🔥 6 LPs de Ofertas...</option>
+        <option value="../../ofertas/promo-2por299.html">LP 1: 2 Óculos por 10x R$ 29,90</option>
+        <option value="../../ofertas/promo-1hora.html">LP 2: Óculos Pronto em 1 Hora</option>
+        <option value="../../ofertas/promo70.html">LP 3: Lentes & Armações até 70% OFF</option>
+        <option value="../../ofertas/promo-antirreflexo.html">LP 4: Completo + Antirreflexo 10x R$ 19,90</option>
+        <option value="../../ofertas/promo-armacoes49.html">LP 5: Armação Preço Único R$ 49,90</option>
+        <option value="../../ofertas/promo-oculos-antigo.html">LP 6: Seu Óculos Antigo Vale Desconto</option>
+    </select>
+    <a href="../../portal-franqueado.html">🛒 Portal Franqueado</a>
+    <a href="../../ofertas/assets/painel.html">📊 Painel de Leads (CRM)</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const netlifyForms = document.querySelectorAll('form[netlify]');
+    netlifyForms.forEach(function(f) {
+        f.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Solicitação enviada com sucesso! (Modo Demonstração Portfólio)');
+            if (f.getAttribute('action')) {
+                window.location.href = f.getAttribute('action').replace(/^\//, '../../');
+            }
+        });
+    });
+});
+</script>
+<!-- LUMINA-PORTFOLIO-WIDGET-END -->
+</body>
+</html>

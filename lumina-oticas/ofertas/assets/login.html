@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Gestão - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <img src="images/raza_logo.png" alt="Lumina Óticas" class="logo">
+            <h2>Painel de Gestão de Leads</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+<!-- LUMINA-PORTFOLIO-WIDGET-START -->
+<style>
+#lumina-portfolio-bar {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 99999;
+    background: rgba(20, 20, 20, 0.96);
+    border: 1px solid rgba(255, 140, 0, 0.45);
+    border-radius: 14px;
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    font-family: 'Montserrat', 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
+    max-width: calc(100vw - 100px);
+}
+#lumina-portfolio-bar a, #lumina-portfolio-bar select {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-family: inherit;
+}
+#lumina-portfolio-bar a:hover, #lumina-portfolio-bar select:hover {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar a.lp-back-torugo {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar select option {
+    background: #222;
+    color: #fff;
+}
+@media (max-width: 768px) {
+    #lumina-portfolio-bar {
+        bottom: 10px;
+        left: 10px;
+        padding: 6px 8px;
+        gap: 4px;
+    }
+    #lumina-portfolio-bar a, #lumina-portfolio-bar select {
+        font-size: 10px;
+        padding: 5px 7px;
+    }
+}
+</style>
+<div id="lumina-portfolio-bar">
+    <a href="../../../index.html" class="lp-back-torugo">← Portfólio Torugo</a>
+    <a href="../../index.html">🏠 Site Principal</a>
+    <a href="../../franqueado.html">🤝 Seja Franqueado</a>
+    <select onchange="if(this.value) window.location.href=this.value" aria-label="Escolher Landing Page de Campanha">
+        <option value="">🔥 6 LPs de Ofertas...</option>
+        <option value="../../ofertas/promo-2por299.html">LP 1: 2 Óculos por 10x R$ 29,90</option>
+        <option value="../../ofertas/promo-1hora.html">LP 2: Óculos Pronto em 1 Hora</option>
+        <option value="../../ofertas/promo70.html">LP 3: Lentes & Armações até 70% OFF</option>
+        <option value="../../ofertas/promo-antirreflexo.html">LP 4: Completo + Antirreflexo 10x R$ 19,90</option>
+        <option value="../../ofertas/promo-armacoes49.html">LP 5: Armação Preço Único R$ 49,90</option>
+        <option value="../../ofertas/promo-oculos-antigo.html">LP 6: Seu Óculos Antigo Vale Desconto</option>
+    </select>
+    <a href="../../portal-franqueado.html">🛒 Portal Franqueado</a>
+    <a href="../../ofertas/assets/painel.html">📊 Painel de Leads (CRM)</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const netlifyForms = document.querySelectorAll('form[netlify]');
+    netlifyForms.forEach(function(f) {
+        f.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Solicitação enviada com sucesso! (Modo Demonstração Portfólio)');
+            if (f.getAttribute('action')) {
+                window.location.href = f.getAttribute('action').replace(/^\//, '../../');
+            }
+        });
+    });
+});
+</script>
+<!-- LUMINA-PORTFOLIO-WIDGET-END -->
+</body>
+</html>

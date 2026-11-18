@@ -1,933 +1,424 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina Óticas — Ecossistema de Franquias, Funil de Vouchers & CRM | Case Torugo Dev</title>
-    <meta name="description" content="Sistema completo para redes de óticas e franquias: Landing Pages de alta conversão com gerador de vouchers, Painel CRM de Leads com rastreio UTM e Portal B2B do Franqueado.">
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <title>Lumina Óticas - A Ótica do Futuro</title>
+    <meta name="description" content="Bem-vindo à Lumina Óticas. Encontre armações, lentes de contato e óculos de sol com estilo e qualidade.">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Lumina Óticas",
+      "url": "https://SUA-URL-AQUI.com.br",
+      "logo": "https://SUA-URL-AQUI.com.br/assets/raza_logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-XX-XXXXX-XXXX",
+        "contactType": "customer service",
+        "areaServed": "BR",
+        "availableLanguage": "pt-BR"
+      },
+      "description": "Lumina Óticas, a ótica do futuro. Oferecemos uma vasta gama de óculos de grau, óculos de sol e lentes de contato.",
+      "sameAs": [
+        "https://www.instagram.com/luminaoticas/",
+        "https://www.facebook.com/p/Lumina-%C3%9Óticas-61562309676910/",
+        "https://linktr.ee/luminaoticas"
+      ]
+    }
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/lp-style.css">
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #0b0d13;
-            color: #f8fafc;
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
         }
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
+        .carousel-slide {
+            display: none;
+            text-align: center;
         }
-        .animate-marquee {
-            display: flex;
-            width: max-content;
-            animation: marquee 26s linear infinite;
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: cover;
         }
-        .animate-marquee:hover {
-            animation-play-state: paused;
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.5);
         }
-        .amber-glow {
-            box-shadow: 0 0 35px rgba(245, 158, 11, 0.25);
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        .dots-container {
+            text-align: center;
+            padding: 10px;
+        }
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .active, .dot:hover {
+            background-color: #717171;
+        }
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+        @keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
-
-    <!-- ==================== BARRA SUPERIOR "3 EM 1" (MODO VITRINE TORUGO DEV) ==================== -->
-    <div class="sticky top-0 z-50 bg-[#080612]/95 backdrop-blur-md border-b border-amber-500/30 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5">
-                <span class="px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider">
-                    ⚡ Ecossistema 3 em 1 (Demo Interativa)
-                </span>
-                <span class="text-xs text-slate-300 hidden md:inline">
-                    Navegue pelas 3 frentes do projeto: <strong>Funil de Vouchers</strong>, <strong>CRM de Leads</strong> e <strong>Portal de Franquia</strong>
-                </span>
-            </div>
-
-            <!-- Abas de Alternância dos 3 Módulos -->
-            <div class="flex flex-wrap items-center gap-1.5 bg-white/5 p-1 rounded-xl border border-white/10">
-                <button onclick="switchModule('lp')" id="tab-btn-lp" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-amber-500 text-slate-950 shadow-lg">
-                    🎯 1. Funil & Vouchers (Cliente)
-                </button>
-                <button onclick="switchModule('crm')" id="tab-btn-crm" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-300 hover:text-white flex items-center gap-1.5">
-                    <span>📊 2. Painel CRM de Leads</span>
-                    <span id="crm-badge-count" class="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono">12</span>
-                </button>
-                <button onclick="switchModule('franchise')" id="tab-btn-franchise" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-300 hover:text-white">
-                    🏢 3. Portal do Franqueado B2B
-                </button>
-            </div>
-
-            <a href="https://torugo-git.github.io/torugo-dev/" class="text-xs font-bold text-purple-300 hover:text-white flex items-center gap-1">
-                <span>← Voltar ao Portfólio</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- CABEÇALHO DA MARCA DEMONSTRATIVA LUMINA ÓTICAS -->
-    <header class="bg-[#111520] border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
-            <a href="#" onclick="switchModule('lp'); return false;" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-glasses"></i>
-                </div>
-                <div>
-                    <span class="text-xl font-black tracking-tight text-white">LUMINA <span class="text-amber-400">ÓTICAS</span></span>
-                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-semibold">Rede de Óticas & Laboratório Digital</span>
-                </div>
-            </a>
-
-            <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
-                <button onclick="switchModule('lp')" class="text-slate-300 hover:text-amber-400 transition-colors px-2 py-1">Campanhas Ativas</button>
-                <button onclick="switchModule('lp'); document.getElementById('lens-types').scrollIntoView({behavior:'smooth'})" class="text-slate-300 hover:text-amber-400 transition-colors px-2 py-1">Tecnologia em Lentes</button>
-                <button onclick="switchModule('franchise')" class="text-slate-300 hover:text-amber-400 transition-colors px-2 py-1">Seja um Franqueado</button>
-                <button onclick="switchModule('crm')" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-amber-500/30 text-amber-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>CRM Gestor</span>
-                </button>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><a href="index.html"><img src="assets/raza_logo.png" alt="Logo da Lumina Óticas"></a></div>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#modelos">Estilo e Conforto</a></li>
+                        <li><a href="#unidades">Nossas Unidades</a></li>
+                        <li><a href="franqueado.html">Seja um Franqueado</a></li>
+                        <li><a href="portal-franqueado.html" class="portal-link">Portal do Franqueado</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
 
-    <!-- ========================================================================================= -->
-    <!-- MÓDULO 1: LANDING PAGE DE ALTA CONVERSÃO & GERADOR DE VOUCHERS (B2C)                      -->
-    <!-- ========================================================================================= -->
-    <div id="module-lp" class="flex-1">
-        <!-- Contador de Escassez de Vouchers -->
-        <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 text-slate-950 py-2.5 px-4 shadow-lg">
-            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-center sm:text-left">
-                <p class="text-xs sm:text-sm font-extrabold tracking-wide mx-auto sm:mx-0">
-                    🔥 RESTAM APENAS <span id="voucher-count" class="px-2 py-0.5 rounded bg-slate-950 text-amber-400 font-black">23</span> VOUCHERS DE DESCONTO PARA USAR NAS LOJAS HOJE!
+    <main>
+      <section id="inicio" class="hero hero-home">
+        <div class="carousel-container">
+            <div class="carousel-slide fade">
+                <a href="ofertas/promo-2por299.html" target="_blank"><img src="assets/hero-background.jpg" alt="Banner 1"></a>
+            </div>
+            <div class="carousel-slide fade">
+                <a href="https://of.luminaoticas.com.br/promo-1hora" target="_blank"><img src="assets/promo1-hora.jpg" alt="Banner 2"></a>
+            </div>
+            <div class="carousel-slide fade">
+                <a href="https://of.luminaoticas.com.br/promo70" target="_blank"><img src="assets/promo70-hero-poster.jpg" alt="Banner 3"></a>
+            </div>
+            <div class="carousel-slide fade">
+                <a href="ofertas/promo-antirreflexo.html" target="_blank"><img src="assets/promo-antirreflexo-banner.jpg" alt="Banner 4"></a>
+            </div>
+            <div class="carousel-slide fade">
+                <a href="ofertas/promo-armacoes49.html" target="_blank"><img src="assets/promo-armacoes49-banner.jpg" alt="Banner 5"></a>
+            </div>
+            <div class="carousel-slide fade">
+                <a href="ofertas/promo-oculos-antigo.html" target="_blank"><img src="assets/promo-oculos-antigo.jpg" alt="Banner 6"></a>
+            </div>
+            <a class="prev">&#10094;</a>
+            <a class="next">&#10095;</a>
+        </div>
+        <div class="dots-container">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+      </section>
+
+      <section id="modelos" class="section">
+        <div class="container">
+            <h2 class="section-title">Estilo e Conforto</h2>
+            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 3rem; color: #666;">Nossos óculos combinam design moderno com o máximo conforto. Deslize para ver mais modelos!</p>
+            <div class="modelos-gallery">
+                <img src="modelos_carrossel/67-scaled-qvn77fehx2o82vjaaw4k6pvyxqdfsg369t4l5it08g.jpg" alt="Armação de óculos de grau moderna Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/68-scaled-qvn789hbzrteeeblf94meiapy296mrel1y04idkepc.jpg" alt="Óculos de sol unissex com armação preta Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/71-scaled-qvn7apu5u76cpqr93bbjww01sa5oqb5cq3brmdxegg.jpg" alt="Modelo de óculos feminino estilo gatinho Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/72-scaled-qvn7bi1bj88ye1mainiczovvluap589atywc0orl9s.jpg" alt="Design de armação de grau metálica e leve Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/73-scaled-qvn7cb6bf3cudyfysi3smzj60sb2rugz9z4dw9kdww.jpg" alt="Óculos de sol esportivo com proteção UV Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/74-scaled-qvn7d595hsi0ph89wv3uurxx146tm5se23zx94bsds.jpg" alt="Armação de óculos infantil colorida e resistente Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/75-scaled-qvn7dye5dnlwpe1y6ppai2l7g2778s02i47z4p4l0w.jpg" alt="Modelo de óculos de grau clássico retangular Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/78-scaled-qvn7gbxgnkv01wlpb8ocaz05i4hlp8fn5vl5svlrao.jpg" alt="Óculos de sol modelo aviador espelhado Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/80-scaled-qvn7hz5am542dc7opg9u6226xedq65yqe0or1b5yeo.jpg" alt="Armação de acetato transparente design moderno Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/81-scaled-qvn7it84ou98ouzztt9wdugxxq9h0ha565kae5xcvk.jpg" alt="Óculos de sol feminino grande e elegante Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/82-scaled-qvn7jnayrjef0dsay69ylmvoy257usljyaftr0orcg.jpg" alt="Modelo de óculos de grau masculino de titânio Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/84-scaled-qvn7l9kyj9m707fnhvgtw869ry5z410wuavxi6acmo.jpg" alt="Armação de óculos redonda estilo retrô Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/85-scaled-qvn7m2pyf4q3049brq29jitk6w6cqn8lab3zdr359s.jpg" alt="Óculos de sol com armação de madeira Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/86-scaled-qvn7mux445soof4d7292mbpe0gbd5kcje6ojs1xc34.jpg" alt="Armação de grau leve para leitura Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/88-scaled-qvn7oh73vw0go8rpqrfxwwzyucc4esrwa74nj7ixdc.jpg" alt="Óculos de sol com lente polarizada Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/89-scaled-qvn7pb9xyl5mzrk0v4g04pepuo7v943b2c06w2abu8.jpg" alt="Design de óculos de grau minimalista Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/90-scaled-qvn7q4exug9izodp4z1fs0209m88vqazic88rn34hc.jpg" alt="Armação de óculos de grau para rostos ovais Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/91-scaled-qvn7qxjxqbdezl7detmvfapaok8micinycgan7vx4g.jpg" alt="Óculos de sol quadrado com armação grossa Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/92-scaled-qvn7rqoxm6hazi11oo8b2lcl3i904yqcecocisoprk.jpg" alt="Modelo de óculos para descanso com filtro azul Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/95-scaled-qvn7u5632xronmjfnplzfzizqyert49ne8p0o94hv4.jpg" alt="Armação de óculos de grau feminina delicada Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/96-scaled-qvn7uyb2ysvknjd3xk7f3a6a5wf5fqhbu8x2jtxai8.jpg" alt="Óculos de sol masculino com design arrojado Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/97-scaled-qvn7vrg2unzgng6s77esuqktkkufj2cp0a954feq35c.jpg" alt="Armação de grau unissex versátil para o dia a dia Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/98-scaled-qvn7wkl2qj3cnd0gh9eadvguzsfwoywoq9d6azivsg.jpg" alt="Óculos de sol infantil com proteção UVA e UVB Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/99-scaled-qvn7xcs8fk5ybnvhwll3gocotckx3w0mu4xqpad2ls.jpg" alt="Modelo de armação de grau com detalhes em dourado Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/100-1-scaled-qvn7yns5x9yag5z8a5wfxchqim59sr77olk0p4fdyo.jpg" alt="Óculos de sol estilo wayfarer clássico Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/02-scaled-qvn5p0iuac6nziko1de1ug7cyqki782k4hkp0vhgfk.jpg" alt="Armação de óculos de grau leve e flexível Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/11-scaled-qvn5wnxjwsnoh9gmd6fqn0pf0mv1ujfwucpymy53sg.jpg" alt="Design exclusivo de óculos de sol da coleção Lumina Óticas" class="fade-in-up">
+                <img src="modelos_carrossel/17-scaled-qvn622i57i218jlzt0jih5ltze813vwcl3rgz84m0g.jpg" alt="Armação de óculos de grau moderna para jovens Lumina Óticas" class="fade-in-up">
+            </div>
+        </div>
+    </section>
+
+        <section id="unidades" class="section">
+            <div class="container">
+                <h2 class="section-title">Nossas Unidades</h2>
+                <p style="text-align: center; font-size: 1.1rem; margin-bottom: 3rem; color: #666;">
+                    Encontre a Lumina Óticas mais perto de você.
                 </p>
-                <a href="#capture-form" class="mx-auto sm:mx-0 px-4 py-1 rounded-full bg-slate-950 hover:bg-slate-800 text-white text-xs font-black uppercase tracking-wider transition-transform hover:scale-105">
-                    Retirar Meu Voucher →
+                <div class="unidades-grid">
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/belo-horizonte/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Belo Horizonte</h3>
+                            <p class="estado">Minas Gerais</p>
+                            <p>Avenida Parana 170, Belo Horizonte - MG</p>
+                        </a>
+                        <p><a href="https://wa.me/5531992051429" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(31) 99205-1429</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/macae/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Macaé</h3>
+                            <p class="estado">Rio de Janeiro</p>
+                            <p>Av. Rui Barbosa, 305 - Calçadão, Macaé - RJ</p>
+                        </a>
+                        <p><a href="https://wa.me/5522992512828" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(22) 99251-2828</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/cabo-frio/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Cabo Frio</h3>
+                            <p class="estado">Rio de Janeiro</p>
+                            <p>Rua Erico Coelho 140, Calçadão, Cabo Frio - RJ</p>
+                        </a>
+                        <p><a href="https://wa.me/5522992833992" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(22) 99283-3992</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/rio-das-ostras-centro/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Rio das Ostras</h3>
+                            <p class="estado">Centro</p>
+                            <p>Rodovia Amaral Peixoto, 4472 - Centro, Rio das Ostras - RJ</p>
+                        </a>
+                        <p><a href="https://wa.me/5522991037155" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(22) 99103-7155</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/juiz-de-fora/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Juiz de Fora</h3>
+                            <p class="estado">Minas Gerais</p>
+                            <p>Av.Barão do Rio Branco,2360, Centro Juiz de Fora - MG</p>
+                        </a>
+                        <p><a href="https://wa.me/5532984807155" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(32)98480-7155</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/laranjeiras/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Laranjeiras</h3>
+                            <p class="estado">Espírito Santo</p>
+                            <p>Avenida Central, 440 - Parque Res. Laranjeiras, Serra - ES</p>
+                        </a>
+                        <p><a href="https://wa.me/5527992738181" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(27) 99273-8181</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/cariacica/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Cariacica</h3>
+                            <p class="estado">Espírito Santo</p>
+                            <p>Av. Expedito Garcia, 49 - Campo Grande, Cariacica - ES</p>
+                        </a>
+                        <p><a href="https://wa.me/5527992548190" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(27) 99254-8190</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/campos-dos-goytacazes/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>Campos dos Goytacazes</h3>
+                            <p class="estado">Rio de Janeiro</p>
+                            <p>Av.Sete de Setembro,486</p>
+                        </a>
+                        <p><a href="https://wa.me/5522999651991" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(22)999651991</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                    <div class="unidade-card fade-in-up">
+                        <a href="unidades/sao-jose-dos-campos/index.html" style="text-decoration: none; color: inherit;">
+                            <div class="unidade-icon"></div>
+                            <h3>São José dos Campos</h3>
+                            <p class="estado">São Paulo</p>
+                            <p>Mal.Floriano Peixoto, 188 Centro</p>
+                        </a>
+                        <p><a href="https://wa.me/5512991890891" target="_blank"><img src="assets/whatsapp.svg" alt="WhatsApp Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;">(12)99189-0891</a></p>
+                        <a href="franqueado.html" class="franqueado-button">Seja um Franqueado</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="section contato" style="padding: 2rem 0;">
+            <div class="container">
+                <a href="franqueado.html">
+                    <img src="assets/seja-franqueado.png" alt="Arte da campanha Seja um Franqueado Lumina Óticas" style="display: block; margin-left: auto; margin-right: auto; max-width: 80%; height: auto;">
                 </a>
             </div>
-        </div>
-
-        <!-- Seletor Interativo das 4 Campanhas do Funil de Tráfego Pago -->
-        <section class="relative overflow-hidden py-10 sm:py-14 bg-gradient-to-b from-[#131826] to-[#0b0d13] border-b border-white/10">
-            <div class="max-w-7xl mx-auto px-4 space-y-8">
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-                    <div>
-                        <span class="text-[11px] font-mono uppercase tracking-widest text-amber-400 font-bold">Simulador de Campanhas UTM (Tráfego Pago)</span>
-                        <h2 class="text-lg sm:text-xl font-extrabold text-white">Clique para testar as diferentes ofertas do funil:</h2>
-                    </div>
-                    <div class="flex flex-wrap gap-2" id="campaign-tabs">
-                        <button onclick="selectCampaign('promo-2por299')" data-camp="promo-2por299" class="camp-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 shadow-md">
-                            1. Dose Dupla (2 por R$ 299)
-                        </button>
-                        <button onclick="selectCampaign('promo-1hora')" data-camp="promo-1hora" class="camp-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10">
-                            2. Óculos Prontos em 1 Hora
-                        </button>
-                        <button onclick="selectCampaign('promo-antirreflexo')" data-camp="promo-antirreflexo" class="camp-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10">
-                            3. Lente Blue Control + Antirreflexo
-                        </button>
-                        <button onclick="selectCampaign('promo-70off')" data-camp="promo-70off" class="camp-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10">
-                            4. LiquidAção Até 70% OFF
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Hero Banner Dinâmico em HTML5/CSS Puro (Substitui as artes antigas sem nenhuma marca de terceiros) -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-gradient-to-br from-[#192034] via-[#111522] to-[#0d101a] border border-amber-500/30 p-6 sm:p-10 amber-glow relative overflow-hidden">
-                    <div class="absolute -right-24 -top-24 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-                    <div class="lg:col-span-7 space-y-5 relative z-10">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold">
-                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                            <span id="hero-utm-tag">CAMPANHA ATIVA • UTM: promo-2por299</span>
-                        </div>
-
-                        <h1 id="hero-title" class="text-3xl sm:text-5xl font-black text-white leading-tight">
-                            LEVE <span class="text-amber-400">2 ÓCULOS COMPLETOS</span> POR APENAS <span class="text-amber-400">10x R$ 29,90</span>
-                        </h1>
-
-                        <p id="hero-desc" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-                            Renove seu visual em dobro! Armação + Lentes com proteção UV400 inclusa. Escolha entre mais de 1.000 modelos nas nossas unidades e garanta seu voucher exclusivo abaixo.
-                        </p>
-
-                        <div class="grid grid-cols-3 gap-3 pt-2 max-w-lg">
-                            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-                                <span class="block text-lg sm:text-2xl font-black text-amber-400">+1.000</span>
-                                <span class="text-[11px] text-slate-400">Modelos em Loja</span>
-                            </div>
-                            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-                                <span class="block text-lg sm:text-2xl font-black text-amber-400">1 Hora</span>
-                                <span class="text-[11px] text-slate-400">Laboratório Próprio</span>
-                            </div>
-                            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-                                <span class="block text-lg sm:text-2xl font-black text-amber-400">100%</span>
-                                <span class="text-[11px] text-slate-400">Garantia & Ajuste</span>
-                            </div>
-                        </div>
-
-                        <div class="pt-2 flex flex-wrap gap-3">
-                            <a href="#capture-form" class="px-7 py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm uppercase tracking-wider shadow-xl shadow-amber-500/25 transition-all">
-                                Garantir Meu Voucher Agora →
-                            </a>
-                            <button onclick="switchModule('crm')" class="px-5 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-bold text-xs">
-                                Ver Leads no Painel CRM 📊
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Showcase Visual de Óculos (Imagens 100% Neutras de Alta Resolução) -->
-                    <div class="lg:col-span-5 relative z-10">
-                        <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/40 shadow-2xl group">
-                            <img id="hero-img" src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=80" alt="Coleção Premium Lumina Óticas" class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-                            <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between bg-slate-950/85 backdrop-blur-md p-3.5 rounded-xl border border-white/15">
-                                <div>
-                                    <span id="hero-badge-sub" class="text-[10px] font-mono uppercase text-amber-400 font-bold">Armação + Lentes de Grau</span>
-                                    <p id="hero-badge-price" class="text-sm font-black text-white">2 Óculos Completos • 10x R$ 29,90</p>
-                                </div>
-                                <span class="px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold">
-                                    VOUCHER ATIVO
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
+    </main>
 
-        <!-- Seção de Tecnologia em Lentes (Usa os ícones PNG originais 100% neutros) -->
-        <section id="lens-types" class="py-14 bg-[#0e121b] border-b border-white/10">
-            <div class="max-w-7xl mx-auto px-4 space-y-10">
-                <div class="text-center max-w-2xl mx-auto space-y-2">
-                    <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Laboratório Digital de Alta Precisão</span>
-                    <h2 class="text-2xl sm:text-3xl font-black text-white">Soluções em lentes feitas <span class="text-amber-400">sob medida para você</span></h2>
-                    <p class="text-xs sm:text-sm text-slate-400">Trabalhamos com tratamentos antirreflexo, filtro de luz azul para telas e lentes ultrafinas de alto índice.</p>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                 <div class="footer-section">
+                    <h3>Lumina Óticas</h3>
+                    <p>A Ótica do Futuro</p>
+                    <p>Inovação, Estilo e Qualidade</p>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    <div class="glass-card rounded-2xl p-6 text-center space-y-3 hover:border-amber-400/50 transition-all">
-                        <div class="w-20 h-16 mx-auto rounded-2xl bg-amber-400 flex items-center justify-center p-3 shadow-lg">
-                            <img src="assets/icons/icone-monofocal.png" alt="Lentes Monofocais" class="max-h-full object-contain">
-                        </div>
-                        <h3 class="text-base font-extrabold text-white">Lentes Monofocais</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Para pessoas com <strong>miopia, hipermetropia ou astigmatismo</strong>, corrigindo a visão para perto ou longe com nitidez total.</p>
-                    </div>
-
-                    <div class="glass-card rounded-2xl p-6 text-center space-y-3 hover:border-amber-400/50 transition-all">
-                        <div class="w-20 h-16 mx-auto rounded-2xl bg-amber-400 flex items-center justify-center p-3 shadow-lg">
-                            <img src="assets/icons/icone-multifocal.png" alt="Lentes Multifocais" class="max-h-full object-contain">
-                        </div>
-                        <h3 class="text-base font-extrabold text-white">Lentes Multifocais</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Ajustam a visão de forma progressiva para <strong>várias distâncias</strong>, perfeitas para o dia a dia sem precisar trocar de óculos.</p>
-                    </div>
-
-                    <div class="glass-card rounded-2xl p-6 text-center space-y-3 hover:border-amber-400/50 transition-all">
-                        <div class="w-20 h-16 mx-auto rounded-2xl bg-amber-400 flex items-center justify-center p-3 shadow-lg">
-                            <img src="assets/icons/icone-bifocal.png" alt="Lentes Bifocais" class="max-h-full object-contain">
-                        </div>
-                        <h3 class="text-base font-extrabold text-white">Lentes Bifocais</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Combinam dois campos visuais distintos <strong>para perto e para longe</strong> na mesma lente com transição imediata.</p>
-                    </div>
-
-                    <div class="glass-card rounded-2xl p-6 text-center space-y-3 hover:border-amber-400/50 transition-all">
-                        <div class="w-20 h-16 mx-auto rounded-2xl bg-amber-400 flex items-center justify-center p-3 shadow-lg">
-                            <img src="assets/icons/icone-ocupacional.png" alt="Lentes Ocupacionais" class="max-h-full object-contain">
-                        </div>
-                        <h3 class="text-base font-extrabold text-white">Lentes Ocupacionais</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Projetadas para <strong>uso intenso de computador e escritório</strong>, com filtro Blue Control que evita a fadiga ocular.</p>
-                    </div>
+                <div class="footer-section">
+                    <h3>Redes Sociais</h3>
+                    <p><a href="https://www.instagram.com/luminaoticas/" target="_blank" rel="noopener noreferrer">Instagram: @luminaoticas</a></p>
+                    <p><a href="https://www.facebook.com/p/Lumina-%C3%9Óticas-61562309676910/" target="_blank" rel="noopener noreferrer">Facebook: Lumina Óticas</a></p>
+                    <p><a href="https://linktr.ee/luminaoticas" target="_blank" rel="noopener noreferrer">Linktree: luminaoticas</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Franquia</h3>
+                    <p><a href="franqueado.html">Seja um Franqueado</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><a href="mailto:dev@luminaoticas.com.br">dev@luminaoticas.com.br</a></p>
                 </div>
             </div>
-        </section>
-
-        <!-- Carrossel Infinito de Marcas Homologadas (Logos Originais Neutros) -->
-        <section class="py-10 bg-white text-slate-900 overflow-hidden border-b border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 mb-6 text-center">
-                <span class="text-[11px] font-mono uppercase tracking-widest text-amber-600 font-extrabold">Trabalhamos com Grifes Originais</span>
-                <h3 class="text-xl sm:text-2xl font-black text-slate-900">As melhores marcas mundiais estão aqui</h3>
-            </div>
-            <div class="relative w-full overflow-hidden">
-                <div class="animate-marquee flex items-center gap-12 px-6">
-                    <img src="assets/marcas/ray-ban.png" alt="Ray-Ban" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/oakley.png" alt="Oakley" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/vogue.png" alt="Vogue" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/armani-exchange.png" alt="Armani Exchange" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/ralph-lauren.png" alt="Ralph Lauren" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/ana-hickmann.png" alt="Ana Hickmann" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/hb.png" alt="HB" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/carmim.png" alt="Carmim" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <!-- Duplicado para efeito contínuo -->
-                    <img src="assets/marcas/ray-ban.png" alt="Ray-Ban" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/oakley.png" alt="Oakley" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/vogue.png" alt="Vogue" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/armani-exchange.png" alt="Armani Exchange" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/ralph-lauren.png" alt="Ralph Lauren" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/ana-hickmann.png" alt="Ana Hickmann" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/hb.png" alt="HB" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                    <img src="assets/marcas/carmim.png" alt="Carmim" class="h-12 object-contain grayscale hover:grayscale-0 transition">
-                </div>
-            </div>
-        </section>
-
-        <!-- Formulário de Captura de Voucher Integrado em Tempo Real ao Módulo CRM -->
-        <section id="capture-form" class="py-16 bg-gradient-to-b from-[#0b0d13] to-[#121726]">
-            <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div class="lg:col-span-6 space-y-5">
-                    <span class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold">
-                        ⚡ Teste a Integração ao Vivo
-                    </span>
-                    <h2 class="text-2xl sm:text-4xl font-black text-white leading-tight">
-                        Retire seu Voucher Digital e veja o Lead cair no <span class="text-amber-400">Painel CRM</span> na hora!
-                    </h2>
-                    <p class="text-sm text-slate-300 leading-relaxed">
-                        Este formulário simula exatamente a jornada do cliente vindo de anúncios (Meta Ads / Google Ads). Ao enviar, o sistema gera o **Voucher com Código Único** e registra automaticamente o lead com a **Unidade** e a **Campanha UTM** selecionada lá na aba <strong>2. Painel CRM de Leads</strong>.
-                    </p>
-
-                    <div class="space-y-3 pt-2">
-                        <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                            <span class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center shrink-0">1</span>
-                            <p class="text-xs text-slate-200">Escolha sua unidade mais próxima e preencha seus dados para reservar o desconto.</p>
-                        </div>
-                        <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                            <span class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center shrink-0">2</span>
-                            <p class="text-xs text-slate-200">Receba na tela seu código único de voucher e encaminhamento para o consultor óptico.</p>
-                        </div>
-                        <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                            <span class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center shrink-0">3</span>
-                            <p class="text-xs text-slate-200">O gestor da rede acompanha em tempo real qual loja e qual anúncio gerou mais vendas.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-6">
-                    <form id="lead-voucher-form" onsubmit="handleVoucherSubmit(event)" class="glass-card rounded-3xl p-6 sm:p-8 space-y-4 border border-amber-500/40 shadow-2xl">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                            <div>
-                                <span class="text-[10px] font-mono uppercase text-amber-400">Reserva Gratuita de Cupom</span>
-                                <h3 class="text-lg font-extrabold text-white">Gerar Voucher de Desconto</h3>
-                            </div>
-                            <span id="form-campaign-pill" class="px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 text-[11px] font-mono">promo-2por299</span>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1.5">Unidade de Atendimento *</label>
-                            <select id="lead-unit" required class="w-full px-4 py-3 rounded-xl bg-[#0b0d13] border border-white/15 text-white text-sm focus:border-amber-400 outline-none">
-                                <option value="" disabled selected>Selecione a loja mais próxima</option>
-                                <option value="centro-rj">Unidade Centro — Rio de Janeiro (RJ)</option>
-                                <option value="barra-shopping-rj">Unidade Barra Shopping — Rio de Janeiro (RJ)</option>
-                                <option value="icarai-niteroi">Unidade Icaraí — Niterói (RJ)</option>
-                                <option value="savassi-bh">Unidade Savassi — Belo Horizonte (MG)</option>
-                                <option value="jardins-sp">Unidade Jardins — São Paulo (SP)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1.5">Nome e Sobrenome *</label>
-                            <input type="text" id="lead-name" required placeholder="Ex: Mariana Costa" class="w-full px-4 py-3 rounded-xl bg-[#0b0d13] border border-white/15 text-white text-sm focus:border-amber-400 outline-none">
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-300 mb-1.5">WhatsApp *</label>
-                                <input type="tel" id="lead-phone" required placeholder="(21) 99999-9999" class="w-full px-4 py-3 rounded-xl bg-[#0b0d13] border border-white/15 text-white text-sm focus:border-amber-400 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-300 mb-1.5">Seu Melhor E-mail *</label>
-                                <input type="email" id="lead-email" required placeholder="mariana@email.com" class="w-full px-4 py-3 rounded-xl bg-[#0b0d13] border border-white/15 text-white text-sm focus:border-amber-400 outline-none">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-amber-500/25 transition-all">
-                            🎟️ Garantir Meu Voucher Agora
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Sanfonado -->
-        <section class="py-12 bg-[#0b0d13] border-t border-white/10">
-            <div class="max-w-4xl mx-auto px-4 space-y-6">
-                <h2 class="text-2xl font-black text-center text-white">Dúvidas Frequentes</h2>
-                <div class="space-y-3">
-                    <details class="glass-card rounded-2xl p-4 group">
-                        <summary class="font-bold text-sm text-white cursor-pointer flex items-center justify-between">
-                            <span>As lentes já contam com proteção contra luz azul e raios UV?</span>
-                            <span class="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
-                        </summary>
-                        <p class="text-xs text-slate-300 mt-3 leading-relaxed">Sim! Trabalhamos com lentes completas com filtro Blue Control para uso confortável em computadores e celulares, além de proteção 100% UVA/UVB.</p>
-                    </details>
-                    <details class="glass-card rounded-2xl p-4 group">
-                        <summary class="font-bold text-sm text-white cursor-pointer flex items-center justify-between">
-                            <span>Em quanto tempo meus óculos ficam prontos?</span>
-                            <span class="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
-                        </summary>
-                        <p class="text-xs text-slate-300 mt-3 leading-relaxed">Contamos com laboratório digital próprio de montagem. Para graus esféricos e cilíndricos de visão simples em estoque, entregamos seus óculos prontos em até 1 hora!</p>
-                    </details>
-                    <details class="glass-card rounded-2xl p-4 group">
-                        <summary class="font-bold text-sm text-white cursor-pointer flex items-center justify-between">
-                            <span>Posso levar a receita do meu oftalmologista?</span>
-                            <span class="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
-                        </summary>
-                        <p class="text-xs text-slate-300 mt-3 leading-relaxed">Com certeza! Aceitamos receitas de qualquer médico oftalmologista e nossos consultores especialistas em visagismo ajudam a escolher a armação ideal para o seu formato de rosto.</p>
-                    </details>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- ========================================================================================= -->
-    <!-- MÓDULO 2: PAINEL CRM DE GESTÃO DE LEADS & TRÁFEGO PAGO (UTM)                              -->
-    <!-- ========================================================================================= -->
-    <div id="module-crm" class="hidden flex-1 py-10 bg-[#0b0d13]">
-        <div class="max-w-7xl mx-auto px-4 space-y-8">
-            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">
-                <div>
-                    <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Painel Administrativo • Gestor de Tráfego & Lojas</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-white">CRM de Leads & Vouchers Capturados</h1>
-                </div>
-                <div class="flex flex-wrap items-center gap-2.5">
-                    <button onclick="switchModule('lp'); document.getElementById('capture-form').scrollIntoView({behavior:'smooth'})" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold text-white">
-                        + Simular Novo Lead na LP
-                    </button>
-                    <button onclick="exportLeadsCsv()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
-                        <i class="fa-solid fa-file-csv"></i>
-                        <span>Exportar Planilha CSV</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 4 KPI Cards (Fiel ao painel.html + painel.js original) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-400">
-                    <span class="text-xs text-slate-400 font-semibold">Total de Leads na Base</span>
-                    <h2 id="kpi-total-leads" class="text-3xl font-black text-white mt-1">12</h2>
-                    <span class="text-[11px] text-emerald-400 font-mono">● Sincronizado em tempo real</span>
-                </div>
-                <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-400">
-                    <span class="text-xs text-slate-400 font-semibold">Leads Capturados Hoje</span>
-                    <h2 id="kpi-leads-today" class="text-3xl font-black text-emerald-400 mt-1">4</h2>
-                    <span class="text-[11px] text-slate-400 font-mono">Conversão média: 28,4%</span>
-                </div>
-                <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400">
-                    <span class="text-xs text-slate-400 font-semibold">Unidade Líder em Vouchers</span>
-                    <h2 id="kpi-best-unit" class="text-xl font-black text-white mt-1 truncate">Barra Shopping - RJ</h2>
-                    <span class="text-[11px] text-purple-300 font-mono">Maior volume de agendamentos</span>
-                </div>
-                <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400">
-                    <span class="text-xs text-slate-400 font-semibold">Melhor Campanha (UTM)</span>
-                    <h2 id="kpi-best-campaign" class="text-xl font-black text-amber-300 mt-1 font-mono">promo-2por299</h2>
-                    <span class="text-[11px] text-cyan-300 font-mono">Menor Custo por Lead (CPL)</span>
-                </div>
-            </div>
-
-            <!-- Barra de Filtros do CRM -->
-            <div class="glass-card rounded-2xl p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Filtrar por Unidade:</label>
-                    <select id="crm-unit-filter" onchange="renderCrmTable()" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs text-white">
-                        <option value="">Todas as Unidades (5 lojas)</option>
-                        <option value="centro-rj">Centro - RJ</option>
-                        <option value="barra-shopping-rj">Barra Shopping - RJ</option>
-                        <option value="icarai-niteroi">Icaraí - Niterói</option>
-                        <option value="savassi-bh">Savassi - BH</option>
-                        <option value="jardins-sp">Jardins - SP</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Filtrar por Campanha (UTM):</label>
-                    <select id="crm-camp-filter" onchange="renderCrmTable()" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs text-white">
-                        <option value="">Todas as Campanhas</option>
-                        <option value="promo-2por299">promo-2por299 (2 por R$ 299)</option>
-                        <option value="promo-1hora">promo-1hora (Pronto em 1h)</option>
-                        <option value="promo-antirreflexo">promo-antirreflexo (Blue Control)</option>
-                        <option value="promo-70off">promo-70off (Até 70% OFF)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Pesquisar Cliente / Voucher:</label>
-                    <input type="search" id="crm-search" oninput="renderCrmTable()" placeholder="Nome, telefone, email ou código..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs text-white">
-                </div>
-                <div>
-                    <button onclick="resetCrmFilters()" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white">
-                        Limpar Filtros
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tabela de Leads Capturados -->
-            <div class="glass-card rounded-2xl overflow-hidden border border-white/10">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-[11px] font-mono uppercase text-slate-400">
-                                <th class="py-3.5 px-4">Data / Hora</th>
-                                <th class="py-3.5 px-4">Voucher</th>
-                                <th class="py-3.5 px-4">Nome do Cliente</th>
-                                <th class="py-3.5 px-4">WhatsApp</th>
-                                <th class="py-3.5 px-4">Unidade Escolhida</th>
-                                <th class="py-3.5 px-4">Campanha (UTM)</th>
-                                <th class="py-3.5 px-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="crm-table-body" class="divide-y divide-white/10 text-xs">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================================================================= -->
-    <!-- MÓDULO 3: PORTAL B2B DO FRANQUEADO & EXPANSÃO DA REDE                                     -->
-    <!-- ========================================================================================= -->
-    <div id="module-franchise" class="hidden flex-1 py-10 bg-[#0b0d13]">
-        <div class="max-w-7xl mx-auto px-4 space-y-10">
-            <!-- Big Numbers da Franquia -->
-            <div class="rounded-3xl bg-gradient-to-r from-[#192034] to-[#111522] border border-amber-500/30 p-6 sm:p-10 space-y-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                        <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Expansão & Portal Interno B2B</span>
-                        <h1 class="text-2xl sm:text-3xl font-black text-white">Portal do Franqueado — Abastecimento & Marketing</h1>
-                    </div>
-                    <div class="px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold">
-                        Unidade Logada (Demo): <strong>Barra Shopping — RJ</strong>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-[11px] text-slate-400">Investimento Inicial</span>
-                        <p class="text-lg sm:text-xl font-black text-amber-400">A partir de R$ 180 mil</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-[11px] text-slate-400">Faturamento Médio Anual</span>
-                        <p class="text-lg sm:text-xl font-black text-emerald-400">Até R$ 3 Milhões</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-[11px] text-slate-400">Margem Líquida Média</span>
-                        <p class="text-lg sm:text-xl font-black text-white">20% a 28%</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-[11px] text-slate-400">Payback Estimado</span>
-                        <p class="text-lg sm:text-xl font-black text-purple-300">10 a 14 meses</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grid B2B: Catálogo de Reposição da Matriz + Formulário Automático de Pedido (Fiel ao portal-franqueado.html) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Coluna 1: Catálogo Atacado para Franqueados -->
-                <div class="lg:col-span-7 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-lg font-extrabold text-white">1. Catálogo B2B — Reposição de Estoque da Matriz</h2>
-                        <span class="text-xs text-slate-400">Clique para adicionar ao pedido da sua unidade</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3">
-                            <div>
-                                <span class="text-[10px] font-mono text-amber-400">REF: LUM-ARM-01</span>
-                                <h3 class="text-sm font-extrabold text-white">Lote 10x Armações Acetato Italiano</h3>
-                                <p class="text-xs text-slate-400 mt-1">Mix de modelos femininos e masculinos linha premium.</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                                <span class="text-sm font-black text-emerald-400">R$ 890,00</span>
-                                <button onclick="addB2BItem('LUM-ARM-01', 'Lote 10x Armações Acetato Italiano', 890)" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold">
-                                    + Adicionar Lote
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3">
-                            <div>
-                                <span class="text-[10px] font-mono text-amber-400">REF: LUM-LEN-02</span>
-                                <h3 class="text-sm font-extrabold text-white">Lote 20x Pares Lente Blue Control 1.56</h3>
-                                <p class="text-xs text-slate-400 mt-1">Blanks prontos para surfaçagem rápida em 1 hora.</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                                <span class="text-sm font-black text-emerald-400">R$ 1.240,00</span>
-                                <button onclick="addB2BItem('LUM-LEN-02', 'Lote 20x Pares Lente Blue Control 1.56', 1240)" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold">
-                                    + Adicionar Lote
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3">
-                            <div>
-                                <span class="text-[10px] font-mono text-amber-400">REF: LUM-SOL-03</span>
-                                <h3 class="text-sm font-extrabold text-white">Kit 15x Óculos Solar Polarizados UV400</h3>
-                                <p class="text-xs text-slate-400 mt-1">Acompanha estojos rígidos e flanelas personalizadas.</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                                <span class="text-sm font-black text-emerald-400">R$ 1.450,00</span>
-                                <button onclick="addB2BItem('LUM-SOL-03', 'Kit 15x Óculos Solar Polarizados UV400', 1450)" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold">
-                                    + Adicionar Lote
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3">
-                            <div>
-                                <span class="text-[10px] font-mono text-amber-400">REF: LUM-MKT-04</span>
-                                <h3 class="text-sm font-extrabold text-white">Kit PDV & Displays Iluminados LED</h3>
-                                <p class="text-xs text-slate-400 mt-1">Expositores para campanha Dose Dupla 2 por R$ 299.</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                                <span class="text-sm font-black text-emerald-400">R$ 620,00</span>
-                                <button onclick="addB2BItem('LUM-MKT-04', 'Kit PDV & Displays Iluminados LED', 620)" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold">
-                                    + Adicionar Lote
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Central de Materiais de Marketing (Do materiais-marketing.html original) -->
-                    <div class="glass-card rounded-2xl p-5 space-y-3 mt-6">
-                        <h3 class="text-sm font-extrabold text-amber-400 uppercase tracking-wider">📁 Central de Materiais de Marketing & Manuais</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-                                <p class="font-bold text-white">Pack Tráfego Pago 2026</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">Criativos para Stories, Feed e Reels.</p>
-                            </div>
-                            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-                                <p class="font-bold text-white">Manual de Operação & Laboratório</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">Padrão de entrega em 1 hora.</p>
-                            </div>
-                            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-                                <p class="font-bold text-white">Treinamento de Visagismo</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">Guia prático para consultores.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Coluna 2: Formulário de Pedido do Franqueado Preenchido Automaticamente pelo Carrinho -->
-                <div class="lg:col-span-5">
-                    <form onsubmit="handleB2BOrderSubmit(event)" class="glass-card rounded-3xl p-6 space-y-4 border border-amber-500/40">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                            <div>
-                                <span class="text-[10px] font-mono uppercase text-amber-400">Abastecimento Unificado</span>
-                                <h3 class="text-base font-extrabold text-white">Requerimento de Pedido à Matriz</h3>
-                            </div>
-                            <button type="button" onclick="clearB2BCart()" class="text-[11px] text-rose-400 hover:underline">Limpar Lotes</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-300 mb-1">Franqueado Responsável</label>
-                                <input type="text" value="Roberto Almeida" required class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs text-white">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-300 mb-1">Unidade da Franquia</label>
-                                <select class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs text-white">
-                                    <option>Barra Shopping — RJ</option>
-                                    <option>Centro — RJ</option>
-                                    <option>Icaraí — Niterói</option>
-                                    <option>Savassi — BH</option>
-                                    <option>Jardins — SP</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1">Itens do Pedido (Gerado automaticamente pelo Catálogo B2B)</label>
-                            <textarea id="b2b-order-textarea" rows="7" readonly class="w-full p-3.5 rounded-xl bg-[#0b0d13] border border-white/15 text-xs font-mono text-amber-300"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg">
-                            📦 Enviar Pedido de Reposição para a Matriz
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE VOUCHER GERADO COM SUCESSO -->
-    <div id="voucher-modal" onclick="closeVoucherModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-        <div onclick="event.stopPropagation()" class="bg-[#121726] border-2 border-amber-400 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-2xl">
-                <i class="fa-solid fa-ticket"></i>
-            </div>
-            <span class="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-bold"> Lead Registrado no CRM com Sucesso!</span>
-            <h3 class="text-xl font-black text-white">Seu Voucher Foi Emitido!</h3>
-            <p id="modal-voucher-desc" class="text-xs text-slate-300"></p>
-            <div class="p-4 rounded-2xl bg-[#0b0d13] border border-dashed border-amber-400/60">
-                <span class="text-[10px] font-mono uppercase text-slate-400 block">Código Único do Cupom</span>
-                <span id="modal-voucher-code" class="text-2xl font-black font-mono text-amber-400 tracking-wider">#LUM-8492</span>
-            </div>
-            <div class="flex flex-col gap-2 pt-2">
-                <button onclick="closeVoucherModal(); switchModule('crm');" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase">
-                    📊 Ver Meu Cadastro Lá no Painel CRM Agora
-                </button>
-                <button onclick="closeVoucherModal()" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold">
-                    Fechar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RODAPÉ OFICIAL COM CRÉDITO CLICÁVEL TORUGO DEV -->
-    <footer class="bg-[#080a0f] border-t border-white/10 py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-            <div>
-                <p class="font-bold text-white">Lumina Óticas — Ecossistema Demonstrativo (White-Label)</p>
-                <p class="text-[11px] text-slate-500">Funil de Vouchers + Painel CRM UTM + Portal de Franquias B2B</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="https://wa.me/5521970453147?text=Ol%C3%A1%20Torugo!%20Vi%20o%20ecossistema%20da%20Lumina%20%C3%93ticas%20(Funil%20de%20Vouchers%20%2B%20CRM%20de%20Leads%20%2B%20Portal%20de%20Franquia)%20no%20seu%20portf%C3%B3lio%20e%20quero%20or%C3%A7ar%20um%20projeto!" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs">
-                    💬 Quero um Ecossistema Assim
-                </a>
-                <span>Desenvolvido por <a href="https://torugo-git.github.io/torugo-dev/" target="_blank" rel="noopener" class="text-amber-400 font-extrabold hover:underline">Torugo Dev</a></span>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Lumina Óticas. Todos os direitos reservados. Fundada em 16 de junho de 2020 por Grupo Lumina Franquias S.A.. | <a href="portal-franqueado.html" class="footer-portal-link">Portal do Franqueado</a></p>
             </div>
         </div>
     </footer>
-
-    <script>
-        // ==================== DADOS DAS 4 CAMPANHAS DO FUNIL ====================
-        const CAMPAIGNS = {
-            'promo-2por299': {
-                title: 'LEVE <span class="text-amber-400">2 ÓCULOS COMPLETOS</span> POR APENAS <span class="text-amber-400">10x R$ 29,90</span>',
-                desc: 'Renove seu visual em dobro! Armação + Lentes com proteção UV400 inclusa. Escolha entre mais de 1.000 modelos nas nossas unidades e garanta seu voucher exclusivo abaixo.',
-                sub: 'Armação + Lentes de Grau',
-                price: '2 Óculos Completos • 10x R$ 29,90',
-                img: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=80'
-            },
-            'promo-1hora': {
-                title: 'SEUS ÓCULOS DE GRAU <span class="text-amber-400">PRONTOS EM ATÉ 1 HORA</span> NO NOSSO LABORATÓRIO!',
-                desc: 'Tecnologia de surfaçagem e montagem digital na própria loja. Traga sua receita e saia enxergando em alta definição no mesmo dia com garantia total.',
-                sub: 'Laboratório Digital Express',
-                price: 'Entrega Expressa em 60 Minutos',
-                img: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=900&q=80'
-            },
-            'promo-antirreflexo': {
-                title: 'ARMAÇÃO + LENTES <span class="text-amber-400">BLUE CONTROL ANTIRREFLEXO</span> COM 50% OFF',
-                desc: 'Proteja seus olhos do cansaço digital no computador e celular. Lentes com filtro de luz azul e antirreflexo premium pela metade do preço.',
-                sub: 'Saúde Visual para Telas',
-                price: 'Kit Completo Blue Control • 50% OFF',
-                img: 'https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&w=900&q=80'
-            },
-            'promo-70off': {
-                title: 'FESTIVAL DE GRIFES COM <span class="text-amber-400">ATÉ 70% DE DESCONTO</span> NAS ARMAÇÕES!',
-                desc: 'Modelos selecionados Ray-Ban, Oakley, Vogue e Armani Exchange com descontos reais de até 70% mediante apresentação do seu Voucher Digital na loja.',
-                sub: 'Grifes Originais Homologadas',
-                price: 'Armações a partir de R$ 49,90',
-                img: 'https://images.unsplash.com/photo-1508296695146-257a814070b4?auto=format&fit=crop&w=900&q=80'
-            }
-        };
-
-        let activeCampaign = 'promo-2por299';
-        let vouchersLeft = 23;
-
-        function selectCampaign(campKey) {
-            activeCampaign = campKey;
-            const data = CAMPAIGNS[campKey];
-            document.getElementById('hero-utm-tag').textContent = `CAMPANHA ATIVA • UTM: ${campKey}`;
-            document.getElementById('hero-title').innerHTML = data.title;
-            document.getElementById('hero-desc').textContent = data.desc;
-            document.getElementById('hero-badge-sub').textContent = data.sub;
-            document.getElementById('hero-badge-price').textContent = data.price;
-            document.getElementById('hero-img').src = data.img;
-            document.getElementById('form-campaign-pill').textContent = campKey;
-
-            document.querySelectorAll('.camp-btn').forEach(btn => {
-                if (btn.dataset.camp === campKey) {
-                    btn.className = 'camp-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 shadow-md';
-                } else {
-                    btn.className = 'camp-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10';
-                }
-            });
-        }
-
-        // ==================== BASE DE LEADS DO CRM (SANDBOX LOCAL) ====================
-        const UNIT_NAMES = {
-            'centro-rj': 'Centro - RJ',
-            'barra-shopping-rj': 'Barra Shopping - RJ',
-            'icarai-niteroi': 'Icaraí - Niterói',
-            'savassi-bh': 'Savassi - BH',
-            'jardins-sp': 'Jardins - SP'
-        };
-
-        let crmLeads = [
-            { date: 'Hoje, 16:40', voucher: '#LUM-9104', nome: 'Fernanda Oliveira', telefone: '(21) 99812-4410', email: 'fernanda.oli@email.com', unidade: 'barra-shopping-rj', campanha: 'promo-2por299', status: 'Voucher Ativo', today: true },
-            { date: 'Hoje, 15:18', voucher: '#LUM-8832', nome: 'Carlos Eduardo Lima', telefone: '(21) 98741-2099', email: 'cadu.lima@email.com', unidade: 'centro-rj', campanha: 'promo-1hora', status: 'Compareceu em Loja', today: true },
-            { date: 'Hoje, 13:05', voucher: '#LUM-8719', nome: 'Patrícia Mendonça', telefone: '(21) 99655-3381', email: 'patricia.m@email.com', unidade: 'icarai-niteroi', campanha: 'promo-2por299', status: 'Voucher Ativo', today: true },
-            { date: 'Hoje, 10:42', voucher: '#LUM-8501', nome: 'Rafael Vasconcelos', telefone: '(31) 99120-7744', email: 'rafael.vasc@email.com', unidade: 'savassi-bh', campanha: 'promo-antirreflexo', status: 'Agendado Exame', today: true },
-            { date: 'Ontem, 19:22', voucher: '#LUM-8190', nome: 'Juliana Martins', telefone: '(11) 98442-1190', email: 'ju.martins@email.com', unidade: 'jardins-sp', campanha: 'promo-2por299', status: 'Venda Concluída', today: false },
-            { date: 'Ontem, 17:50', voucher: '#LUM-7944', nome: 'Bruno Teixeira', telefone: '(21) 97211-9082', email: 'bruno.tx@email.com', unidade: 'barra-shopping-rj', campanha: 'promo-70off', status: 'Venda Concluída', today: false },
-            { date: 'Ontem, 15:12', voucher: '#LUM-7811', nome: 'Camila Rocha', telefone: '(21) 99304-5521', email: 'camila.rocha@email.com', unidade: 'barra-shopping-rj', campanha: 'promo-2por299', status: 'Compareceu em Loja', today: false },
-            { date: 'Ontem, 11:30', voucher: '#LUM-7605', nome: 'Thiago Nogueira', telefone: '(21) 98119-6400', email: 'thiago.nog@email.com', unidade: 'centro-rj', campanha: 'promo-1hora', status: 'Venda Concluída', today: false },
-            { date: '15/11, 18:05', voucher: '#LUM-7422', nome: 'Aline Cavalcanti', telefone: '(31) 99841-0023', email: 'aline.cav@email.com', unidade: 'savassi-bh', campanha: 'promo-2por299', status: 'Venda Concluída', today: false },
-            { date: '15/11, 14:40', voucher: '#LUM-7290', nome: 'Marcelo Santana', telefone: '(21) 98872-1920', email: 'marcelo.s@email.com', unidade: 'icarai-niteroi', campanha: 'promo-antirreflexo', status: 'Compareceu em Loja', today: false },
-            { date: '14/11, 16:15', voucher: '#LUM-7088', nome: 'Larissa Ribeiro', telefone: '(11) 99118-3402', email: 'larissa.rib@email.com', unidade: 'jardins-sp', campanha: 'promo-70off', status: 'Venda Concluída', today: false },
-            { date: '14/11, 11:08', voucher: '#LUM-6950', nome: 'Gustavo Henrique', telefone: '(21) 99400-8172', email: 'gustavo.h@email.com', unidade: 'barra-shopping-rj', campanha: 'promo-2por299', status: 'Venda Concluída', today: false }
-        ];
-
-        function handleVoucherSubmit(e) {
+    <script src="js/carousel.js"></script>
+<!-- LUMINA-PORTFOLIO-WIDGET-START -->
+<style>
+#lumina-portfolio-bar {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 99999;
+    background: rgba(20, 20, 20, 0.96);
+    border: 1px solid rgba(255, 140, 0, 0.45);
+    border-radius: 14px;
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    font-family: 'Montserrat', 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
+    max-width: calc(100vw - 100px);
+}
+#lumina-portfolio-bar a, #lumina-portfolio-bar select {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-family: inherit;
+}
+#lumina-portfolio-bar a:hover, #lumina-portfolio-bar select:hover {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar a.lp-back-torugo {
+    background: #ff8c00;
+    color: #111;
+    border-color: #ff8c00;
+}
+#lumina-portfolio-bar select option {
+    background: #222;
+    color: #fff;
+}
+@media (max-width: 768px) {
+    #lumina-portfolio-bar {
+        bottom: 10px;
+        left: 10px;
+        padding: 6px 8px;
+        gap: 4px;
+    }
+    #lumina-portfolio-bar a, #lumina-portfolio-bar select {
+        font-size: 10px;
+        padding: 5px 7px;
+    }
+}
+</style>
+<div id="lumina-portfolio-bar">
+    <a href="../index.html" class="lp-back-torugo">← Portfólio Torugo</a>
+    <a href="index.html">🏠 Site Principal</a>
+    <a href="franqueado.html">🤝 Seja Franqueado</a>
+    <select onchange="if(this.value) window.location.href=this.value" aria-label="Escolher Landing Page de Campanha">
+        <option value="">🔥 6 LPs de Ofertas...</option>
+        <option value="ofertas/promo-2por299.html">LP 1: 2 Óculos por 10x R$ 29,90</option>
+        <option value="ofertas/promo-1hora.html">LP 2: Óculos Pronto em 1 Hora</option>
+        <option value="ofertas/promo70.html">LP 3: Lentes & Armações até 70% OFF</option>
+        <option value="ofertas/promo-antirreflexo.html">LP 4: Completo + Antirreflexo 10x R$ 19,90</option>
+        <option value="ofertas/promo-armacoes49.html">LP 5: Armação Preço Único R$ 49,90</option>
+        <option value="ofertas/promo-oculos-antigo.html">LP 6: Seu Óculos Antigo Vale Desconto</option>
+    </select>
+    <a href="portal-franqueado.html">🛒 Portal Franqueado</a>
+    <a href="ofertas/assets/painel.html">📊 Painel de Leads (CRM)</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const netlifyForms = document.querySelectorAll('form[netlify]');
+    netlifyForms.forEach(function(f) {
+        f.addEventListener('submit', function(e) {
             e.preventDefault();
-            const unit = document.getElementById('lead-unit').value;
-            const nome = document.getElementById('lead-name').value.trim();
-            const telefone = document.getElementById('lead-phone').value.trim();
-            const email = document.getElementById('lead-email').value.trim();
-            if (!unit || !nome) return;
-
-            const randomCode = '#LUM-' + Math.floor(1000 + Math.random() * 9000);
-            crmLeads.unshift({
-                date: 'Agora mesmo',
-                voucher: randomCode,
-                nome,
-                telefone,
-                email,
-                unidade: unit,
-                campanha: activeCampaign,
-                status: 'Novo Lead (LP)',
-                today: true
-            });
-
-            if (vouchersLeft > 3) {
-                vouchersLeft--;
-                document.getElementById('voucher-count').textContent = vouchersLeft;
+            alert('✅ Solicitação enviada com sucesso! (Modo Demonstração Portfólio)');
+            if (f.getAttribute('action')) {
+                window.location.href = f.getAttribute('action').replace(/^\//, '');
             }
-
-            document.getElementById('crm-badge-count').textContent = crmLeads.length;
-            renderCrmTable();
-
-            document.getElementById('modal-voucher-code').textContent = randomCode;
-            document.getElementById('modal-voucher-desc').textContent = `Olá ${nome}! Seu voucher da campanha (${activeCampaign}) para a unidade ${UNIT_NAMES[unit]} foi reservado e já aparece no topo do Painel CRM.`;
-            const modal = document.getElementById('voucher-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            e.target.reset();
-        }
-
-        function closeVoucherModal() {
-            const modal = document.getElementById('voucher-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function renderCrmTable() {
-            const unitFilter = document.getElementById('crm-unit-filter').value;
-            const campFilter = document.getElementById('crm-camp-filter').value;
-            const search = document.getElementById('crm-search').value.toLowerCase().trim();
-
-            const filtered = crmLeads.filter(l => {
-                const matchUnit = !unitFilter || l.unidade === unitFilter;
-                const matchCamp = !campFilter || l.campanha === campFilter;
-                const matchSearch = !search ||
-                    l.nome.toLowerCase().includes(search) ||
-                    l.telefone.toLowerCase().includes(search) ||
-                    l.email.toLowerCase().includes(search) ||
-                    l.voucher.toLowerCase().includes(search);
-                return matchUnit && matchCamp && matchSearch;
-            });
-
-            const tbody = document.getElementById('crm-table-body');
-            tbody.innerHTML = filtered.map(l => `
-                <tr class="hover:bg-white/5 transition-colors">
-                    <td class="py-3.5 px-4 font-mono text-slate-400">${l.date}</td>
-                    <td class="py-3.5 px-4 font-mono font-bold text-amber-400">${l.voucher}</td>
-                    <td class="py-3.5 px-4 font-bold text-white">${l.nome}<span class="block text-[10px] text-slate-400 font-normal">${l.email}</span></td>
-                    <td class="py-3.5 px-4 text-slate-300">${l.telefone}</td>
-                    <td class="py-3.5 px-4 text-slate-200">${UNIT_NAMES[l.unidade] || l.unidade}</td>
-                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-amber-500/15 border border-amber-400/30 text-amber-300 font-mono text-[11px]">${l.campanha}</span></td>
-                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px] font-bold">${l.status}</span></td>
-                </tr>
-            `).join('');
-
-            // Atualiza KPIs
-            document.getElementById('kpi-total-leads').textContent = crmLeads.length;
-            document.getElementById('kpi-leads-today').textContent = crmLeads.filter(x => x.today).length;
-        }
-
-        function resetCrmFilters() {
-            document.getElementById('crm-unit-filter').value = '';
-            document.getElementById('crm-camp-filter').value = '';
-            document.getElementById('crm-search').value = '';
-            renderCrmTable();
-        }
-
-        function exportLeadsCsv() {
-            const headers = ['Data', 'Voucher', 'Nome', 'WhatsApp', 'Email', 'Unidade', 'Campanha UTM', 'Status'];
-            const rows = crmLeads.map(l => [
-                `"${l.date}"`, `"${l.voucher}"`, `"${l.nome}"`, `"${l.telefone}"`, `"${l.email}"`, `"${UNIT_NAMES[l.unidade]}"`, `"${l.campanha}"`, `"${l.status}"`
-            ].join(','));
-            const csv = 'data:text/csv;charset=utf-8,' + [headers.join(',')].concat(rows).join('\n');
-            const link = document.createElement('a');
-            link.setAttribute('href', encodeURI(csv));
-            link.setAttribute('download', 'leads_lumina_oticas.csv');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ==================== MÓDULO 3: CARRINHO B2B DO FRANQUEADO ====================
-        let b2bCart = {
-            'LUM-ARM-01': { name: 'Lote 10x Armações Acetato Italiano', price: 890, qty: 2 },
-            'LUM-LEN-02': { name: 'Lote 20x Pares Lente Blue Control 1.56', price: 1240, qty: 1 }
-        };
-
-        function updateB2BTextarea() {
-            const keys = Object.keys(b2bCart);
-            if (keys.length === 0) {
-                document.getElementById('b2b-order-textarea').value = 'Nenhum lote selecionado. Clique em "+ Adicionar Lote" no catálogo ao lado.';
-                return;
-            }
-            let total = 0;
-            let lines = ['--- ITENS DO PEDIDO DE REPOSIÇÃO (MATRIZ) ---'];
-            keys.forEach(ref => {
-                const item = b2bCart[ref];
-                const sub = item.price * item.qty;
-                total += sub;
-                lines.push(`• ${item.qty}x ${item.name} (${ref}) — R$ ${sub.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`);
-            });
-            lines.push('---------------------------------------------');
-            lines.push(`VALOR TOTAL DO PEDIDO B2B: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`);
-            document.getElementById('b2b-order-textarea').value = lines.join('\n');
-        }
-
-        function addB2BItem(ref, name, price) {
-            if (!b2bCart[ref]) {
-                b2bCart[ref] = { name, price, qty: 1 };
-            } else {
-                b2bCart[ref].qty++;
-            }
-            updateB2BTextarea();
-        }
-
-        function clearB2BCart() {
-            b2bCart = {};
-            updateB2BTextarea();
-        }
-
-        function handleB2BOrderSubmit(e) {
-            e.preventDefault();
-            alert('✅ Pedido de Reposição B2B registrado com sucesso na demonstração!\n\nNa versão em produção, a Matriz recebe este pedido por e-mail e no painel logístico.');
-        }
-
-        // ==================== NAVEGAÇÃO ENTRE OS 3 MÓDULOS ====================
-        function switchModule(mod) {
-            ['lp', 'crm', 'franchise'].forEach(m => {
-                document.getElementById('module-' + m).classList.toggle('hidden', m !== mod);
-                const btn = document.getElementById('tab-btn-' + m);
-                if (m === mod) {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-amber-500 text-slate-950 shadow-lg flex items-center gap-1.5';
-                } else {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-300 hover:text-white flex items-center gap-1.5';
-                }
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Inicializa tabelas
-        renderCrmTable();
-        updateB2BTextarea();
-    </script>
+        });
+    });
+});
+</script>
+<!-- LUMINA-PORTFOLIO-WIDGET-END -->
 </body>
 </html>
