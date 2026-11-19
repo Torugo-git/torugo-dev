@@ -325,10 +325,32 @@
                 </div>
             </div>
 
-            <div class="flex justify-center items-center gap-2 py-2">
-                <span class="text-sm font-medium text-gray-500">Lucro Bruto Estimado:</span>
-                <span id="res-total-profit" class="text-xl font-extrabold text-greenSuccess">R$ 0,00</span>
-                <span id="res-unit-profit" class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded ml-1">(R$ 0,00 por unidade)</span>
+            <!-- Painel Inteligente v2.0: Separação Salário x Lucro da Loja x Ganho Total no Bolso -->
+            <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Precificação Inteligente v2.0</span>
+                        <span class="text-xs text-gray-500">Mão de obra remunerada sem inflacionar seu preço final</span>
+                    </div>
+                    <span id="res-formula-hint" class="text-[11px] text-gray-400 font-mono">(Insumos ÷ CMV) + Mão de Obra Direta</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3.5 flex flex-col">
+                        <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wider">1. Seu Salário (Mão de Obra)</span>
+                        <span id="res-salary-gain" class="text-xl font-extrabold text-blueLight mt-0.5">R$ 0,00</span>
+                        <span id="res-unit-salary" class="text-[11px] text-blue-600/80 mt-0.5">Remuneração do seu tempo</span>
+                    </div>
+                    <div class="bg-emerald-50/60 border border-emerald-100 rounded-xl p-3.5 flex flex-col">
+                        <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">2. Lucro Líquido da Doceria</span>
+                        <span id="res-total-profit" class="text-xl font-extrabold text-greenSuccess mt-0.5">R$ 0,00</span>
+                        <span id="res-unit-profit" class="text-[11px] text-emerald-700/80 mt-0.5">(R$ 0,00 por unidade)</span>
+                    </div>
+                    <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5 flex flex-col">
+                        <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider">3. Ganho Total no Seu Bolso (1+2)</span>
+                        <span id="res-pocket-total" class="text-xl font-extrabold text-amber-700 mt-0.5">R$ 0,00</span>
+                        <span id="res-unit-pocket" class="text-[11px] text-amber-800/80 mt-0.5">Salário + Lucro livre de insumos</span>
+                    </div>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -455,68 +477,219 @@
         Sistema desenvolvido sob medida por <a href="https://torugo-git.github.io/torugo-dev/" target="_blank" class="text-primary font-bold hover:underline">Torugo Dev</a> • Protegido contra uso comercial não licenciado.
     </footer>
 
-    <!-- Modal de Paywall / Licença Comercial Torugo Dev -->
-    <div id="paywall-modal" class="fixed inset-0 z-[100] hidden bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative text-center">
+    <!-- Modal de Paywall / Licença Comercial Vinculada ao Aparelho (Anti-Compartilhamento) -->
+    <div id="paywall-modal" class="fixed inset-0 z-[100] hidden bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-gray-100 relative text-center my-auto">
             <button onclick="closePaywallModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center">&times;</button>
-            <div class="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 text-primary flex items-center justify-center text-2xl mx-auto mb-4 shadow-sm">
+            <div class="w-13 h-13 w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-primary flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm">
                 🔒
             </div>
             <span id="paywall-feature-badge" class="inline-block bg-gray-100 text-gray-700 text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full mb-2">
                 Recurso Exclusivo da Versão Licenciada
             </span>
-            <h3 class="text-xl font-extrabold text-gray-900 mb-2">Gostou da Precificação Inteligente?</h3>
-            <p class="text-sm text-gray-600 leading-relaxed mb-5">
-                Esta é uma <strong>vitrine demonstrativa</strong> do portfólio da <strong>Torugo Dev</strong>. Para cadastrar seus próprios ingredientes, liberar o cálculo exato das suas receitas e exportar fichas técnicas em PDF, adquira seu sistema licenciado!
+            <h3 class="text-xl font-extrabold text-gray-900 mb-1.5">Gostou da Precificação Inteligente?</h3>
+            <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                Esta é uma <strong>vitrine demonstrativa</strong> do portfólio da <strong>Torugo Dev</strong>. Para cadastrar seus insumos, editar preços com recálculo automático e salvar suas receitas, ative a licença exclusiva deste aparelho!
             </p>
-            <div class="bg-gray-50 rounded-2xl p-4 text-left text-xs text-gray-700 space-y-2 mb-6 border border-gray-200">
-                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Cadastro ilimitado de ingredientes, caldas e embalagens</div>
-                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Cálculo automático de CMV, custos invisíveis e mão de obra</div>
-                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Banco de Receitas Favoritas + Exportação em PDF</div>
-                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Personalizado com a logo e cores do seu negócio</div>
+            <div class="bg-gray-50 rounded-2xl p-3.5 text-left text-xs text-gray-700 space-y-1.5 mb-4 border border-gray-200">
+                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Cadastro e edição ilimitada de ingredientes, caldas e embalagens</div>
+                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Matemática v2.0 (separa seu salário do lucro líquido da loja)</div>
+                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Atualização automática de todas as Receitas Favoritas + PDF</div>
+                <div class="flex items-center gap-2"><span class="text-emerald-600 font-bold">✔</span> Licença vitalícia vinculada ao seu aparelho</div>
             </div>
-            <div class="space-y-2.5">
-                <a href="https://wa.me/5521970453147?text=Ol%C3%A1%2C+Torugo+Dev%21+Testei+o+Sistema+PrecificaPro+no+portf%C3%B3lio+e+quero+saber+o+valor+para+liberar+meu+acesso%21" target="_blank" class="block w-full bg-primary hover:bg-primaryHover text-white font-extrabold py-3.5 px-4 rounded-xl text-sm shadow-lg transition-colors">
-                    💬 Solicitar Acesso no WhatsApp (Torugo Dev)
+
+            <!-- Identificador Único do Aparelho (Anti-Compartilhamento de Chave) -->
+            <div class="bg-amber-50/80 border border-amber-200 rounded-xl p-3 mb-4 text-left flex items-center justify-between gap-2">
+                <div>
+                    <span class="block text-[10px] font-extrabold uppercase tracking-wider text-amber-800">📱 Código Deste Aparelho</span>
+                    <span id="display-device-id" class="font-mono text-sm font-black text-gray-900 select-all">AP-0000-0000</span>
+                </div>
+                <button type="button" onclick="copyDeviceId()" id="btn-copy-device" class="bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold px-2.5 py-1.5 rounded-lg text-[11px] transition-colors shrink-0">
+                    Copiar Código
+                </button>
+            </div>
+
+            <div class="space-y-2">
+                <a id="whatsapp-license-link" href="https://wa.me/5521970453147" target="_blank" class="block w-full bg-primary hover:bg-primaryHover text-white font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-lg transition-colors">
+                    💬 Solicitar Chave p/ Este Aparelho no WhatsApp
                 </a>
-                <button onclick="resetToDemoRecipe(); closePaywallModal();" class="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-xl text-xs transition-colors">
+                <button onclick="resetToDemoRecipe(); closePaywallModal();" class="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-xl text-xs transition-colors">
                     Voltar para a Receita de Demonstração
                 </button>
             </div>
-            <div class="mt-5 pt-4 border-t border-gray-200 text-left">
-                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">🔑 Já possui Chave de Licença?</label>
+
+            <div class="mt-4 pt-3.5 border-t border-gray-200 text-left">
+                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">🔑 Já recebeu sua Chave de Licença?</label>
                 <div class="flex gap-2">
-                    <input type="password" id="license-key-input" placeholder="Digite sua chave..." class="flex-1 rounded-xl bg-gray-50 border border-gray-300 px-3 py-2 text-xs focus:outline-none focus:border-primary" onkeydown="if(event.key==='Enter') unlockWithLicenseKey()">
+                    <input type="text" id="license-key-input" placeholder="Ex: DOCERIA DOCE MEL#A1B2C3" class="flex-1 rounded-xl bg-gray-50 border border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-primary" onkeydown="if(event.key==='Enter') unlockWithLicenseKey()">
                     <button onclick="unlockWithLicenseKey()" class="bg-gray-900 hover:bg-gray-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition-colors">
-                        Entrar
+                        Ativar
                     </button>
                 </div>
-                <p id="license-key-error" class="hidden text-[11px] text-rose-600 font-semibold mt-1">Chave inválida. Solicite sua licença pelo WhatsApp acima.</p>
+                <p id="license-key-error" class="hidden text-[11px] text-rose-600 font-semibold mt-1.5">Chave inválida para este aparelho.</p>
+
+                <!-- Painel Secreto Admin Torugo Dev (abre ao digitar torugo#admin) -->
+                <div id="torugo-admin-keygen" class="hidden mt-3 p-3.5 rounded-2xl bg-gray-900 text-white border border-emerald-500/40 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">🛠️ Gerador de Chave por Aparelho (Admin)</span>
+                        <button type="button" onclick="document.getElementById('torugo-admin-keygen').classList.add('hidden')" class="text-gray-400 hover:text-white text-xs">&times;</button>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 uppercase font-bold mb-0.5">1. Código do Aparelho do Cliente</label>
+                        <input type="text" id="admin-client-device" placeholder="Ex: AP-4829-1930" class="w-full rounded-lg bg-gray-800 border border-gray-700 px-2.5 py-1.5 text-xs font-mono text-white uppercase focus:outline-none focus:border-emerald-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 uppercase font-bold mb-0.5">2. Nome da Confeitaria / Cliente</label>
+                        <input type="text" id="admin-client-store" placeholder="Ex: Confeitaria Doce Mel" class="w-full rounded-lg bg-gray-800 border border-gray-700 px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-400">
+                    </div>
+                    <button type="button" onclick="generateClientDeviceKey()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-extrabold py-2 rounded-lg text-xs transition-colors">
+                        Gerar e Copiar Chave Exclusiva
+                    </button>
+                    <div id="admin-generated-key-box" class="hidden p-2 rounded-lg bg-gray-950 border border-emerald-500/40 text-center">
+                        <span class="block text-[10px] text-gray-400">Chave gerada (copiada!):</span>
+                        <code id="admin-generated-key-val" class="text-xs font-mono font-bold text-emerald-400 select-all break-all"></code>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // GERAÇÃO E VALIDAÇÃO DE ID DO APARELHO (ANTI-COMPARTILHAMENTO DE CHAVE)
+        function getOrCreateDeviceId() {
+            let devId = localStorage.getItem('precificapro_device_id');
+            if (!devId || !/^AP-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(devId)) {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                const block = () => Array.from({length: 4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                devId = `AP-${block()}-${block()}`;
+                localStorage.setItem('precificapro_device_id', devId);
+            }
+            return devId;
+        }
+
+        // Assinatura criptográfica determinística que amarra (Código do Aparelho + Nome da Loja)
+        function computeDeviceSignature(deviceId, storeName) {
+            const cleanDev = (deviceId || '').toUpperCase().trim();
+            const cleanStore = (storeName || '').toUpperCase().trim();
+            const payload = `${cleanDev}::${cleanStore}::TORUGO_DEV_2026_SECRET`;
+            let h1 = 0xdeadbeef ^ payload.length, h2 = 0x41c6ce57 ^ payload.length;
+            for (let i = 0; i < payload.length; i++) {
+                const ch = payload.charCodeAt(i);
+                h1 = Math.imul(h1 ^ ch, 2654435761);
+                h2 = Math.imul(h2 ^ ch, 1597334677);
+            }
+            h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+            h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+            const hex = ((h1 >>> 0).toString(16).padStart(8, '0') + (h2 >>> 0).toString(16).padStart(8, '0')).toUpperCase();
+            return hex.slice(0, 6);
+        }
+
+        const currentDeviceId = getOrCreateDeviceId();
+
+        (function initDeviceIdUI() {
+            const el = document.getElementById('display-device-id');
+            if (el) el.textContent = currentDeviceId;
+            const waLink = document.getElementById('whatsapp-license-link');
+            if (waLink) {
+                const msg = encodeURIComponent(`Olá, Torugo Dev! Testei o PrecificaPro v2.0 no portfólio e quero adquirir minha licença.\n\n📱 Código do meu aparelho: ${currentDeviceId}`);
+                waLink.href = `https://wa.me/5521970453147?text=${msg}`;
+            }
+        })();
+
+        window.copyDeviceId = function() {
+            navigator.clipboard?.writeText(currentDeviceId);
+            const btn = document.getElementById('btn-copy-device');
+            if (btn) {
+                btn.textContent = '✔ Copiado!';
+                setTimeout(() => { btn.textContent = 'Copiar Código'; }, 2000);
+            }
+        };
+
         (function checkVipAccess() {
             const params = new URLSearchParams(window.location.search);
             const vipParam = (params.get('vip') || params.get('chave') || '').toLowerCase().trim();
             if (vipParam === 'cianela' || vipParam === 'mae') {
                 localStorage.setItem('precificapro_vip', 'true');
+                localStorage.setItem('precificapro_licensed_store', 'Cianela Doceria');
                 window.location.replace('cianela.html');
                 return;
             }
             if (localStorage.getItem('precificapro_vip') === 'true' && params.get('demo') !== '1') {
-                window.location.replace('cianela.html');
+                // Verifica se é chave de cliente vinculada a aparelho
+                const savedSig = localStorage.getItem('precificapro_license_sig');
+                const savedStore = localStorage.getItem('precificapro_licensed_store') || '';
+                if (!savedSig || computeDeviceSignature(currentDeviceId, savedStore) === savedSig) {
+                    window.location.replace('cianela.html');
+                }
             }
         })();
 
+        window.generateClientDeviceKey = function() {
+            const devInput = (document.getElementById('admin-client-device')?.value || '').toUpperCase().trim();
+            const storeInput = (document.getElementById('admin-client-store')?.value || '').trim();
+            if (!devInput || !storeInput) {
+                alert('Preencha o Código do Aparelho do cliente (ex: AP-XXXX-XXXX) e o Nome da Confeitaria.');
+                return;
+            }
+            const sig = computeDeviceSignature(devInput, storeInput);
+            const finalKey = `${storeInput.toUpperCase()}#${sig}`;
+            const box = document.getElementById('admin-generated-key-box');
+            const codeEl = document.getElementById('admin-generated-key-val');
+            if (box && codeEl) {
+                codeEl.textContent = finalKey;
+                box.classList.remove('hidden');
+            }
+            navigator.clipboard?.writeText(finalKey);
+        };
+
         window.unlockWithLicenseKey = function() {
-            const val = (document.getElementById('license-key-input')?.value || '').toLowerCase().trim();
-            if (val === 'cianela' || val === 'mae' || val === 'cianela2026') {
+            const raw = (document.getElementById('license-key-input')?.value || '').trim();
+            const lower = raw.toLowerCase();
+            const errEl = document.getElementById('license-key-error');
+
+            // Comando secreto do Victor Hugo para abrir o Gerador de Chaves por Aparelho
+            if (lower === 'torugo#admin') {
+                document.getElementById('torugo-admin-keygen')?.classList.remove('hidden');
+                const devField = document.getElementById('admin-client-device');
+                if (devField && !devField.value) devField.value = currentDeviceId;
+                if (errEl) errEl.classList.add('hidden');
+                return;
+            }
+
+            // Acesso vitalício da mãe do Victor Hugo
+            if (lower === 'cianela' || lower === 'mae' || lower === 'cianela2026') {
                 localStorage.setItem('precificapro_vip', 'true');
+                localStorage.setItem('precificapro_licensed_store', 'Cianela Doceria');
+                localStorage.removeItem('precificapro_license_sig');
                 window.location.href = 'cianela.html';
-            } else {
-                document.getElementById('license-key-error')?.classList.remove('hidden');
+                return;
+            }
+
+            // Validação de Chave Comercial Vinculada ao Aparelho: NOME DA LOJA#ASSINATURA
+            if (raw.includes('#')) {
+                const parts = raw.split('#');
+                const storeName = parts.slice(0, -1).join('#').trim();
+                const providedSig = (parts[parts.length - 1] || '').toUpperCase().trim();
+                const expectedSig = computeDeviceSignature(currentDeviceId, storeName);
+
+                if (storeName && providedSig === expectedSig) {
+                    localStorage.setItem('precificapro_vip', 'true');
+                    localStorage.setItem('precificapro_licensed_store', storeName);
+                    localStorage.setItem('precificapro_license_sig', expectedSig);
+                    window.location.href = 'cianela.html';
+                    return;
+                } else {
+                    if (errEl) {
+                        errEl.textContent = `🔒 Esta chave pertence exclusivamente a outro aparelho e não funciona no código ${currentDeviceId}.`;
+                        errEl.classList.remove('hidden');
+                    }
+                    return;
+                }
+            }
+
+            if (errEl) {
+                errEl.textContent = 'Chave inválida. Envie o Código deste Aparelho pelo WhatsApp acima para receber sua chave.';
+                errEl.classList.remove('hidden');
             }
         };
         const initialIngredients = [
@@ -784,12 +957,16 @@
 
             ingredientsGridContainer.innerHTML = '';
             ingredients.forEach(i => {
+                const costPer100 = (i.costPerGram || 0) * 100;
+                const unitFormatted = (i.costPerGram < 0.05)
+                    ? i.costPerGram.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 4, maximumFractionDigits: 4 })
+                    : formatBRL(i.costPerGram);
                 ingredientsGridContainer.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50">
                         <td class="px-6 py-3 font-medium text-gray-900">${i.name}</td>
-                        <td class="px-6 py-3 text-gray-500 text-center">${i.size}g <br><span class="text-[10px] bg-gray-100 px-1 rounded ml-1">R$ ${i.price.toFixed(2)}</span></td>
-                        <td class="px-6 py-3 text-center font-mono text-primary font-semibold">${formatBRL(i.costPerGram)}</td>
-                        <td class="px-6 py-3 text-center"><button onclick="deleteIngredient('${i.id}')" class="text-gray-400 hover:text-red-600 bg-white border border-gray-200 p-1.5 rounded text-xs">🔒 Excluir</button></td>
+                        <td class="px-6 py-3 text-gray-500 text-center">${i.size}g/ml <br><span class="text-[10px] bg-gray-100 px-1 rounded ml-1">R$ ${i.price.toFixed(2)}</span></td>
+                        <td class="px-6 py-3 text-center font-mono text-primary font-semibold">${unitFormatted}/g<br><span class="text-[10px] text-gray-400 font-sans">(${formatBRL(costPer100)} cada 100g)</span></td>
+                        <td class="px-6 py-3 text-center"><button onclick="deleteIngredient('${i.id}')" class="text-gray-400 hover:text-primary bg-white border border-gray-200 px-2 py-1 rounded text-xs">🔒 Editar / Excluir</button></td>
                     </tr>`;
             });
             kpiTotalIngredients.textContent = ingredients.length;
@@ -801,7 +978,7 @@
                         <td class="px-6 py-3 font-medium text-gray-900">${p.name}</td>
                         <td class="px-6 py-3 text-gray-500 text-center">${p.size} un. <br><span class="text-[10px] bg-gray-100 px-1 rounded ml-1">R$ ${p.price.toFixed(2)}</span></td>
                         <td class="px-6 py-3 text-center font-mono text-primary font-semibold">${formatBRL(p.costPerUnit)}</td>
-                        <td class="px-6 py-3 text-center"><button onclick="deletePackaging('${p.id}')" class="text-gray-400 hover:text-red-600 bg-white border border-gray-200 p-1.5 rounded text-xs">🔒 Excluir</button></td>
+                        <td class="px-6 py-3 text-center"><button onclick="deletePackaging('${p.id}')" class="text-gray-400 hover:text-primary bg-white border border-gray-200 px-2 py-1 rounded text-xs">🔒 Editar / Excluir</button></td>
                     </tr>`;
             });
             kpiTotalPackagings.textContent = packagings.length;
@@ -865,31 +1042,43 @@
             });
         }
 
-        // CÁLCULO MESTRE (COM BLOQUEIO ANTI-USO GRATUITO)
+        // CÁLCULO MESTRE v2.0 (SEM SUPERESTIMAR A MÃO DE OBRA NO DIVISOR DO CMV)
         function calculateMaster() {
             const recipeBaseCost = recipe.reduce((acc, item) => acc + ((item.ingredient.costPerGram || 0) * item.qtd), 0);
             const syrupBaseCost = syrupRecipe.reduce((acc, item) => acc + ((item.ingredient.costPerGram || 0) * item.qtd), 0);
-            const syrupYield = parseFloat(inputSyrupBatchYield.value) || 1;
-            const syrupUsed = parseFloat(inputSyrupUsedVolume.value) || 0;
+            const syrupYield = Math.max(parseFloat(inputSyrupBatchYield.value) || 1, 1);
+            const syrupUsed = Math.max(parseFloat(inputSyrupUsedVolume.value) || 0, 0);
             const syrupCostPerMl = syrupBaseCost / syrupYield;
             const syrupFinalCost = syrupCostPerMl * syrupUsed;
             
             const dynamicPackagingCost = recipePacks.reduce((acc, item) => acc + ((item.pack.costPerUnit || 0) * item.qtd), 0);
-            const legacyPackagingCost = parseFloat(inputPackaging.value) || 0;
+            const legacyPackagingCost = Math.max(parseFloat(inputPackaging.value) || 0, 0);
             const packagingTotal = dynamicPackagingCost + legacyPackagingCost;
             
-            const yieldVal = parseFloat(inputYield.value) || 1; 
+            const yieldVal = Math.max(parseFloat(inputYield.value) || 1, 1); 
             const unitLabel = inputYieldUnit.value;
-            const invisibleRate = parseFloat(inputInvisible.value) || 0; 
-            const laborRate = parseFloat(inputLaborRate.value) || 0;
-            const laborTime = parseFloat(inputLaborTime.value) || 0; 
-            const cmvTarget = parseFloat(inputCmv.value) || 35;
+            const invisibleRate = Math.max(parseFloat(inputInvisible.value) || 0, 0); 
+            const laborRate = Math.max(parseFloat(inputLaborRate.value) || 0, 0);
+            const laborTime = Math.max(parseFloat(inputLaborTime.value) || 0, 0); 
+            const cmvTarget = Math.min(Math.max(parseFloat(inputCmv.value) || 35, 5), 95);
 
             const variablesCost = (recipeBaseCost + syrupFinalCost) * (invisibleRate / 100);
             const laborCostTotal = laborRate * laborTime;
-            const totalCostReceita = recipeBaseCost + syrupFinalCost + packagingTotal + variablesCost + laborCostTotal;
-            const totalSalePrice = totalCostReceita / (cmvTarget / 100);
-            const totalProfit = totalSalePrice - totalCostReceita;
+
+            // Custo de Produção de Insumos (Massa + Calda + Embalagem + Gás/Luz)
+            const productionCost = recipeBaseCost + syrupFinalCost + packagingTotal + variablesCost;
+            // Custo Total Real (Insumos + Mão de Obra)
+            const totalCostReceita = productionCost + laborCostTotal;
+
+            // Preço de Venda Inteligente v2.0: aplica o divisor de CMV sobre os insumos e soma a Mão de Obra Direta (1x)
+            const totalSalePrice = (productionCost / (cmvTarget / 100)) + laborCostTotal;
+            const netStoreProfit = totalSalePrice - totalCostReceita;
+            const totalPocketEarnings = laborCostTotal + netStoreProfit;
+
+            const resSalaryGain = document.getElementById('res-salary-gain');
+            const resUnitSalary = document.getElementById('res-unit-salary');
+            const resPocketTotal = document.getElementById('res-pocket-total');
+            const resUnitPocket = document.getElementById('res-unit-pocket');
 
             lblSubtotalIng.textContent = formatBRL(recipeBaseCost); 
             lblSubtotalSyrup.textContent = formatBRL(syrupBaseCost); 
@@ -906,13 +1095,21 @@
                 resTotalRevenue.textContent = "🔒 Clique para liberar licença";
                 resTotalProfit.textContent = "R$ ••,•• 🔒";
                 resUnitProfit.textContent = "(Exclusivo Versão Licenciada)";
+                if (resSalaryGain) resSalaryGain.textContent = "R$ ••,•• 🔒";
+                if (resUnitSalary) resUnitSalary.textContent = "🔒 Bloqueado no Modo Demo";
+                if (resPocketTotal) resPocketTotal.textContent = "R$ ••,•• 🔒";
+                if (resUnitPocket) resUnitPocket.textContent = "🔒 Clique em Liberar Agora";
             } else {
                 resTotalCost.textContent = formatBRL(totalCostReceita); 
-                resUnitCost.textContent = `${formatBRL(totalCostReceita / yieldVal)} por ${unitLabel}`;
+                resUnitCost.textContent = `${formatBRL(totalCostReceita / yieldVal)} por ${unitLabel} (Insumos: ${formatBRL(productionCost / yieldVal)})`;
                 resUnitSalePrice.textContent = formatBRL(totalSalePrice / yieldVal); 
-                resTotalRevenue.textContent = `Venda Total: ${formatBRL(totalSalePrice)}`;
-                resTotalProfit.textContent = formatBRL(totalProfit); 
-                resUnitProfit.textContent = `(${formatBRL(totalProfit / yieldVal)} por ${unitLabel})`;
+                resTotalRevenue.textContent = `Venda Total da Fornada: ${formatBRL(totalSalePrice)}`;
+                resTotalProfit.textContent = formatBRL(netStoreProfit); 
+                resUnitProfit.textContent = `(${formatBRL(netStoreProfit / yieldVal)} livres por ${unitLabel})`;
+                if (resSalaryGain) resSalaryGain.textContent = formatBRL(laborCostTotal);
+                if (resUnitSalary) resUnitSalary.textContent = `(${formatBRL(laborCostTotal / yieldVal)} por ${unitLabel} trabalhado)`;
+                if (resPocketTotal) resPocketTotal.textContent = formatBRL(totalPocketEarnings);
+                if (resUnitPocket) resUnitPocket.textContent = `${formatBRL(totalPocketEarnings / yieldVal)} no bolso por ${unitLabel}`;
             }
         }
 
