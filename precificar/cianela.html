@@ -246,7 +246,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <label class="text-xs font-medium text-gray-500" title="Opcional: Taxa de maquininha, iFood ou delivery">Taxa Cartão / App (opcional)</label>
+                            <label class="text-xs font-medium text-gray-500" title="Opcional: Taxa de maquininha, iFood ou delivery que será embutida no preço de venda">Taxa Cartão / App (opcional)</label>
                             <div class="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-2.5 py-1 w-28">
                                 <input type="number" id="card-fee-rate" value="0" min="0" max="50" step="0.1" class="w-full bg-transparent border-none focus:outline-none text-right font-medium text-gray-700 text-xs">
                                 <span class="text-gray-400 text-xs ml-1">%</span>
@@ -266,6 +266,7 @@
                     <span class="text-xs font-semibold uppercase tracking-wider mb-2 opacity-90">Custo Total da Receita</span>
                     <div id="res-total-cost" class="text-4xl font-extrabold tracking-tight mb-1">R$ 0,00</div>
                     <span id="res-unit-cost" class="text-xs opacity-80 mt-1 bg-black/10 px-2 py-0.5 rounded">R$ 0,00 por unidade</span>
+                    <span id="res-cost-breakdown" class="text-[10px] opacity-85 mt-1 font-medium">Insumos: R$ 0,00 + Mão de Obra: R$ 0,00</span>
                 </div>
 
                 <div class="bg-blueLight rounded-2xl p-5 text-white shadow-lg flex flex-col items-center justify-center text-center relative overflow-hidden">
@@ -275,14 +276,15 @@
                         <input type="number" id="var-cmv" value="35" min="1" max="100" class="w-20 bg-transparent border-none focus:outline-none text-4xl font-extrabold tracking-tight text-center text-white p-0 m-0">
                         <span class="text-3xl font-bold ml-1">%</span>
                     </div>
-                    <span class="text-[10px] opacity-80 mt-1 font-medium">Custo ideal sobre o preço de venda</span>
+                    <span class="text-[10px] opacity-80 mt-1 font-medium">Meta sobre custo de produção (insumos)</span>
                 </div>
 
                 <div class="bg-greenSuccess rounded-2xl p-5 text-white shadow-lg flex flex-col items-center justify-center text-center relative overflow-hidden">
                     <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                    <span class="text-xs font-semibold uppercase tracking-wider mb-2 opacity-90">Valor de Venda Sugerido</span>
+                    <span id="res-sale-title" class="text-xs font-semibold uppercase tracking-wider mb-2 opacity-90">Valor de Venda Sugerido</span>
                     <div id="res-unit-sale-price" class="text-4xl font-extrabold tracking-tight mb-1 drop-shadow-sm">R$ 0,00</div>
                     <span id="res-total-revenue" class="text-xs font-bold mt-1 bg-black/10 px-2 py-0.5 rounded">Venda Total: R$ 0,00</span>
+                    <span id="res-card-sale-price" class="hidden text-[11px] font-bold mt-1.5 bg-white/20 px-2.5 py-0.5 rounded-full"></span>
                 </div>
             </div>
 
@@ -362,9 +364,25 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-700">Seus Ingredientes Salvos</h3>
-                    <span id="kpi-total-ingredients" class="bg-white border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-gray-700">Seus Ingredientes Salvos</h3>
+                        <span id="kpi-total-ingredients" class="bg-white border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <div class="relative">
+                            <input type="text" id="ing-search-input" placeholder="🔍 Pesquisar ingrediente..." class="w-full sm:w-56 input-clean rounded-lg pl-3 pr-8 py-1.5 text-xs font-medium bg-white">
+                            <button type="button" onclick="document.getElementById('ing-search-input').value=''; renderAll();" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs">✕</button>
+                        </div>
+                        <select id="ing-sort-select" class="input-clean rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 bg-white cursor-pointer">
+                            <option value="alpha-asc">🔤 Ordem Alfabética (A → Z)</option>
+                            <option value="alpha-desc">🔤 Ordem Alfabética (Z → A)</option>
+                            <option value="price-desc">💰 Maior Preço Pago</option>
+                            <option value="price-asc">💰 Menor Preço Pago</option>
+                            <option value="unit-desc">⚖️ Maior Custo por g/ml</option>
+                            <option value="unit-asc">⚖️ Menor Custo por g/ml</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
@@ -412,9 +430,23 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-700">Suas Embalagens Salvas</h3>
-                    <span id="kpi-total-packagings" class="bg-white border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-gray-700">Suas Embalagens Salvas</h3>
+                        <span id="kpi-total-packagings" class="bg-white border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <div class="relative">
+                            <input type="text" id="pack-search-input" placeholder="🔍 Pesquisar embalagem..." class="w-full sm:w-56 input-clean rounded-lg pl-3 pr-8 py-1.5 text-xs font-medium bg-white">
+                            <button type="button" onclick="document.getElementById('pack-search-input').value=''; renderAll();" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs">✕</button>
+                        </div>
+                        <select id="pack-sort-select" class="input-clean rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 bg-white cursor-pointer">
+                            <option value="alpha-asc">🔤 Ordem Alfabética (A → Z)</option>
+                            <option value="alpha-desc">🔤 Ordem Alfabética (Z → A)</option>
+                            <option value="unit-desc">💰 Maior Custo por Unid.</option>
+                            <option value="unit-asc">💰 Menor Custo por Unid.</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
@@ -517,15 +549,16 @@
         const resTotalCost = document.getElementById('res-total-cost');
         const resUnitCost = document.getElementById('res-unit-cost');
         const resCostBreakdown = document.getElementById('res-cost-breakdown');
+        const resSaleTitle = document.getElementById('res-sale-title');
         const resUnitSalePrice = document.getElementById('res-unit-sale-price');
         const resTotalRevenue = document.getElementById('res-total-revenue');
         const resCardSalePrice = document.getElementById('res-card-sale-price');
         const resTotalProfit = document.getElementById('res-total-profit');
         const resUnitProfit = document.getElementById('res-unit-profit');
-        const resLaborEarning = document.getElementById('res-labor-earning');
-        const resLaborUnit = document.getElementById('res-labor-unit');
+        const resLaborEarning = document.getElementById('res-salary-gain');
+        const resLaborUnit = document.getElementById('res-unit-salary');
         const resPocketTotal = document.getElementById('res-pocket-total');
-        const resPocketUnit = document.getElementById('res-pocket-unit');
+        const resPocketUnit = document.getElementById('res-unit-pocket');
         
         const kpiTotalIngredients = document.getElementById('kpi-total-ingredients');
         const kpiTotalPackagings = document.getElementById('kpi-total-packagings');
@@ -809,16 +842,32 @@
             syncUpdatedLibrariesAcrossRecipes();
             selectRecipeIngredient.innerHTML = '<option value="">Selecione na biblioteca...</option>';
             selectSyrupIngredient.innerHTML = '<option value="">Selecione na biblioteca...</option>';
-            ingredients.forEach(i => {
+            [...ingredients].sort((x, y) => x.name.localeCompare(y.name, 'pt-BR')).forEach(i => {
                 selectRecipeIngredient.innerHTML += `<option value="${i.id}">${i.name}</option>`;
                 selectSyrupIngredient.innerHTML += `<option value="${i.id}">${i.name}</option>`;
             });
             
             selectRecipePackaging.innerHTML = '<option value="">Selecione...</option>';
-            packagings.forEach(p => selectRecipePackaging.innerHTML += `<option value="${p.id}">${p.name}</option>`);
+            [...packagings].sort((x, y) => x.name.localeCompare(y.name, 'pt-BR')).forEach(p => selectRecipePackaging.innerHTML += `<option value="${p.id}">${p.name}</option>`);
 
-            ingredientsGridContainer.innerHTML = '';
-            ingredients.forEach(i => {
+            const sortList = (arr, mode, unitKey) => {
+                const a = [...arr];
+                const byName = (x, y) => x.name.localeCompare(y.name, 'pt-BR', { sensitivity: 'base' });
+                if (mode === 'alpha-desc') a.sort((x, y) => byName(y, x));
+                else if (mode === 'price-desc') a.sort((x, y) => (y.price || 0) - (x.price || 0));
+                else if (mode === 'price-asc') a.sort((x, y) => (x.price || 0) - (y.price || 0));
+                else if (mode === 'unit-desc') a.sort((x, y) => (y[unitKey] || 0) - (x[unitKey] || 0));
+                else if (mode === 'unit-asc') a.sort((x, y) => (x[unitKey] || 0) - (y[unitKey] || 0));
+                else a.sort(byName);
+                return a;
+            };
+            const norm = (t) => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const ingTerm = norm(document.getElementById('ing-search-input')?.value);
+            const ingMode = document.getElementById('ing-sort-select')?.value || 'alpha-asc';
+            const visibleIngredients = sortList(ingredients, ingMode, 'costPerGram').filter(i => norm(i.name).includes(ingTerm));
+
+            ingredientsGridContainer.innerHTML = visibleIngredients.length === 0 ? '<tr><td colspan="4" class="px-6 py-6 text-center text-xs text-gray-400">Nenhum ingrediente encontrado.</td></tr>' : '';
+            visibleIngredients.forEach(i => {
                 const per100g = (i.costPerGram || 0) * 100;
                 ingredientsGridContainer.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50">
@@ -836,8 +885,11 @@
             });
             kpiTotalIngredients.textContent = ingredients.length;
 
-            packagingsGridContainer.innerHTML = '';
-            packagings.forEach(p => {
+            const packTerm = norm(document.getElementById('pack-search-input')?.value);
+            const packMode = document.getElementById('pack-sort-select')?.value || 'alpha-asc';
+            const visiblePacks = sortList(packagings, packMode, 'costPerUnit').filter(p => norm(p.name).includes(packTerm));
+            packagingsGridContainer.innerHTML = visiblePacks.length === 0 ? '<tr><td colspan="4" class="px-6 py-6 text-center text-xs text-gray-400">Nenhuma embalagem encontrada.</td></tr>' : '';
+            visiblePacks.forEach(p => {
                 packagingsGridContainer.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50">
                         <td class="px-6 py-3 font-medium text-gray-900">${p.name}</td>
@@ -993,16 +1045,20 @@
                 resCostBreakdown.textContent = `Insumos/Emb: ${formatBRL(productionCost)} + Mão de Obra: ${formatBRL(laborCostTotal)}`;
             }
 
-            resUnitSalePrice.textContent = formatBRL(totalSalePrice / yieldVal); 
-            resTotalRevenue.textContent = `Venda Total PIX: ${formatBRL(totalSalePrice)}`;
-
-            if (resCardSalePrice) {
-                if (cardFeeRate > 0) {
-                    resCardSalePrice.textContent = `💳 Cartão/App (+${cardFeeRate}%): ${formatBRL(totalCardSalePrice / yieldVal)} / ${unitLabel}`;
+            const feeValue = totalCardSalePrice - totalSalePrice;
+            if (cardFeeRate > 0) {
+                if (resSaleTitle) resSaleTitle.textContent = `Valor de Venda Sugerido (c/ taxa ${cardFeeRate}%)`;
+                resUnitSalePrice.textContent = formatBRL(totalCardSalePrice / yieldVal);
+                resTotalRevenue.textContent = `Venda Total: ${formatBRL(totalCardSalePrice)} (taxa: ${formatBRL(feeValue)})`;
+                if (resCardSalePrice) {
+                    resCardSalePrice.textContent = `💵 PIX/Dinheiro (sem taxa): ${formatBRL(totalSalePrice / yieldVal)} / ${unitLabel}`;
                     resCardSalePrice.classList.remove('hidden');
-                } else {
-                    resCardSalePrice.classList.add('hidden');
                 }
+            } else {
+                if (resSaleTitle) resSaleTitle.textContent = 'Valor de Venda Sugerido';
+                resUnitSalePrice.textContent = formatBRL(totalSalePrice / yieldVal);
+                resTotalRevenue.textContent = `Venda Total: ${formatBRL(totalSalePrice)}`;
+                if (resCardSalePrice) resCardSalePrice.classList.add('hidden');
             }
 
             if (resLaborEarning) resLaborEarning.textContent = formatBRL(laborCostTotal);
@@ -1042,6 +1098,9 @@
         [inputRecipeName, inputYield, inputYieldUnit, inputTime, inputSyrupBatchYield, inputSyrupUsedVolume, inputPackaging, inputInvisible, inputLaborRate, inputLaborTime, inputCardFeeRate, inputCmv].forEach(inp => {
             if(inp) inp.addEventListener('input', () => { calculateMaster(); saveState(); });
         });
+
+        ['ing-search-input', 'pack-search-input'].forEach(id => document.getElementById(id)?.addEventListener('input', renderAll));
+        ['ing-sort-select', 'pack-sort-select'].forEach(id => document.getElementById(id)?.addEventListener('change', renderAll));
 
         renderAll();
     </script>
