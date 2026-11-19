@@ -483,10 +483,42 @@
                     Voltar para a Receita de Demonstração
                 </button>
             </div>
+            <div class="mt-5 pt-4 border-t border-gray-200 text-left">
+                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">🔑 Já possui Chave de Licença?</label>
+                <div class="flex gap-2">
+                    <input type="password" id="license-key-input" placeholder="Digite sua chave..." class="flex-1 rounded-xl bg-gray-50 border border-gray-300 px-3 py-2 text-xs focus:outline-none focus:border-primary" onkeydown="if(event.key==='Enter') unlockWithLicenseKey()">
+                    <button onclick="unlockWithLicenseKey()" class="bg-gray-900 hover:bg-gray-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition-colors">
+                        Entrar
+                    </button>
+                </div>
+                <p id="license-key-error" class="hidden text-[11px] text-rose-600 font-semibold mt-1">Chave inválida. Solicite sua licença pelo WhatsApp acima.</p>
+            </div>
         </div>
     </div>
 
     <script>
+        (function checkVipAccess() {
+            const params = new URLSearchParams(window.location.search);
+            const vipParam = (params.get('vip') || params.get('chave') || '').toLowerCase().trim();
+            if (vipParam === 'cianela' || vipParam === 'mae') {
+                localStorage.setItem('precificapro_vip', 'true');
+                window.location.replace('cianela.html');
+                return;
+            }
+            if (localStorage.getItem('precificapro_vip') === 'true' && params.get('demo') !== '1') {
+                window.location.replace('cianela.html');
+            }
+        })();
+
+        window.unlockWithLicenseKey = function() {
+            const val = (document.getElementById('license-key-input')?.value || '').toLowerCase().trim();
+            if (val === 'cianela' || val === 'mae' || val === 'cianela2026') {
+                localStorage.setItem('precificapro_vip', 'true');
+                window.location.href = 'cianela.html';
+            } else {
+                document.getElementById('license-key-error')?.classList.remove('hidden');
+            }
+        };
         const initialIngredients = [
             { id: "1", name: "Leite Moça Integral Lata", size: 395, price: 7.28, costPerGram: 7.28/395 },
             { id: "2", name: "Leite Ninho Integral Pó", size: 400, price: 17.50, costPerGram: 17.50/400 },
