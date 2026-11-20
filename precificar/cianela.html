@@ -471,6 +471,19 @@
                     <p class="text-sm text-gray-500 mt-1">Aqui ficam salvas as receitas que você criou.</p>
                 </div>
             </div>
+            <div class="mb-6 flex flex-col sm:flex-row gap-2">
+                <div class="relative flex-1">
+                    <input type="text" id="fav-search-input" placeholder="🔍 Pesquisar receita pelo nome ou ingrediente..." class="w-full input-clean rounded-xl pl-4 pr-9 py-3 text-sm font-medium bg-white">
+                    <button type="button" onclick="document.getElementById('fav-search-input').value=''; renderFavorites();" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">✕</button>
+                </div>
+                <select id="fav-sort-select" class="input-clean rounded-xl px-3 py-3 text-sm font-semibold text-gray-700 bg-white cursor-pointer">
+                    <option value="alpha-asc">🔤 A → Z</option>
+                    <option value="alpha-desc">🔤 Z → A</option>
+                    <option value="recent">🕒 Mais recentes</option>
+                    <option value="sale-desc">💰 Maior preço de venda</option>
+                    <option value="sale-asc">💰 Menor preço de venda</option>
+                </select>
+            </div>
             <div id="favorites-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
@@ -949,10 +962,28 @@
         }
 
         function renderFavorites() {
-            favoritesGridContainer.innerHTML = favoriteRecipes.length === 0 ? '<div class="col-span-full text-center py-10 text-gray-400">Nenhuma receita salva ainda.</div>' : '';
-            favoriteRecipes.forEach(fav => {
+            const normF = (t) => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const term = normF(document.getElementById('fav-search-input')?.value);
+            const mode = document.getElementById('fav-sort-select')?.value || 'alpha-asc';
+            let list = favoriteRecipes.map((fav, idx) => ({ fav, idx, metrics: computeFavoriteMetrics(fav) }));
+            if (term) {
+                list = list.filter(({ fav }) => {
+                    const ingNames = [...(fav.recipeData || []), ...(fav.syrupData || [])].map(it => it.ingredient?.name || '').join(' ');
+                    return normF(fav.name + ' ' + ingNames).includes(term);
+                });
+            }
+            const byName = (a, b) => (a.fav.name || '').localeCompare(b.fav.name || '', 'pt-BR', { sensitivity: 'base' });
+            if (mode === 'alpha-desc') list.sort((a, b) => byName(b, a));
+            else if (mode === 'recent') list.sort((a, b) => b.idx - a.idx);
+            else if (mode === 'sale-desc') list.sort((a, b) => b.metrics.unitSale - a.metrics.unitSale);
+            else if (mode === 'sale-asc') list.sort((a, b) => a.metrics.unitSale - b.metrics.unitSale);
+            else list.sort(byName);
+
+            favoritesGridContainer.innerHTML = favoriteRecipes.length === 0
+                ? '<div class="col-span-full text-center py-10 text-gray-400">Nenhuma receita salva ainda.</div>'
+                : (list.length === 0 ? '<div class="col-span-full text-center py-10 text-gray-400">Nenhuma receita encontrada.</div>' : '');
+            list.forEach(({ fav, metrics }) => {
                 const favUnit = fav.yieldUnit || "unid.";
-                const metrics = computeFavoriteMetrics(fav);
                 favoritesGridContainer.innerHTML += `
                     <div class="bg-white border border-gray-200 p-5 rounded-2xl relative group shadow-sm space-y-3">
                         <button onclick="deleteFavorite('${fav.id}')" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 font-bold">X</button>
@@ -1099,6 +1130,8 @@
             if(inp) inp.addEventListener('input', () => { calculateMaster(); saveState(); });
         });
 
+        document.getElementById('fav-search-input')?.addEventListener('input', renderFavorites);
+        document.getElementById('fav-sort-select')?.addEventListener('change', renderFavorites);
         ['ing-search-input', 'pack-search-input'].forEach(id => document.getElementById(id)?.addEventListener('input', renderAll));
         ['ing-sort-select', 'pack-sort-select'].forEach(id => document.getElementById(id)?.addEventListener('change', renderAll));
 
