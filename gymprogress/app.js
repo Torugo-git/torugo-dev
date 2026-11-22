@@ -1056,12 +1056,56 @@
         activeSession.exercises[exIdx].note = val;
     };
 
+    function getExerciseHistoricalPR(exerciseName) {
+        const target = normText(exerciseName);
+        let maxWeight = 0;
+        let max1RM = 0;
+        let hasHistory = false;
+        db.history.forEach((h) => {
+            (h.exercises || []).forEach((ex) => {
+                if (normText(ex.name) !== target) return;
+                (ex.sets || []).forEach((s) => {
+                    const w = parseFloat(s.weight) || 0;
+                    const r = parseInt(s.reps, 10) || 0;
+                    if (w > 0 && r > 0) {
+                        hasHistory = true;
+                        if (w > maxWeight) maxWeight = w;
+                        const est = epley1RM(w, r);
+                        if (est > max1RM) max1RM = est;
+                    }
+                });
+            });
+        });
+        return { hasHistory, maxWeight, max1RM };
+    }
+
+    function checkSetIsPR(exerciseName, weight, reps) {
+        const w = parseFloat(weight) || 0;
+        const r = parseInt(reps, 10) || 0;
+        if (w <= 0 || r <= 0) return false;
+        const prev = getExerciseHistoricalPR(exerciseName);
+        if (!prev.hasHistory) return false;
+        const est = epley1RM(w, r);
+        return (w > prev.maxWeight) || (est > prev.max1RM + 0.25);
+    }
+
     window.toggleSetDone = function (exIdx, setIdx) {
         if (!activeSession) return;
-        const setObj = activeSession.exercises[exIdx].sets[setIdx];
+        const ex = activeSession.exercises[exIdx];
+        const setObj = ex.sets[setIdx];
         setObj.done = !setObj.done;
         if (setObj.done) {
             startRestTimer(restDefault);
+            if (checkSetIsPR(ex.name, setObj.weight, setObj.reps)) {
+                setObj.isPR = true;
+                const est = epley1RM(setObj.weight, setObj.reps);
+                showToast(`🏆 NOVO PR em ${ex.name}! (${setObj.weight}kg · 1RM ${fmtNum(est, 1)}kg)`);
+                if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 200]);
+            } else {
+                setObj.isPR = false;
+            }
+        } else {
+            setObj.isPR = false;
         }
         renderActiveSession();
     };
@@ -1134,11 +1178,16 @@
                     <div><strong>• 1RM (Fórmula de Epley):</strong> estima sua força máxima para 1 repetição sem precisar arriscar carga máxima.</div>
                 </div>` : ''}
 
-            ${activeSession.exercises.map((ex, exIdx) => `
-                <div class="card">
+            ${activeSession.exercises.map((ex, exIdx) => {
+                const hasExPR = (ex.sets || []).some((s) => s.done && s.isPR);
+                return `
+                <div class="card" style="${hasExPR ? 'border-color:rgba(57,255,20,0.45);' : ''}">
                     <div class="card-header" style="margin-bottom:4px;">
                         <div>
-                            <h3 class="section-title" style="font-size:16px;">${escapeHtml(ex.name)}</h3>
+                            <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
+                                <h3 class="section-title" style="font-size:16px;">${escapeHtml(ex.name)}</h3>
+                                ${hasExPR ? '<span class="pr-badge">🏆 NOVO PR!</span>' : ''}
+                            </div>
                             <span class="eyebrow">Meta: ${ex.targetSets}× ${escapeHtml(ex.targetReps)} reps</span>
                         </div>
                         <div style="display:flex; gap:6px;">
@@ -1163,7 +1212,7 @@
 
                     ${ex.sets.map((s, sIdx) => `
                         <div class="set-row ${s.done ? 'done' : ''}">
-                            <span class="set-num">${sIdx + 1}</span>
+                            <span class="set-num">${s.isPR ? '🏆' : sIdx + 1}</span>
                             <input type="number" inputmode="decimal" step="0.5" min="0" class="input-compact" placeholder="kg" value="${escapeHtml(s.weight)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)">
                             <input type="number" inputmode="numeric" min="0" class="input-compact" placeholder="reps" value="${escapeHtml(s.reps)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'reps', this.value)">
                             <input type="number" inputmode="numeric" min="0" max="10" class="input-compact" placeholder="—" value="${escapeHtml(s.rir)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'rir', this.value)">
@@ -1175,7 +1224,8 @@
                     <div style="margin-top:10px;">
                         <input type="text" class="input" style="min-height:38px; font-size:12.5px; font-weight:500;" placeholder="📝 Observação rápida (ex: subir carga na próxima semana)..." value="${escapeHtml(ex.note)}" oninput="updateExerciseNote(${exIdx}, this.value)">
                     </div>
-                </div>`).join('')}
+                </div>`;
+            }).join('')}
 
             <div style="display:grid; grid-template-columns: 1fr 2fr; gap:10px; margin-top:16px;">
                 <button type="button" class="btn btn-danger" onclick="cancelWorkout()">Cancelar</button>
@@ -1193,6 +1243,34 @@
             return;
         }
 
+        // Detect all PRs broken in this workout before saving to history
+        const sessionPRs = [];
+        activeSession.exercises.forEach((ex) => {
+            const prev = getExerciseHistoricalPR(ex.name);
+            if (!prev.hasHistory) return;
+            let bestW = 0;
+            let bestR = 0;
+            let bestEst = 0;
+            (ex.sets || []).filter((s) => s.done).forEach((s) => {
+                const w = parseFloat(s.weight) || 0;
+                const r = parseInt(s.reps, 10) || 0;
+                const est = epley1RM(w, r);
+                if (est > bestEst) {
+                    bestEst = est;
+                    bestW = w;
+                    bestR = r;
+                }
+            });
+            if (bestW > prev.maxWeight || bestEst > prev.max1RM + 0.25) {
+                sessionPRs.push({
+                    exercise: ex.name,
+                    weight: bestW,
+                    reps: bestR,
+                    est1RM: Number(bestEst.toFixed(1))
+                });
+            }
+        });
+
         const durationMin = Math.max(1, Math.round((Date.now() - activeSession.startedAt) / 60000));
         const newLog = {
             id: 'log-' + Date.now(),
@@ -1202,6 +1280,7 @@
             durationMin,
             totalVolume: Math.round(m.totalVolume),
             bestEpley1RM: Number(m.bestEpley.toFixed(1)),
+            prs: sessionPRs,
             exercises: activeSession.exercises.map((ex) => ({
                 name: ex.name,
                 note: (ex.note || '').trim(),
@@ -1227,6 +1306,11 @@
         const summaryBody = document.getElementById('workout-summary-body');
         summaryBody.innerHTML = `
             <p class="section-sub" style="margin-bottom:14px;"><strong>${escapeHtml(newLog.splitName)}</strong> salvo no seu histórico com sucesso!</p>
+            ${sessionPRs.length ? `
+                <div style="background:rgba(57,255,20,0.1); border:1px solid rgba(57,255,20,0.4); border-radius:14px; padding:12px; margin-bottom:14px;">
+                    <div style="font-weight:800; font-size:13px; color:var(--neon); margin-bottom:6px;">🏆 ${sessionPRs.length} NOVO(S) RECORDE(S) PESSOAL(IS)!</div>
+                    ${sessionPRs.map((pr) => `<div style="font-size:12px; color:var(--text-primary); margin-bottom:3px;">• <strong>${escapeHtml(pr.exercise)}</strong>: <span class="font-mono" style="color:var(--neon-soft);">${pr.weight}kg × ${pr.reps}</span> (1RM ${fmtNum(pr.est1RM, 1)}kg)</div>`).join('')}
+                </div>` : ''}
             <div class="stat-row-3" style="margin-bottom:16px;">
                 <div class="stat-mini">
                     <span class="stat-mini-val">${fmtInt(newLog.totalVolume)}</span>
@@ -1555,7 +1639,104 @@
         return [...set].sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }
 
+    window.adjustWeeklyGoal = function (delta) {
+        if (!requireFullLicense('Ajustar Meta Semanal de Treinos')) return;
+        const cur = db.weeklyGoal || 4;
+        db.weeklyGoal = Math.max(1, Math.min(7, cur + delta));
+        saveDB();
+        renderConsistencyCalendar();
+    };
+
+    function renderConsistencyCalendar() {
+        const box = document.getElementById('consistency-calendar-card');
+        if (!box) return;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const todayISO = now.toISOString().slice(0, 10);
+        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+        // Map trained dates -> latest logId on that date
+        const trainedMap = {};
+        db.history.forEach((h) => {
+            if (h.date && !trainedMap[h.date]) trainedMap[h.date] = h.id;
+        });
+
+        // Count workouts in current week (Sunday to Saturday)
+        const startOfWeek = new Date(now);
+        startOfWeek.setHours(0, 0, 0, 0);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const weekTrainedDays = new Set();
+        let monthTrainedCount = 0;
+        db.history.forEach((h) => {
+            if (!h.date) return;
+            const parts = h.date.split('-');
+            if (parts.length !== 3) return;
+            const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            if (d >= startOfWeek && d <= endOfWeek) weekTrainedDays.add(h.date);
+            if (d.getFullYear() === year && d.getMonth() === month) monthTrainedCount++;
+        });
+
+        const weeklyGoal = db.weeklyGoal || 4;
+        const weekDone = weekTrainedDays.size;
+        const weekPct = Math.min(100, Math.round((weekDone / weeklyGoal) * 100));
+
+        // Build calendar cells for current month
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let cellsHtml = '';
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            cellsHtml += `<div class="cal-day empty"></div>`;
+        }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const logId = trainedMap[iso];
+            const isToday = iso === todayISO;
+            const cls = `cal-day ${logId ? 'trained' : ''} ${isToday ? 'today' : ''}`;
+            const clickAttr = logId ? `onclick="viewWorkoutDetail('${logId}')" title="Ver treino de ${fmtDateBR(iso)}"` : '';
+            cellsHtml += `<div class="${cls}" ${clickAttr}>${day}</div>`;
+        }
+
+        box.innerHTML = `
+            <div class="card-header" style="margin-bottom:10px;">
+                <div>
+                    <span class="eyebrow" style="color:var(--neon-soft);">🔥 Constância & Disciplina</span>
+                    <h3 class="section-title" style="font-size:15.5px; margin-top:2px;">${monthNames[month]} ${year} · ${monthTrainedCount} treino(s)</h3>
+                </div>
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <span style="font-size:11px; color:var(--text-muted);">Meta/sem:</span>
+                    <button type="button" class="btn btn-secondary btn-sm" style="min-height:28px; padding:0 8px;" onclick="adjustWeeklyGoal(-1)">−</button>
+                    <strong class="font-mono" style="font-size:13px; color:var(--neon); min-width:18px; text-align:center;">${weeklyGoal}</strong>
+                    <button type="button" class="btn btn-secondary btn-sm" style="min-height:28px; padding:0 8px;" onclick="adjustWeeklyGoal(1)">+</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:var(--text-secondary);">Esta semana: <strong class="font-mono" style="color:var(--text-primary);">${weekDone} de ${weeklyGoal} treinos</strong></span>
+                    <strong class="font-mono" style="color:var(--neon-soft);">${weekDone >= weeklyGoal ? '🎉 Meta batida!' : `${weekPct}%`}</strong>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width:${weekPct}%;"></div>
+                </div>
+            </div>
+
+            <div class="cal-weekdays">
+                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+            </div>
+            <div class="cal-grid">${cellsHtml}</div>
+            <p style="margin:8px 0 0; font-size:11px; color:var(--text-muted); text-align:center;">🟢 Dias em verde = treino concluído (toque no dia para ver detalhes)</p>
+        `;
+    }
+
     function renderEvolucao() {
+        renderConsistencyCalendar();
+
         // 1. Exercise selector
         const sel = document.getElementById('chart-exercise-select');
         const names = getAllLoggedExerciseNames();
@@ -1584,7 +1765,10 @@
             histContainer.innerHTML = sorted.map((h) => `
                 <div class="history-item">
                     <div style="min-width:0;">
-                        <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(h.splitName)}</div>
+                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            <span style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(h.splitName)}</span>
+                            ${h.prs && h.prs.length ? `<span class="pr-badge" style="font-size:9.5px;">🏆 ${h.prs.length} PR</span>` : ''}
+                        </div>
                         <div style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">
                             📅 ${fmtDateBR(h.date)} · Volume: <strong class="font-mono" style="color:var(--neon-soft);">${fmtInt(h.totalVolume)} kg</strong> · 1RM: <strong class="font-mono">${fmtNum(h.bestEpley1RM, 1)} kg</strong>
                         </div>
@@ -2345,6 +2529,13 @@
         ctx.fillStyle = '#39ff14';
         ctx.font = '800 24px "Plus Jakarta Sans", sans-serif';
         ctx.fillText('⚡ TREINO CONCLUÍDO', 102, 113);
+
+        if (log.prs && log.prs.length) {
+            roundRect(402, 76, 240, 56, 28, '#39ff14', '#39ff14');
+            ctx.fillStyle = '#051404';
+            ctx.font = '800 23px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`🏆 ${log.prs.length} NOVO(S) PR!`, 426, 113);
+        }
 
         ctx.fillStyle = '#9aa4b2';
         ctx.font = '700 26px "JetBrains Mono", monospace';

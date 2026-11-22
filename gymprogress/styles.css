@@ -1264,5 +1264,69 @@ input[type=number] {
     font-weight: 700;
 }
 
+/* PR Badge & Consistency Calendar */
+.pr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(90deg, #39ff14, #a3e635);
+    color: #051404;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    box-shadow: 0 0 12px rgba(57, 255, 20, 0.38);
+}
+
+.cal-weekdays, .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.cal-weekdays span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding-bottom: 4px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.cal-day.empty {
+    background: transparent;
+    border-color: transparent;
+}
+
+.cal-day.trained {
+    background: var(--neon);
+    color: var(--neon-ink);
+    border-color: var(--neon);
+    box-shadow: 0 0 12px rgba(57, 255, 20, 0.3);
+    cursor: pointer;
+}
+
+.cal-day.today {
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+}
+
+
 
 
