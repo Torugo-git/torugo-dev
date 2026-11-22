@@ -130,8 +130,14 @@
                     <div>
                         <span class="eyebrow">Progressão de Carga</span>
                         <h3 class="section-title" style="font-size:15.5px;">Carga Máxima × Volume Total</h3>
-                        <p class="section-sub" style="font-size:11.5px;">💡 <strong>Verde</strong> = peso máximo · <strong>Azul</strong> = volume total (kg × reps). Se sobem, você está evoluindo.</p>
+                        <p class="section-sub" style="font-size:11.5px;">💡 <strong>Verde (esq.)</strong> = maior peso usado · <strong>Azul (dir.)</strong> = soma de todas as séries.</p>
                     </div>
+                    <button type="button" class="btn btn-ghost btn-sm" style="min-height:30px; padding:2px 9px; font-size:11px; flex-shrink:0;" onclick="document.getElementById('chart-explain-box').classList.toggle('hidden')">❓ Entender</button>
+                </div>
+                <div id="chart-explain-box" class="guide-box hidden" style="margin-bottom:12px;">
+                    <div><strong>🟢 Linha Verde (Carga Máxima):</strong> é o maior peso que você colocou no exercício naquele dia (ex.: <strong>60 kg</strong>).</div>
+                    <div><strong>🔵 Linha Azul (Volume Total):</strong> soma <em>Peso × Repetições</em> de todas as séries! Ex.: <strong>3 séries × 8 reps × 60 kg = 1.440 kg</strong>. Por isso o número parece grande — não se assuste!</div>
+                    <div><strong>✅ Como saber se evoluiu?</strong> Se a linha verde ou a azul subir com o tempo, você está ficando mais forte (mesmo mantendo o peso e fazendo +1 rep!).</div>
                 </div>
                 <div class="field" style="margin-bottom:12px;">
                     <select id="chart-exercise-select" class="select" onchange="onExerciseChartChange()"></select>
@@ -206,6 +212,23 @@
                         <strong style="font-size:13.5px;">Visualize sua evolução em gráficos</strong>
                         <p class="section-sub">Veja a curva de <strong>Carga Máxima</strong>, <strong>Volume Total</strong>, <strong>1RM (Epley)</strong> e suas medidas corporais com a linha da Meta.</p>
                     </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Entenda os Números</span>
+                <h3 class="section-title" style="font-size:16px; margin:2px 0 10px;">📊 Como ler os Gráficos (sem se assustar!)</h3>
+                <div class="guide-box" style="margin-bottom:10px;">
+                    <div style="color:var(--neon-soft); font-weight:800; font-size:12.5px;">1. Gráfico de Exercício (Carga Máxima × Volume Total)</div>
+                    <div><strong>🟢 Linha Verde (eixo da esquerda):</strong> é simplesmente o <strong>maior peso</strong> que você usou naquele exercício (ex.: <strong>60 kg</strong>).</div>
+                    <div><strong>🔵 Linha Azul Tracejada (eixo da direita):</strong> é o <strong>Volume Total</strong> — a soma de <em>Peso × Repetições</em> de todas as séries juntas.</div>
+                    <div><strong>💡 Por que o Volume dá números altos (ex.: 1.440 kg)?</strong> Porque ele soma cada repetição! Ex.: 3 séries × 8 reps × 60 kg = <strong>1.440 kg</strong>. Não é o peso de 1 repetição, é o trabalho total do exercício!</div>
+                    <div><strong>✅ O que observar:</strong> se a linha verde ou a azul subir ao longo das semanas, você está evoluindo de verdade.</div>
+                </div>
+                <div class="guide-box" style="margin-bottom:0;">
+                    <div style="color:var(--neon-soft); font-weight:800; font-size:12.5px;">2. Gráfico de Medidas Corporais vs. Meta</div>
+                    <div><strong>🟢 Linha Verde:</strong> mostra a evolução da medida escolhida (Peso, Cintura, Peito, Braço...).</div>
+                    <div><strong>🟡 Linha Amarela Tracejada:</strong> é a sua <strong>Meta Alvo</strong>. Quanto mais perto a linha verde chegar da amarela, mais perto você está do objetivo!</div>
                 </div>
             </div>
 
