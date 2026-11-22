@@ -1,0 +1,18 @@
+{
+  "name": "GymProgress — Progressão de Carga & Medidas",
+  "short_name": "GymProgress",
+  "description": "App mobile-first para registro de progressão de carga, cronômetro de descanso, medidas corporais e metas.",
+  "start_url": "./app.html",
+  "display": "standalone",
+  "background_color": "#090b0e",
+  "theme_color": "#090b0e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='44' fill='%23090b0e'/%3E%3Crect x='14' y='14' width='164' height='164' rx='34' fill='%2313171d' stroke='%2339ff14' stroke-width='6'/%3E%3Cpath d='M52 96h88M68 72v48M124 72v48M54 80v32M138 80v32' stroke='%2339ff14' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

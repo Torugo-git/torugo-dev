@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#090b0e">
+    <meta name="description" content="GymProgress — Demonstração interativa do sistema de Progressão de Carga, Medidas Corporais e Metas desenvolvido por Torugo Dev.">
+    <title>GymProgress | Demo Interativa — Torugo Dev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body class="is-demo">
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Top Commercial Vitrine Banner -->
+    <div class="demo-banner">
+        <div class="demo-banner-inner">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span class="demo-badge">🔒 Modo Vitrine</span>
+                <span style="color:var(--text-secondary);">Demonstração do <strong style="color:var(--text-primary);">GymProgress</strong> (Torugo Dev).</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" style="min-height:30px; padding:4px 12px; font-size:11.5px;" onclick="openPaywallModal('Acesso Completo & Licença')">
+                Liberar App / Licença →
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Header -->
+    <header class="app-header">
+        <div class="app-header-inner">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-name">Gym<span>Progress</span></h1>
+                    <span class="brand-sub">Demo Interativa · Torugo Dev</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="icon-btn" onclick="startRestTimer(90)" title="Testar Cronômetro">⏱️</button>
+                <button type="button" class="icon-btn" onclick="openPaywallModal('Ativar Licença ou Chave')" title="Licença / Chave">🔑</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- ==================== ABA 1: TREINOS ==================== -->
+        <section id="panel-treinos" class="tab-panel active">
+            <div id="splits-view">
+                <div class="card-header" style="margin-bottom:14px;">
+                    <div>
+                        <h2 class="section-title">Fichas de Exemplo</h2>
+                        <p class="section-sub">Toque em <strong>Treinar Agora</strong> para testar a tela de séries e o cronômetro</p>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openSplitModal()">+ Nova Ficha 🔒</button>
+                </div>
+                <div id="splits-container"></div>
+            </div>
+
+            <div id="active-workout-view" class="hidden"></div>
+        </section>
+
+        <!-- ==================== ABA 2: MEDIDAS ==================== -->
+        <section id="panel-medidas" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Medidas & Metas</h2>
+                    <p class="section-sub">Dia 1 vs. Atual vs. Objetivo Final</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openGoalsModal()">🎯 Metas 🔒</button>
+            </div>
+
+            <div id="aesthetic-ratio-card" class="ratio-card"></div>
+            <div id="metrics-comparative-grid" class="metric-cards-grid"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="section-title" style="font-size:16px;">Registrar Novas Medidas 🔒</h3>
+                        <p class="section-sub">Recurso liberado na versão licenciada</p>
+                    </div>
+                </div>
+                <form onsubmit="saveMeasurementForm(event)">
+                    <div class="field" style="margin-bottom:10px;">
+                        <label for="measure-date">Data da Medição</label>
+                        <input type="date" id="measure-date" class="input" required>
+                    </div>
+                    <div class="form-grid-2" style="margin-bottom:14px;">
+                        <div class="field"><label for="m-inp-weight">Peso (kg)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-weight" class="input" placeholder="80.5"></div>
+                        <div class="field"><label for="m-inp-waist">Cintura / Umbigo (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-waist" class="input" placeholder="84.0"></div>
+                        <div class="field"><label for="m-inp-chest">Peito (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-chest" class="input" placeholder="102.5"></div>
+                        <div class="field"><label for="m-inp-armFlexed">Braço Contraído (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-armFlexed" class="input" placeholder="39.0"></div>
+                        <div class="field"><label for="m-inp-armRelaxed">Braço Relaxado (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-armRelaxed" class="input" placeholder="35.5"></div>
+                        <div class="field"><label for="m-inp-neck">Pescoço (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-neck" class="input" placeholder="39.5"></div>
+                        <div class="field" style="grid-column:1/-1;"><label for="m-inp-thigh">Coxa (cm)</label><input type="number" inputmode="decimal" step="0.1" id="m-inp-thigh" class="input" placeholder="60.0"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">📏 Salvar Registro 🔒</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title" style="font-size:15px; margin-bottom:10px;">Histórico de Medições (Exemplo)</h3>
+                <div id="measurements-history-list"></div>
+            </div>
+        </section>
+
+        <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
+        <section id="panel-evolucao" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Dashboard de Evolução</h2>
+                    <p class="section-sub">Gráficos interativos de carga, volume e medidas</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Progressão de Carga</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Carga Máxima × Volume Total</h3>
+                    </div>
+                </div>
+                <div class="field" style="margin-bottom:12px;">
+                    <select id="chart-exercise-select" class="select" onchange="onExerciseChartChange()"></select>
+                </div>
+                <div id="exercise-chart-kpis" class="stat-row-3" style="margin-bottom:12px;"></div>
+                <div class="chart-box">
+                    <canvas id="exercise-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Evolução Corporal</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Medidas ao Longo do Tempo vs. Meta</h3>
+                    </div>
+                </div>
+                <div id="measure-chart-pills" class="pill-row"></div>
+                <div class="chart-box">
+                    <canvas id="measure-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Diário de Treinos</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Treinos Finalizados (Exemplo)</h3>
+                    </div>
+                </div>
+                <div id="workout-history-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cronômetro de Descanso Flutuante -->
+    <div id="rest-timer-dock" class="rest-timer-dock" role="region" aria-label="Cronômetro de descanso">
+        <div class="rest-timer-top">
+            <div>
+                <span class="eyebrow" style="color:var(--neon-soft); display:block;">⏱️ Descanso entre séries</span>
+                <span id="rest-countdown-val" class="rest-countdown">01:30</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addRestSeconds(15)">+15s</button>
+                <button type="button" id="btn-rest-pause" class="btn btn-secondary btn-sm" onclick="toggleRestPause()">⏸ Pausar</button>
+                <button type="button" class="icon-btn" style="width:36px; height:36px;" onclick="closeRestTimer()" title="Fechar">✕</button>
+            </div>
+        </div>
+        <div class="rest-presets">
+            <button type="button" class="rest-pill" data-sec="60" onclick="startRestTimer(60)">60s</button>
+            <button type="button" class="rest-pill active" data-sec="90" onclick="startRestTimer(90)">90s</button>
+            <button type="button" class="rest-pill" data-sec="120" onclick="startRestTimer(120)">120s</button>
+            <button type="button" class="rest-pill" data-sec="180" onclick="startRestTimer(180)">180s</button>
+        </div>
+    </div>
+
+    <!-- Navegação Inferior Fixa -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <div class="bottom-nav-inner">
+            <button type="button" id="nav-treinos" class="nav-btn active" onclick="switchTab('treinos')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
+                <span>Treinos</span>
+            </button>
+            <button type="button" id="nav-medidas" class="nav-btn" onclick="switchTab('medidas')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
+                <span>Medidas</span>
+            </button>
+            <button type="button" id="nav-evolucao" class="nav-btn" onclick="switchTab('evolucao')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span>Evolução</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modal: Detalhes do Treino no Histórico -->
+    <div id="modal-detail" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Treino</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-detail').classList.remove('open')">✕</button>
+            </div>
+            <div id="detail-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Paywall & Licença Vinculada ao Aparelho (Anti-Compartilhamento) -->
+    <div id="modal-paywall" class="modal-backdrop">
+        <div class="modal-card" style="text-align:center;">
+            <div class="modal-header" style="margin-bottom:8px;">
+                <span id="paywall-feature-badge" class="chip chip-neon" style="font-size:10.5px;">🔒 Recurso Exclusivo da Versão Licenciada</span>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="closePaywallModal()">✕</button>
+            </div>
+            <h3 class="section-title" style="font-size:19px; margin-bottom:6px;">Desbloqueie o GymProgress</h3>
+            <p class="section-sub" style="margin-bottom:14px;">
+                Crie suas próprias fichas, salve todo o histórico de cargas, acompanhe suas medidas corporais e instale como aplicativo no celular — sem anúncios e sem mensalidade.
+            </p>
+
+            <div style="background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:14px; padding:12px; text-align:left; font-size:12.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
+                <div><strong style="color:var(--neon);">✓</strong> Fichas e exercícios ilimitados + memória do último treino</div>
+                <div><strong style="color:var(--neon);">✓</strong> Cálculo de Volume Total, 1RM (Epley) e Cronômetro integrado</div>
+                <div><strong style="color:var(--neon);">✓</strong> Medidas corporais, Metas, Proporção Cintura/Peito e Gráficos</div>
+                <div><strong style="color:var(--neon);">✓</strong> Backup JSON + personalização sob medida para Personal Trainers</div>
+            </div>
+
+            <!-- Código Único do Aparelho -->
+            <div style="background:rgba(57,255,20,0.08); border:1px solid rgba(57,255,20,0.28); border-radius:13px; padding:10px 12px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left;">
+                <div>
+                    <span class="eyebrow" style="color:var(--neon-soft); display:block;">📱 Código Deste Aparelho</span>
+                    <span id="display-device-id" class="font-mono" style="font-size:15px; font-weight:800; color:var(--text-primary); user-select:all;">GP-0000-0000</span>
+                </div>
+                <button type="button" id="btn-copy-device" class="btn btn-secondary btn-sm" onclick="copyDeviceId()">Copiar</button>
+            </div>
+
+            <a id="whatsapp-license-link" href="https://wa.me/5521970453147" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-bottom:14px;">
+                💬 Solicitar Licença no WhatsApp (Torugo Dev)
+            </a>
+
+            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; text-align:left;">
+                <label class="eyebrow" style="display:block; margin-bottom:6px;">🔑 Já possui sua Chave de Licença?</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="license-key-input" class="input font-mono" style="min-height:40px; font-size:12.5px;" placeholder="Ex: JOAO PERSONAL#A1B2C3" onkeydown="if(event.key==='Enter') unlockWithLicenseKey()">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="unlockWithLicenseKey()">Ativar</button>
+                </div>
+                <p id="license-key-error" class="hidden" style="color:#fda4af; font-size:11.5px; font-weight:600; margin:6px 0 0;"></p>
+
+                <!-- Gerador Secreto Admin (torugo#admin) -->
+                <div id="torugo-admin-keygen" class="hidden" style="margin-top:12px; padding:12px; border-radius:14px; background:#090d0a; border:1px solid rgba(57,255,20,0.35); display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="eyebrow" style="color:var(--neon);">🛠️ Gerador de Chave (Admin)</span>
+                        <button type="button" class="btn btn-ghost btn-sm" style="min-height:24px; padding:2px 8px;" onclick="document.getElementById('torugo-admin-keygen').classList.add('hidden')">✕</button>
+                    </div>
+                    <input type="text" id="admin-client-device" class="input font-mono" style="min-height:36px; font-size:12px; text-transform:uppercase;" placeholder="Código do aparelho (GP-XXXX-XXXX)">
+                    <input type="text" id="admin-client-owner" class="input" style="min-height:36px; font-size:12px;" placeholder="Nome do Cliente ou Personal">
+                    <button type="button" class="btn btn-primary btn-sm btn-block" onclick="generateClientDeviceKey()">Gerar e Copiar Chave Exclusiva</button>
+                    <div id="admin-generated-key-box" class="hidden" style="padding:8px; border-radius:10px; background:#050806; text-align:center;">
+                        <span class="eyebrow" style="display:block; margin-bottom:2px;">Chave gerada (copiada!):</span>
+                        <code id="admin-generated-key-val" class="font-mono" style="font-size:13px; color:var(--neon); font-weight:800; user-select:all;"></code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>window.GYMPROGRESS_MODE = 'demo';</script>
+    <script src="app.js"></script>
+</body>
+</html>

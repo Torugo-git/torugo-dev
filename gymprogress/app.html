@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#090b0e">
+    <meta name="description" content="GymProgress — Registro de Progressão de Carga, Cronômetro de Descanso, Medidas Corporais e Metas.">
+    <title>GymProgress — Progressão de Carga & Medidas</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Top Header -->
+    <header class="app-header">
+        <div class="app-header-inner">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-name">Gym<span>Progress</span></h1>
+                    <span id="brand-sub" class="brand-sub">Progressão de Carga & Medidas</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="icon-btn" onclick="startRestTimer(90)" title="Cronômetro de Descanso">⏱️</button>
+                <button type="button" class="icon-btn" onclick="openSettingsModal()" title="Configurações e Backup">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- Sample Data Banner -->
+        <div id="sample-data-banner" class="sample-banner hidden">
+            <p><strong>Dados de exemplo ativos</strong> para você visualizar os gráficos e recursos agora.</p>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="clearSampleData()">🧹 Limpar dados de exemplo</button>
+        </div>
+
+        <!-- ==================== ABA 1: TREINOS ==================== -->
+        <section id="panel-treinos" class="tab-panel active">
+            <div id="splits-view">
+                <div class="card-header" style="margin-bottom:14px;">
+                    <div>
+                        <h2 class="section-title">Minhas Fichas</h2>
+                        <p class="section-sub">Toque em <strong>Treinar Agora</strong> para registrar suas cargas</p>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openSplitModal()">+ Nova Ficha</button>
+                </div>
+                <div id="splits-container"></div>
+            </div>
+
+            <div id="active-workout-view" class="hidden"></div>
+        </section>
+
+        <!-- ==================== ABA 2: MEDIDAS ==================== -->
+        <section id="panel-medidas" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Medidas & Metas</h2>
+                    <p class="section-sub">Dia 1 vs. Atual vs. Objetivo Final</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openGoalsModal()">🎯 Editar Metas</button>
+            </div>
+
+            <!-- Proporção Estética Cintura / Peito -->
+            <div id="aesthetic-ratio-card" class="ratio-card"></div>
+
+            <!-- Painel Comparativo -->
+            <div id="metrics-comparative-grid" class="metric-cards-grid"></div>
+
+            <!-- Formulário de Registro de Medidas -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="section-title" style="font-size:16px;">Registrar Novas Medidas</h3>
+                        <p class="section-sub">Preencha os campos que mediu hoje</p>
+                    </div>
+                </div>
+                <form onsubmit="saveMeasurementForm(event)">
+                    <div class="field" style="margin-bottom:10px;">
+                        <label for="measure-date">Data da Medição</label>
+                        <input type="date" id="measure-date" class="input" required>
+                    </div>
+                    <div class="form-grid-2" style="margin-bottom:14px;">
+                        <div class="field">
+                            <label for="m-inp-weight">Peso (kg)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-weight" class="input" placeholder="Ex: 80.5">
+                        </div>
+                        <div class="field">
+                            <label for="m-inp-waist">Cintura / Umbigo (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-waist" class="input" placeholder="Ex: 84.0">
+                        </div>
+                        <div class="field">
+                            <label for="m-inp-chest">Peito (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-chest" class="input" placeholder="Ex: 102.5">
+                        </div>
+                        <div class="field">
+                            <label for="m-inp-armFlexed">Braço Contraído (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-armFlexed" class="input" placeholder="Ex: 39.0">
+                        </div>
+                        <div class="field">
+                            <label for="m-inp-armRelaxed">Braço Relaxado (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-armRelaxed" class="input" placeholder="Ex: 35.5">
+                        </div>
+                        <div class="field">
+                            <label for="m-inp-neck">Pescoço (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-neck" class="input" placeholder="Ex: 39.5">
+                        </div>
+                        <div class="field" style="grid-column:1/-1;">
+                            <label for="m-inp-thigh">Coxa (cm)</label>
+                            <input type="number" inputmode="decimal" step="0.1" id="m-inp-thigh" class="input" placeholder="Ex: 60.0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">📏 Salvar Registro de Medidas</button>
+                </form>
+            </div>
+
+            <!-- Histórico de Medidas -->
+            <div class="card">
+                <h3 class="section-title" style="font-size:15px; margin-bottom:10px;">Histórico de Medições</h3>
+                <div id="measurements-history-list"></div>
+            </div>
+        </section>
+
+        <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
+        <section id="panel-evolucao" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Dashboard de Evolução</h2>
+                    <p class="section-sub">Acompanhe sua progressão de força e shape</p>
+                </div>
+            </div>
+
+            <!-- Gráfico de Exercício -->
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Progressão de Carga</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Carga Máxima × Volume Total</h3>
+                    </div>
+                </div>
+                <div class="field" style="margin-bottom:12px;">
+                    <select id="chart-exercise-select" class="select" onchange="onExerciseChartChange()"></select>
+                </div>
+                <div id="exercise-chart-kpis" class="stat-row-3" style="margin-bottom:12px;"></div>
+                <div class="chart-box">
+                    <canvas id="exercise-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Medidas Corporais -->
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Evolução Corporal</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Medidas ao Longo do Tempo vs. Meta</h3>
+                    </div>
+                </div>
+                <div id="measure-chart-pills" class="pill-row"></div>
+                <div class="chart-box">
+                    <canvas id="measure-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Histórico de Treinos -->
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow">Diário de Treinos</span>
+                        <h3 class="section-title" style="font-size:15.5px;">Treinos Finalizados</h3>
+                    </div>
+                </div>
+                <div id="workout-history-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cronômetro de Descanso Flutuante -->
+    <div id="rest-timer-dock" class="rest-timer-dock" role="region" aria-label="Cronômetro de descanso">
+        <div class="rest-timer-top">
+            <div>
+                <span class="eyebrow" style="color:var(--neon-soft); display:block;">⏱️ Descanso entre séries</span>
+                <span id="rest-countdown-val" class="rest-countdown">01:30</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addRestSeconds(15)">+15s</button>
+                <button type="button" id="btn-rest-pause" class="btn btn-secondary btn-sm" onclick="toggleRestPause()">⏸ Pausar</button>
+                <button type="button" class="icon-btn" style="width:36px; height:36px;" onclick="closeRestTimer()" title="Fechar">✕</button>
+            </div>
+        </div>
+        <div class="rest-presets">
+            <button type="button" class="rest-pill" data-sec="60" onclick="startRestTimer(60)">60s</button>
+            <button type="button" class="rest-pill active" data-sec="90" onclick="startRestTimer(90)">90s</button>
+            <button type="button" class="rest-pill" data-sec="120" onclick="startRestTimer(120)">120s</button>
+            <button type="button" class="rest-pill" data-sec="180" onclick="startRestTimer(180)">180s</button>
+        </div>
+    </div>
+
+    <!-- Navegação Inferior Fixa -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <div class="bottom-nav-inner">
+            <button type="button" id="nav-treinos" class="nav-btn active" onclick="switchTab('treinos')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
+                <span>Treinos</span>
+            </button>
+            <button type="button" id="nav-medidas" class="nav-btn" onclick="switchTab('medidas')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
+                <span>Medidas</span>
+            </button>
+            <button type="button" id="nav-evolucao" class="nav-btn" onclick="switchTab('evolucao')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span>Evolução</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modal: Criar / Editar Ficha -->
+    <div id="modal-split" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-split-title" class="modal-title">Nova Ficha de Treino</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="closeSplitModal()">✕</button>
+            </div>
+            <form onsubmit="saveSplitFromModal(event)">
+                <input type="hidden" id="split-edit-id" value="">
+                <div class="field" style="margin-bottom:14px;">
+                    <label for="split-name-input">Nome da Ficha</label>
+                    <input type="text" id="split-name-input" class="input" placeholder="Ex: Treino A — Costas & Bíceps" required>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <span class="eyebrow">Exercícios da Ficha</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addExerciseRowToEditor()">+ Exercício</button>
+                </div>
+                <div id="split-editor-exercises" style="margin-bottom:14px;"></div>
+                <button type="submit" class="btn btn-primary btn-block">Salvar Ficha</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Metas Corporais -->
+    <div id="modal-goals" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">🎯 Definir Metas Corporais</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-goals').classList.remove('open')">✕</button>
+            </div>
+            <form onsubmit="saveGoalsFromModal(event)">
+                <div id="goals-form-fields" class="form-grid-2" style="margin-bottom:16px;"></div>
+                <button type="submit" class="btn btn-primary btn-block">Salvar Metas</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Resumo do Treino Finalizado -->
+    <div id="modal-summary" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">🔥 Treino Concluído!</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-summary').classList.remove('open')">✕</button>
+            </div>
+            <div id="workout-summary-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalhes do Treino no Histórico -->
+    <div id="modal-detail" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Treino</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-detail').classList.remove('open')">✕</button>
+            </div>
+            <div id="detail-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Configurações & Backup JSON -->
+    <div id="modal-settings" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Configurações & Backup</h3>
+                <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-settings').classList.remove('open')">✕</button>
+            </div>
+            <p class="section-sub" style="margin-bottom:14px;">Seus treinos e medidas ficam salvos automaticamente neste aparelho. Exporte um backup em JSON sempre que quiser guardar uma cópia de segurança.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button type="button" class="btn btn-primary btn-block" onclick="exportBackupJSON()">💾 Exportar Backup (JSON)</button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="triggerImportBackup()">📂 Importar Backup (JSON)</button>
+                <input type="file" id="import-backup-file" accept=".json,application/json" class="hidden" onchange="handleImportBackupFile(event)">
+                <hr style="border:none; border-top:1px solid var(--border-subtle); margin:4px 0;">
+                <button type="button" class="btn btn-danger btn-block" onclick="clearSampleData()">🧹 Limpar Dados / Começar do Zero</button>
+                <button type="button" class="btn btn-ghost btn-block btn-sm" onclick="restoreSampleData()">✨ Restaurar Dados de Exemplo</button>
+            </div>
+            <p style="text-align:center; font-size:11px; color:var(--text-muted); margin:16px 0 0;">
+                Desenvolvido por <strong style="color:var(--neon-soft);">Torugo Dev</strong> · GymProgress v1.0
+            </p>
+        </div>
+    </div>
+
+    <script>window.GYMPROGRESS_MODE = 'full';</script>
+    <script src="app.js"></script>
+</body>
+</html>
