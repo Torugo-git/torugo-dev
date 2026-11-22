@@ -408,6 +408,110 @@
         return `Última vez (${fmtDateBR(last.date)}): ${pairs}`;
     }
 
+    function getDaysAgoText(isoDate) {
+        if (!isoDate) return 'Sem registros';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const parts = isoDate.split('-');
+        const dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        const diff = Math.round((today - dt) / 86400000);
+        if (diff <= 0) return 'Hoje 🔥';
+        if (diff === 1) return 'Ontem';
+        return `há ${diff} dias`;
+    }
+
+    function getSuggestedNextSplitId() {
+        if (!db.splits.length) return null;
+        if (!db.history.length) return db.splits[0].id;
+        const sorted = [...db.history].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        const lastSplitId = sorted[0]?.splitId;
+        const idx = db.splits.findIndex((s) => s.id === lastSplitId);
+        if (idx === -1) return db.splits[0].id;
+        return db.splits[(idx + 1) % db.splits.length].id;
+    }
+
+    function renderHomeHUD() {
+        const hud = document.getElementById('home-hud-grid');
+        if (!hud) return;
+
+        const sortedHist = [...db.history].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        const lastWorkout = sortedHist[0] || null;
+        const prevWorkout = sortedHist[1] || null;
+
+        // 1. Treinos feitos
+        const totalWorkouts = db.history.length;
+        const lastWhen = lastWorkout ? getDaysAgoText(lastWorkout.date) : 'Comece hoje!';
+
+        // 2. Último volume + variação
+        let volVal = '0 kg';
+        let volSub = 'Finalize um treino';
+        let volGood = false;
+        if (lastWorkout) {
+            volVal = `${fmtInt(lastWorkout.totalVolume)} kg`;
+            if (prevWorkout && prevWorkout.totalVolume > 0) {
+                const pct = ((lastWorkout.totalVolume - prevWorkout.totalVolume) / prevWorkout.totalVolume) * 100;
+                const sign = pct >= 0 ? '+' : '';
+                volSub = `${sign}${fmtNum(pct, 1)}% vs treino anterior`;
+                volGood = pct >= 0;
+            } else {
+                volSub = lastWorkout.splitName.split('—')[0].trim();
+            }
+        }
+
+        // 3. Recorde 1RM Epley
+        let best1RM = 0;
+        let bestExName = 'Sem registro';
+        db.history.forEach((h) => {
+            (h.exercises || []).forEach((ex) => {
+                (ex.sets || []).forEach((s) => {
+                    const est = epley1RM(s.weight, s.reps);
+                    if (est > best1RM) {
+                        best1RM = est;
+                        bestExName = ex.name;
+                    }
+                });
+            });
+        });
+
+        // 4. Shape Atual (Peso + Cintura / Peito)
+        const sortedMeas = getSortedMeasurements();
+        const latestMeas = sortedMeas[sortedMeas.length - 1] || null;
+        let shapeVal = '—';
+        let shapeSub = 'Registre suas medidas';
+        if (latestMeas) {
+            shapeVal = latestMeas.weight ? `${fmtNum(latestMeas.weight, 1)} kg` : '—';
+            if (latestMeas.waist && latestMeas.chest) {
+                const ratio = (latestMeas.waist / latestMeas.chest) * 100;
+                shapeSub = `Cintura ${fmtNum(latestMeas.waist, 1)}cm · V-Taper ${fmtNum(ratio, 0)}%`;
+            } else if (latestMeas.waist) {
+                shapeSub = `Cintura: ${fmtNum(latestMeas.waist, 1)} cm`;
+            }
+        }
+
+        hud.innerHTML = `
+            <div class="hud-card highlight">
+                <span class="hud-label">🔥 Treinos Feitos</span>
+                <span class="hud-value">${totalWorkouts}</span>
+                <span class="hud-sub good">Último: ${lastWhen}</span>
+            </div>
+            <div class="hud-card">
+                <span class="hud-label">📦 Último Volume</span>
+                <span class="hud-value">${volVal}</span>
+                <span class="hud-sub ${volGood ? 'good' : ''}">${escapeHtml(volSub)}</span>
+            </div>
+            <div class="hud-card">
+                <span class="hud-label">🏆 Recorde 1RM</span>
+                <span class="hud-value">${best1RM > 0 ? `${fmtNum(best1RM, 1)} kg` : '—'}</span>
+                <span class="hud-sub">${escapeHtml(bestExName)}</span>
+            </div>
+            <div class="hud-card" style="cursor:pointer;" onclick="switchTab('medidas')">
+                <span class="hud-label">📏 Shape Atual</span>
+                <span class="hud-value">${shapeVal}</span>
+                <span class="hud-sub">${escapeHtml(shapeSub)}</span>
+            </div>
+        `;
+    }
+
     function renderTreinos() {
         const sampleBanner = document.getElementById('sample-data-banner');
         if (sampleBanner) {
@@ -426,6 +530,7 @@
 
         activeEl.classList.add('hidden');
         listEl.classList.remove('hidden');
+        renderHomeHUD();
 
         const container = document.getElementById('splits-container');
         if (!db.splits.length) {
@@ -439,24 +544,39 @@
             return;
         }
 
+        const nextSplitId = getSuggestedNextSplitId();
+
         container.innerHTML = db.splits.map((split) => {
+            const isNext = split.id === nextSplitId;
             const lastForSplit = [...db.history]
                 .filter((h) => h.splitId === split.id)
                 .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0];
 
             const exHtml = (split.exercises || []).length
-                ? split.exercises.map((ex) => `
+                ? split.exercises.map((ex) => {
+                    const lastEx = getLastExerciseLog(ex.name);
+                    const lastMaxW = lastEx?.exercise?.sets?.length
+                        ? Math.max(...lastEx.exercise.sets.map((s) => parseFloat(s.weight) || 0))
+                        : 0;
+                    return `
                     <div class="exercise-preview-item">
                         <span class="exercise-preview-name">${escapeHtml(ex.name)}</span>
-                        <span class="exercise-preview-target">${ex.targetSets}× ${escapeHtml(ex.targetReps)}</span>
-                    </div>`).join('')
+                        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                            ${lastMaxW > 0 ? `<span class="font-mono" style="font-size:11px; color:var(--text-secondary);">Últ: <strong style="color:var(--text-primary);">${lastMaxW}kg</strong></span>` : ''}
+                            <span class="exercise-preview-target">${ex.targetSets}× ${escapeHtml(ex.targetReps)}</span>
+                        </div>
+                    </div>`;
+                }).join('')
                 : `<p class="section-sub" style="padding:8px 0;">Nenhum exercício cadastrado nesta ficha.</p>`;
 
             return `
-                <div class="split-card">
+                <div class="split-card" style="${isNext ? 'border-color:rgba(57,255,20,0.34);' : ''}">
                     <div class="card-header" style="margin-bottom:6px;">
                         <div>
-                            <h3 class="section-title" style="font-size:16px;">${escapeHtml(split.name)}</h3>
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <h3 class="section-title" style="font-size:16px;">${escapeHtml(split.name)}</h3>
+                                ${isNext ? '<span class="badge-next">⭐ Próximo Sugerido</span>' : ''}
+                            </div>
                             <div class="split-meta">
                                 <span class="chip">${split.exercises.length} exercícios</span>
                                 ${lastForSplit ? `<span class="chip chip-neon">Último: ${fmtDateBR(lastForSplit.date)} · ${fmtInt(lastForSplit.totalVolume)} kg</span>` : '<span class="chip">Ainda não realizado</span>'}
@@ -597,6 +717,46 @@
         showToast('🗑️ Ficha excluída');
     };
 
+    function buildOverloadTip(last, targetReps) {
+        if (!last || !last.exercise?.sets?.length) {
+            return '💡 Primeira sessão: escolha uma carga que permita fazer a faixa de reps com boa técnica.';
+        }
+        const sets = last.exercise.sets;
+        const maxW = Math.max(...sets.map((s) => parseFloat(s.weight) || 0));
+        const maxR = Math.max(...sets.map((s) => parseInt(s.reps, 10) || 0));
+        const minR = Math.min(...sets.map((s) => parseInt(s.reps, 10) || 0));
+        const upperTarget = parseInt((String(targetReps || '').split('-')[1] || targetReps || '0').replace(/\D/g, ''), 10) || 0;
+
+        if (upperTarget > 0 && minR >= upperTarget) {
+            return `💡 Meta hoje: você bateu o teto (${upperTarget} reps)! Tente subir para ${maxW + 2}kg.`;
+        }
+        return `💡 Meta hoje: tente fazer +1 rep em alguma série (${maxR + 1} reps) ou subir para ${maxW + 2}kg.`;
+    }
+
+    let showWorkoutGuide = false;
+
+    window.toggleWorkoutGuide = function () {
+        showWorkoutGuide = !showWorkoutGuide;
+        renderActiveSession();
+    };
+
+    window.repeatLastExerciseSets = function (exIdx) {
+        if (!activeSession) return;
+        const ex = activeSession.exercises[exIdx];
+        if (!ex || !ex.lastSetsRaw || !ex.lastSetsRaw.length) {
+            showToast('Sem registro anterior para copiar.');
+            return;
+        }
+        ex.sets = ex.lastSetsRaw.map((s) => ({
+            weight: s.weight ?? '',
+            reps: s.reps ?? '',
+            rir: s.rir ?? '',
+            done: false
+        }));
+        renderActiveSession();
+        showToast('⚡ Cargas e reps anteriores copiadas!');
+    };
+
     /* ---- Active Workout Session ("Treinar Agora") ---- */
     window.startWorkout = function (splitId) {
         const split = db.splits.find((s) => s.id === splitId);
@@ -622,6 +782,8 @@
                     targetReps: ex.targetReps,
                     lastSummary: formatLastTimeSummary(last),
                     lastNote: last?.exercise?.note || '',
+                    lastSetsRaw: lastSets,
+                    overloadTip: buildOverloadTip(last, ex.targetReps),
                     note: '',
                     sets
                 };
@@ -712,11 +874,21 @@
                     <span class="eyebrow" style="color:var(--neon);">● Treino em Andamento</span>
                     <h2 class="section-title" style="font-size:17px; margin-top:2px;">${escapeHtml(activeSession.splitName)}</h2>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                     <span class="chip chip-neon font-mono" id="live-session-volume">${fmtInt(m.totalVolume)} kg</span>
                     <span class="chip font-mono" id="live-session-sets">${m.completedSets} séries</span>
+                    <button type="button" class="btn btn-ghost btn-sm" style="min-height:28px; padding:2px 9px; font-size:11px;" onclick="toggleWorkoutGuide()">
+                        ${showWorkoutGuide ? '✕ Fechar guia' : '❓ Guia RIR / 1RM'}
+                    </button>
                 </div>
             </div>
+
+            ${showWorkoutGuide ? `
+                <div class="guide-box">
+                    <div><strong>• RIR (Repetições na Reserva):</strong> quantas reps ainda sobrariam antes da falha. <strong>0</strong> = falha total · <strong>1–2</strong> = zona ideal para hipertrofia.</div>
+                    <div><strong>• Volume Total:</strong> Carga × Reps × Séries concluídas. Subir esse número nas semanas gera progressão real.</div>
+                    <div><strong>• 1RM (Fórmula de Epley):</strong> estima sua força máxima para 1 repetição sem precisar arriscar carga máxima.</div>
+                </div>` : ''}
 
             ${activeSession.exercises.map((ex, exIdx) => `
                 <div class="card">
@@ -725,13 +897,17 @@
                             <h3 class="section-title" style="font-size:16px;">${escapeHtml(ex.name)}</h3>
                             <span class="eyebrow">Meta: ${ex.targetSets}× ${escapeHtml(ex.targetReps)} reps</span>
                         </div>
-                        <button type="button" class="btn btn-ghost btn-sm" onclick="addExtraSet(${exIdx})">+ Série</button>
+                        <div style="display:flex; gap:6px;">
+                            ${ex.lastSetsRaw && ex.lastSetsRaw.length ? `<button type="button" class="btn btn-secondary btn-sm" onclick="repeatLastExerciseSets(${exIdx})" title="Preencher com cargas e reps da última vez">⚡ Repetir</button>` : ''}
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="addExtraSet(${exIdx})">+ Série</button>
+                        </div>
                     </div>
 
                     <div class="last-time-box">
                         <strong class="font-mono" style="font-size:12px;">${escapeHtml(ex.lastSummary)}</strong>
                         ${ex.lastNote ? `<span>📝 Obs. anterior: "${escapeHtml(ex.lastNote)}"</span>` : ''}
                     </div>
+                    <div class="overload-tip">${escapeHtml(ex.overloadTip)}</div>
 
                     <div class="set-grid-head">
                         <span>#</span>
@@ -935,8 +1111,11 @@
             `;
         }
 
-        // 2. Painel Comparativo (Dia 1 vs Atual vs Meta)
+        // 2. Painel Comparativo (Dia 1 vs Atual vs Meta) + Cálculo do Progresso Médio
         const cardsGrid = document.getElementById('metrics-comparative-grid');
+        let progressSum = 0;
+        let progressCount = 0;
+
         cardsGrid.innerHTML = METRICS.map((m) => {
             const startVal = first ? Number(first[m.key]) : null;
             const curVal = latest ? Number(latest[m.key]) : null;
@@ -945,6 +1124,7 @@
             let deltaText = '—';
             let deltaClass = 'neutral';
             let progressPct = 0;
+            let remainText = 'Defina sua meta';
 
             if (startVal !== null && !isNaN(startVal) && curVal !== null && !isNaN(curVal)) {
                 const diff = curVal - startVal;
@@ -968,6 +1148,15 @@
                     } else if (Math.abs(curVal - goalVal) < 0.1) {
                         progressPct = 100;
                     }
+                    progressSum += progressPct;
+                    progressCount++;
+
+                    const remaining = wantsDecrease ? (curVal - goalVal) : (goalVal - curVal);
+                    if (remaining <= 0.05) {
+                        remainText = '🎉 Meta batida!';
+                    } else {
+                        remainText = `Faltam ${fmtNum(remaining, 1)} ${m.unit}`;
+                    }
                 }
             }
 
@@ -985,8 +1174,42 @@
                     <div class="progress-track">
                         <div class="progress-fill" style="width:${progressPct.toFixed(0)}%;"></div>
                     </div>
+                    <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-muted); margin-top:5px;">
+                        <span>${remainText}</span>
+                        <strong class="font-mono" style="color:var(--neon-soft);">${progressPct.toFixed(0)}%</strong>
+                    </div>
                 </div>`;
         }).join('');
+
+        // Resumo Rápido do Shape (topo da aba Medidas)
+        const summaryHud = document.getElementById('measures-summary-hud');
+        if (summaryHud) {
+            const avgPct = progressCount > 0 ? Math.round(progressSum / progressCount) : 0;
+            const wDiff = (first?.weight && latest?.weight) ? (latest.weight - first.weight) : null;
+            const waistDiff = (first?.waist && latest?.waist) ? (latest.waist - first.waist) : null;
+            summaryHud.innerHTML = `
+                <div class="hud-card highlight">
+                    <span class="hud-label">🎯 Progresso Geral</span>
+                    <span class="hud-value">${avgPct}%</span>
+                    <span class="hud-sub good">Média das suas ${progressCount || METRICS.length} metas</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">📅 Avaliações</span>
+                    <span class="hud-value">${list.length}</span>
+                    <span class="hud-sub">${latest ? `Última: ${fmtDateBR(latest.date)}` : 'Nenhuma ainda'}</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">⚖️ Variação Peso</span>
+                    <span class="hud-value">${wDiff !== null ? `${wDiff > 0 ? '+' : ''}${fmtNum(wDiff, 1)} kg` : '—'}</span>
+                    <span class="hud-sub">${latest?.weight ? `Atual: ${fmtNum(latest.weight, 1)} kg` : 'Sem peso'}</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">📐 Variação Cintura</span>
+                    <span class="hud-value">${waistDiff !== null ? `${waistDiff > 0 ? '+' : ''}${fmtNum(waistDiff, 1)} cm` : '—'}</span>
+                    <span class="hud-sub ${waistDiff !== null && waistDiff < 0 ? 'good' : ''}">${latest?.waist ? `Atual: ${fmtNum(latest.waist, 1)} cm` : 'Sem cintura'}</span>
+                </div>
+            `;
+        }
 
         // 3. Default date in form
         const dateInp = document.getElementById('measure-date');

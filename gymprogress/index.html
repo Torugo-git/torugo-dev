@@ -53,6 +53,9 @@
         <!-- ==================== ABA 1: TREINOS ==================== -->
         <section id="panel-treinos" class="tab-panel active">
             <div id="splits-view">
+                <!-- Resumo Rápido (Bater o Olho) -->
+                <div id="home-hud-grid" class="hud-grid"></div>
+
                 <div class="card-header" style="margin-bottom:14px;">
                     <div>
                         <h2 class="section-title">Fichas de Exemplo</h2>
@@ -75,6 +78,9 @@
                 </div>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openGoalsModal()">🎯 Metas 🔒</button>
             </div>
+
+            <!-- Resumo Rápido do Shape -->
+            <div id="measures-summary-hud" class="hud-grid"></div>
 
             <div id="aesthetic-ratio-card" class="ratio-card"></div>
             <div id="metrics-comparative-grid" class="metric-cards-grid"></div>
@@ -120,10 +126,11 @@
             </div>
 
             <div class="card">
-                <div class="card-header" style="margin-bottom:10px;">
+                <div class="card-header" style="margin-bottom:8px;">
                     <div>
                         <span class="eyebrow">Progressão de Carga</span>
                         <h3 class="section-title" style="font-size:15.5px;">Carga Máxima × Volume Total</h3>
+                        <p class="section-sub" style="font-size:11.5px;">💡 <strong>Verde</strong> = peso máximo · <strong>Azul</strong> = volume total (kg × reps). Se sobem, você está evoluindo.</p>
                     </div>
                 </div>
                 <div class="field" style="margin-bottom:12px;">
@@ -136,10 +143,11 @@
             </div>
 
             <div class="card">
-                <div class="card-header" style="margin-bottom:10px;">
+                <div class="card-header" style="margin-bottom:8px;">
                     <div>
                         <span class="eyebrow">Evolução Corporal</span>
                         <h3 class="section-title" style="font-size:15.5px;">Medidas ao Longo do Tempo vs. Meta</h3>
+                        <p class="section-sub" style="font-size:11.5px;">💡 <strong>Verde</strong> = suas medições · <strong>Linha amarela tracejada</strong> = sua Meta Alvo.</p>
                     </div>
                 </div>
                 <div id="measure-chart-pills" class="pill-row"></div>
