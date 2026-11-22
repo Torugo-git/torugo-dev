@@ -372,7 +372,7 @@
     /* ==================== NAVIGATION ==================== */
     window.switchTab = function (tab) {
         activeTab = tab;
-        ['treinos', 'medidas', 'evolucao'].forEach((t) => {
+        ['treinos', 'medidas', 'evolucao', 'ajuda'].forEach((t) => {
             document.getElementById(`panel-${t}`)?.classList.toggle('active', t === tab);
             document.getElementById(`nav-${t}`)?.classList.toggle('active', t === tab);
         });
@@ -595,8 +595,226 @@
         }).join('');
     }
 
+    /* ---- Popular Exercise Library & Split Templates ---- */
+    const EXERCISE_MUSCLES = ['Todos', 'Peito', 'Costas', 'Pernas', 'Ombros', 'Bíceps', 'Tríceps', 'Abdômen/Glúteo'];
+
+    const POPULAR_EXERCISES = [
+        // Peito
+        { name: 'Supino Reto Barra', muscle: 'Peito', sets: 3, reps: '6-8' },
+        { name: 'Supino Reto Halteres', muscle: 'Peito', sets: 3, reps: '8-10' },
+        { name: 'Supino Inclinado Halteres', muscle: 'Peito', sets: 3, reps: '8-10' },
+        { name: 'Supino Inclinado Máquina', muscle: 'Peito', sets: 3, reps: '8-10' },
+        { name: 'Supino Declinado', muscle: 'Peito', sets: 3, reps: '8-10' },
+        { name: 'Crucifixo Máquina (Peck Deck)', muscle: 'Peito', sets: 3, reps: '10-12' },
+        { name: 'Crossover Polia Alta', muscle: 'Peito', sets: 3, reps: '12-15' },
+        { name: 'Crossover Polia Baixa', muscle: 'Peito', sets: 3, reps: '12-15' },
+        { name: 'Flexão de Braços', muscle: 'Peito', sets: 3, reps: '12-20' },
+        { name: 'Paralelas (Foco Peito)', muscle: 'Peito', sets: 3, reps: '8-12' },
+        // Costas
+        { name: 'Puxada Frontal Aberta', muscle: 'Costas', sets: 3, reps: '8-10' },
+        { name: 'Puxada Triângulo (Fechada)', muscle: 'Costas', sets: 3, reps: '8-12' },
+        { name: 'Barra Fixa (Pull-Up)', muscle: 'Costas', sets: 3, reps: '6-10' },
+        { name: 'Remada Curvada Barra', muscle: 'Costas', sets: 3, reps: '6-8' },
+        { name: 'Remada Baixa Triângulo', muscle: 'Costas', sets: 3, reps: '8-12' },
+        { name: 'Remada Unilateral (Serrote)', muscle: 'Costas', sets: 3, reps: '8-10' },
+        { name: 'Remada Cavalinho (Barra T)', muscle: 'Costas', sets: 3, reps: '8-10' },
+        { name: 'Remada Máquina Articulada', muscle: 'Costas', sets: 3, reps: '8-12' },
+        { name: 'Pulldown na Polia', muscle: 'Costas', sets: 3, reps: '12-15' },
+        { name: 'Levantamento Terra', muscle: 'Costas', sets: 3, reps: '5-6' },
+        { name: 'Encolhimento Halteres (Trapézio)', muscle: 'Costas', sets: 3, reps: '12-15' },
+        // Pernas
+        { name: 'Agachamento Livre', muscle: 'Pernas', sets: 3, reps: '6-8' },
+        { name: 'Agachamento Smith', muscle: 'Pernas', sets: 3, reps: '8-10' },
+        { name: 'Agachamento Búlgaro', muscle: 'Pernas', sets: 3, reps: '8-10' },
+        { name: 'Leg Press 45°', muscle: 'Pernas', sets: 3, reps: '10-12' },
+        { name: 'Hack Machine', muscle: 'Pernas', sets: 3, reps: '8-10' },
+        { name: 'Cadeira Extensora', muscle: 'Pernas', sets: 3, reps: '12-15' },
+        { name: 'Mesa Flexora', muscle: 'Pernas', sets: 3, reps: '10-12' },
+        { name: 'Cadeira Flexora', muscle: 'Pernas', sets: 3, reps: '10-12' },
+        { name: 'Stiff com Barra / Halteres', muscle: 'Pernas', sets: 3, reps: '8-10' },
+        { name: 'Cadeira Adutora', muscle: 'Pernas', sets: 3, reps: '12-15' },
+        { name: 'Cadeira Abdutora', muscle: 'Pernas', sets: 3, reps: '12-15' },
+        { name: 'Panturrilha em Pé', muscle: 'Pernas', sets: 4, reps: '12-15' },
+        { name: 'Panturrilha Sentado', muscle: 'Pernas', sets: 4, reps: '12-15' },
+        // Ombros
+        { name: 'Desenvolvimento Halteres', muscle: 'Ombros', sets: 3, reps: '8-10' },
+        { name: 'Desenvolvimento Máquina', muscle: 'Ombros', sets: 3, reps: '8-10' },
+        { name: 'Desenvolvimento Militar Barra', muscle: 'Ombros', sets: 3, reps: '6-8' },
+        { name: 'Elevação Lateral Halteres', muscle: 'Ombros', sets: 4, reps: '12-15' },
+        { name: 'Elevação Lateral Polia', muscle: 'Ombros', sets: 3, reps: '12-15' },
+        { name: 'Elevação Frontal', muscle: 'Ombros', sets: 3, reps: '10-12' },
+        { name: 'Crucifixo Inverso (Posterior)', muscle: 'Ombros', sets: 3, reps: '12-15' },
+        { name: 'Face Pull na Polia', muscle: 'Ombros', sets: 3, reps: '12-15' },
+        // Bíceps
+        { name: 'Rosca Direta Barra W', muscle: 'Bíceps', sets: 3, reps: '8-12' },
+        { name: 'Rosca Direta Barra Reta', muscle: 'Bíceps', sets: 3, reps: '8-10' },
+        { name: 'Rosca Alternada Halteres', muscle: 'Bíceps', sets: 3, reps: '10-12' },
+        { name: 'Rosca Martelo Halteres', muscle: 'Bíceps', sets: 3, reps: '10-12' },
+        { name: 'Rosca Scott Máquina / Barra', muscle: 'Bíceps', sets: 3, reps: '8-12' },
+        { name: 'Rosca Inclinada Banco 45°', muscle: 'Bíceps', sets: 3, reps: '10-12' },
+        { name: 'Rosca Concentrada', muscle: 'Bíceps', sets: 3, reps: '10-12' },
+        // Tríceps
+        { name: 'Tríceps Corda Polia', muscle: 'Tríceps', sets: 3, reps: '10-12' },
+        { name: 'Tríceps Barra Reta / V Polia', muscle: 'Tríceps', sets: 3, reps: '8-12' },
+        { name: 'Tríceps Testa Barra W', muscle: 'Tríceps', sets: 3, reps: '8-10' },
+        { name: 'Tríceps Francês Halter / Polia', muscle: 'Tríceps', sets: 3, reps: '10-12' },
+        { name: 'Tríceps Banco / Mergulho', muscle: 'Tríceps', sets: 3, reps: '10-15' },
+        { name: 'Tríceps Coice na Polia', muscle: 'Tríceps', sets: 3, reps: '12-15' },
+        // Abdômen / Glúteo
+        { name: 'Elevação Pélvica (Hip Thrust)', muscle: 'Abdômen/Glúteo', sets: 4, reps: '8-12' },
+        { name: 'Glúteo na Polia (Coice)', muscle: 'Abdômen/Glúteo', sets: 3, reps: '12-15' },
+        { name: 'Abdominal Supra na Polia (Crunch)', muscle: 'Abdômen/Glúteo', sets: 3, reps: '12-15' },
+        { name: 'Abdominal Infra Paralela', muscle: 'Abdômen/Glúteo', sets: 3, reps: '12-15' },
+        { name: 'Prancha Abdominal (segundos)', muscle: 'Abdômen/Glúteo', sets: 3, reps: '45-60s' }
+    ];
+
+    const SPLIT_TEMPLATES = {
+        push: {
+            name: 'Treino A — Push (Peito, Ombro & Tríceps)',
+            exercises: [
+                { name: 'Supino Reto Halteres', targetSets: 3, targetReps: '6-8' },
+                { name: 'Supino Inclinado Máquina', targetSets: 3, targetReps: '8-10' },
+                { name: 'Crucifixo Máquina (Peck Deck)', targetSets: 3, targetReps: '10-12' },
+                { name: 'Desenvolvimento Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Elevação Lateral Halteres', targetSets: 4, targetReps: '12-15' },
+                { name: 'Tríceps Corda Polia', targetSets: 3, targetReps: '10-12' }
+            ]
+        },
+        pull: {
+            name: 'Treino B — Pull (Costas & Bíceps)',
+            exercises: [
+                { name: 'Puxada Frontal Aberta', targetSets: 3, targetReps: '8-10' },
+                { name: 'Remada Curvada Barra', targetSets: 3, targetReps: '6-8' },
+                { name: 'Remada Baixa Triângulo', targetSets: 3, targetReps: '8-12' },
+                { name: 'Crucifixo Inverso (Posterior)', targetSets: 3, targetReps: '12-15' },
+                { name: 'Rosca Direta Barra W', targetSets: 3, targetReps: '8-12' },
+                { name: 'Rosca Martelo Halteres', targetSets: 3, targetReps: '10-12' }
+            ]
+        },
+        legs: {
+            name: 'Treino C — Pernas Completo',
+            exercises: [
+                { name: 'Agachamento Livre', targetSets: 3, targetReps: '6-8' },
+                { name: 'Leg Press 45°', targetSets: 3, targetReps: '10-12' },
+                { name: 'Cadeira Extensora', targetSets: 3, targetReps: '12-15' },
+                { name: 'Mesa Flexora', targetSets: 3, targetReps: '10-12' },
+                { name: 'Stiff com Barra / Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Panturrilha em Pé', targetSets: 4, targetReps: '12-15' }
+            ]
+        },
+        upper: {
+            name: 'Upper — Membros Superiores',
+            exercises: [
+                { name: 'Supino Reto Halteres', targetSets: 3, targetReps: '6-8' },
+                { name: 'Puxada Frontal Aberta', targetSets: 3, targetReps: '8-10' },
+                { name: 'Desenvolvimento Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Remada Baixa Triângulo', targetSets: 3, targetReps: '8-12' },
+                { name: 'Elevação Lateral Halteres', targetSets: 3, targetReps: '12-15' },
+                { name: 'Rosca Direta Barra W', targetSets: 3, targetReps: '8-12' },
+                { name: 'Tríceps Corda Polia', targetSets: 3, targetReps: '10-12' }
+            ]
+        },
+        fullbody: {
+            name: 'Full Body — Corpo Inteiro',
+            exercises: [
+                { name: 'Agachamento Livre', targetSets: 3, targetReps: '6-8' },
+                { name: 'Supino Reto Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Puxada Frontal Aberta', targetSets: 3, targetReps: '8-10' },
+                { name: 'Stiff com Barra / Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Desenvolvimento Halteres', targetSets: 3, targetReps: '8-10' },
+                { name: 'Abdominal Supra na Polia (Crunch)', targetSets: 3, targetReps: '12-15' }
+            ]
+        }
+    };
+
     /* ---- Split Create / Edit Modal ---- */
     let editingSplitExercises = [];
+    let selectedLibMuscle = 'Todos';
+
+    function normText(str) {
+        return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+
+    window.selectLibMuscle = function (muscle) {
+        selectedLibMuscle = muscle;
+        renderExerciseLibrary();
+    };
+
+    window.applySplitTemplate = function (key) {
+        const tpl = SPLIT_TEMPLATES[key];
+        if (!tpl) return;
+        const nameInput = document.getElementById('split-name-input');
+        if (nameInput) nameInput.value = tpl.name;
+        editingSplitExercises = tpl.exercises.map((ex, i) => ({
+            id: `ex-${Date.now()}-${i}`,
+            name: ex.name,
+            targetSets: ex.targetSets,
+            targetReps: ex.targetReps
+        }));
+        renderSplitEditorExercises();
+        renderExerciseLibrary();
+        showToast(`⚡ Modelo "${tpl.name.split('—')[0].trim()}" carregado!`);
+    };
+
+    window.pickLibraryExercise = function (name, sets, reps) {
+        // Remove empty placeholder row if user hasn't typed anything yet
+        if (editingSplitExercises.length === 1 && !editingSplitExercises[0].name.trim()) {
+            editingSplitExercises = [];
+        }
+        const existingIdx = editingSplitExercises.findIndex((e) => normText(e.name) === normText(name));
+        if (existingIdx >= 0) {
+            editingSplitExercises.splice(existingIdx, 1);
+            showToast(`Removido: ${name}`);
+        } else {
+            editingSplitExercises.push({
+                id: 'ex-' + Date.now() + '-' + Math.floor(Math.random() * 999),
+                name,
+                targetSets: sets || 3,
+                targetReps: reps || '8-12'
+            });
+            showToast(`✅ Adicionado: ${name}`);
+        }
+        renderSplitEditorExercises();
+        renderExerciseLibrary();
+    };
+
+    window.renderExerciseLibrary = function () {
+        const musclesBox = document.getElementById('ex-lib-muscles');
+        const listBox = document.getElementById('ex-lib-list');
+        if (!musclesBox || !listBox) return;
+
+        musclesBox.innerHTML = EXERCISE_MUSCLES.map((m) => `
+            <button type="button" class="filter-pill ${selectedLibMuscle === m ? 'active' : ''}" style="padding:5px 10px; font-size:11px;" onclick="selectLibMuscle('${m}')">
+                ${m}
+            </button>`).join('');
+
+        const q = normText(document.getElementById('ex-lib-search')?.value);
+        const addedNames = new Set(editingSplitExercises.map((e) => normText(e.name)));
+
+        const filtered = POPULAR_EXERCISES.filter((ex) => {
+            const matchMuscle = selectedLibMuscle === 'Todos' || ex.muscle === selectedLibMuscle;
+            const matchSearch = !q || normText(ex.name + ' ' + ex.muscle).includes(q);
+            return matchMuscle && matchSearch;
+        });
+
+        if (!filtered.length) {
+            listBox.innerHTML = `<div style="text-align:center; padding:12px; font-size:12px; color:var(--text-muted);">Nenhum exercício encontrado. Use <strong>+ Personalizado</strong> abaixo!</div>`;
+            return;
+        }
+
+        listBox.innerHTML = filtered.map((ex) => {
+            const isAdded = addedNames.has(normText(ex.name));
+            const safeName = ex.name.replace(/'/g, "\\'");
+            return `
+                <button type="button" class="ex-lib-item ${isAdded ? 'added' : ''}" onclick="pickLibraryExercise('${safeName}', ${ex.sets}, '${ex.reps}')">
+                    <div style="min-width:0;">
+                        <div style="font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(ex.name)}</div>
+                        <div style="font-size:10.5px; color:var(--text-muted);">${ex.muscle} · Sugestão: ${ex.sets}× ${ex.reps}</div>
+                    </div>
+                    <span class="chip ${isAdded ? 'chip-neon' : ''}" style="font-size:11px; flex-shrink:0;">${isAdded ? '✓ Na ficha' : '+ Adicionar'}</span>
+                </button>`;
+        }).join('');
+    };
 
     window.openSplitModal = function (splitId) {
         if (!requireFullLicense('Criar ou Editar Fichas de Treino')) return;
@@ -604,6 +822,9 @@
         const idInput = document.getElementById('split-edit-id');
         const nameInput = document.getElementById('split-name-input');
         const title = document.getElementById('modal-split-title');
+        const searchEl = document.getElementById('ex-lib-search');
+        if (searchEl) searchEl.value = '';
+        selectedLibMuscle = 'Todos';
 
         if (splitId) {
             const sp = db.splits.find((s) => s.id === splitId);
@@ -616,13 +837,11 @@
             idInput.value = '';
             nameInput.value = '';
             title.textContent = 'Nova Ficha de Treino';
-            editingSplitExercises = [
-                { id: 'ex-' + Date.now(), name: '', targetSets: 3, targetReps: '8-10' }
-            ];
+            editingSplitExercises = [];
         }
+        renderExerciseLibrary();
         renderSplitEditorExercises();
         modal.classList.add('open');
-        setTimeout(() => nameInput.focus(), 80);
     };
 
     window.closeSplitModal = function () {
@@ -642,6 +861,16 @@
     window.removeExerciseRowFromEditor = function (idx) {
         editingSplitExercises.splice(idx, 1);
         renderSplitEditorExercises();
+        renderExerciseLibrary();
+    };
+
+    window.moveEditorExercise = function (idx, dir) {
+        const target = idx + dir;
+        if (target < 0 || target >= editingSplitExercises.length) return;
+        const tmp = editingSplitExercises[idx];
+        editingSplitExercises[idx] = editingSplitExercises[target];
+        editingSplitExercises[target] = tmp;
+        renderSplitEditorExercises();
     };
 
     window.updateEditorExercise = function (idx, field, val) {
@@ -651,10 +880,20 @@
 
     function renderSplitEditorExercises() {
         const box = document.getElementById('split-editor-exercises');
+        const countEl = document.getElementById('editor-ex-count');
+        if (countEl) countEl.textContent = editingSplitExercises.length;
+
+        if (!editingSplitExercises.length) {
+            box.innerHTML = `<div style="text-align:center; padding:14px; border:1px dashed var(--border-strong); border-radius:12px; font-size:12px; color:var(--text-muted);">Toque nos exercícios populares acima ou escolha um <strong>Modelo Pronto</strong> para montar sua ficha!</div>`;
+            return;
+        }
+
         box.innerHTML = editingSplitExercises.map((ex, idx) => `
             <div style="background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:12px; padding:10px; margin-bottom:8px;">
-                <div style="display:flex; gap:6px; margin-bottom:8px;">
+                <div style="display:flex; gap:5px; margin-bottom:8px;">
                     <input type="text" class="input" style="min-height:38px; font-size:13.5px;" placeholder="Nome do exercício (ex: Supino Reto)" value="${escapeHtml(ex.name)}" oninput="updateEditorExercise(${idx}, 'name', this.value)">
+                    <button type="button" class="btn btn-ghost btn-sm" style="padding:0 8px;" title="Subir" onclick="moveEditorExercise(${idx}, -1)">↑</button>
+                    <button type="button" class="btn btn-ghost btn-sm" style="padding:0 8px;" title="Descer" onclick="moveEditorExercise(${idx}, 1)">↓</button>
                     <button type="button" class="btn btn-danger btn-sm" style="padding:0 10px;" onclick="removeExerciseRowFromEditor(${idx})">✕</button>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">

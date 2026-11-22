@@ -166,6 +166,73 @@
                 <div id="workout-history-list"></div>
             </div>
         </section>
+
+        <!-- ==================== ABA 4: AJUDA & TUTORIAL ==================== -->
+        <section id="panel-ajuda" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Central de Ajuda & Tutorial</h2>
+                    <p class="section-sub">Entenda tudo que o GymProgress faz em 2 minutos</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Como funciona</span>
+                <h3 class="section-title" style="font-size:16px; margin:2px 0 8px;">Guia Rápido em 4 Passos</h3>
+                <div class="help-step">
+                    <span class="help-step-num">1</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Monte suas fichas em segundos</strong>
+                        <p class="section-sub">Escolha um <strong>Modelo Pronto</strong> (Push, Pull, Pernas, Upper, Full Body) ou toque nos <strong>exercícios populares</strong> da biblioteca para montar seu treino sem digitar nada.</p>
+                    </div>
+                </div>
+                <div class="help-step">
+                    <span class="help-step-num">2</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Treine com memória de carga & cronômetro</strong>
+                        <p class="section-sub">Ao tocar em <strong>⚡ Treinar Agora</strong>, o app mostra suas cargas da última vez, sugere a meta de progressão e dispara o cronômetro ao marcar cada série concluída.</p>
+                    </div>
+                </div>
+                <div class="help-step">
+                    <span class="help-step-num">3</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Acompanhe medidas corporais & metas</strong>
+                        <p class="section-sub">Compare <strong>Dia 1 vs. Atual vs. Meta</strong> com barras de progresso e indicador automático de proporção estética <strong>Cintura / Peito (75%–80%)</strong>.</p>
+                    </div>
+                </div>
+                <div class="help-step">
+                    <span class="help-step-num">4</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Visualize sua evolução em gráficos</strong>
+                        <p class="section-sub">Veja a curva de <strong>Carga Máxima</strong>, <strong>Volume Total</strong>, <strong>1RM (Epley)</strong> e suas medidas corporais com a linha da Meta.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Guia de Botões</span>
+                <h3 class="section-title" style="font-size:16px; margin:2px 0 10px;">O que cada botão faz</h3>
+                <div class="help-btn-row"><span class="help-btn-tag neon">⚡ Treinar Agora</span><span>Inicia o treino com histórico da última vez e cronômetro automático.</span></div>
+                <div class="help-btn-row"><span class="help-btn-tag">⚡ Repetir</span><span>Copia todas as cargas e reps do último treino em 1 toque.</span></div>
+                <div class="help-btn-row"><span class="help-btn-tag neon">✓ OK</span><span>Conclui a série, soma no Volume Total e inicia o descanso.</span></div>
+                <div class="help-btn-row"><span class="help-btn-tag">⏱️ Descanso</span><span>Cronômetro de 60s, 90s, 120s ou 180s com aviso sonoro e vibração.</span></div>
+                <div class="help-btn-row"><span class="help-btn-tag">⭐ Próximo Sugerido</span><span>Indica automaticamente qual treino da rotação fazer hoje.</span></div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Sem complicação</span>
+                <h3 class="section-title" style="font-size:16px; margin:2px 0 10px;">Dicionário Fitness</h3>
+                <div class="guide-box" style="margin-bottom:12px;">
+                    <div><strong>• Volume Total:</strong> Carga × Reps × Séries. Mede o trabalho real feito no treino.</div>
+                    <div><strong>• 1RM (Epley):</strong> estima sua força máxima para 1 repetição sem precisar arriscar carga máxima.</div>
+                    <div><strong>• RIR (Repetições na Reserva):</strong> quantas reps ainda sobrariam antes da falha (<strong>1–2</strong> = ideal p/ hipertrofia).</div>
+                    <div><strong>• V-Taper (Cintura / Peito):</strong> proporção estética ideal fica entre <strong>75% e 80%</strong>.</div>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="openPaywallModal('Acesso Completo ao GymProgress')">
+                    🔓 Desbloquear Versão Completa
+                </button>
+            </div>
+        </section>
     </main>
 
     <!-- Cronômetro de Descanso Flutuante -->
@@ -189,20 +256,24 @@
         </div>
     </div>
 
-    <!-- Navegação Inferior Fixa -->
+    <!-- Navegação Inferior Fixa (4 Abas) -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <div class="bottom-nav-inner">
             <button type="button" id="nav-treinos" class="nav-btn active" onclick="switchTab('treinos')">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
                 <span>Treinos</span>
             </button>
             <button type="button" id="nav-medidas" class="nav-btn" onclick="switchTab('medidas')">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
                 <span>Medidas</span>
             </button>
             <button type="button" id="nav-evolucao" class="nav-btn" onclick="switchTab('evolucao')">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 <span>Evolução</span>
+            </button>
+            <button type="button" id="nav-ajuda" class="nav-btn" onclick="switchTab('ajuda')">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <span>Ajuda</span>
             </button>
         </div>
     </nav>

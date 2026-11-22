@@ -847,7 +847,7 @@ input[type=number] {
     height: 100%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .nav-btn {
@@ -1081,4 +1081,111 @@ input[type=number] {
     align-items: center;
     gap: 4px;
 }
+
+/* Popular Exercise Library Picker */
+.ex-library-box {
+    background: #0c1015;
+    border: 1px solid rgba(57, 255, 20, 0.25);
+    border-radius: 14px;
+    padding: 11px;
+    margin-bottom: 12px;
+}
+
+.ex-library-list {
+    max-height: 185px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-right: 2px;
+}
+
+.ex-lib-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    text-align: left;
+    color: var(--text-primary);
+    font-family: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ex-lib-item:hover {
+    border-color: rgba(57, 255, 20, 0.4);
+    background: var(--bg-surface-2);
+}
+
+.ex-lib-item.added {
+    border-color: rgba(57, 255, 20, 0.5);
+    background: rgba(57, 255, 20, 0.09);
+}
+
+/* Help / Tutorial Tab */
+.help-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.help-step:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.help-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: var(--neon-dim);
+    border: 1px solid rgba(57, 255, 20, 0.35);
+    color: var(--neon);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.help-btn-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+}
+
+.help-btn-tag {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 11.5px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.help-btn-tag.neon {
+    background: var(--neon);
+    color: var(--neon-ink);
+    border-color: var(--neon);
+}
+
 
