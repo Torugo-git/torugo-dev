@@ -372,12 +372,13 @@
     /* ==================== NAVIGATION ==================== */
     window.switchTab = function (tab) {
         activeTab = tab;
-        ['treinos', 'medidas', 'evolucao', 'ajuda'].forEach((t) => {
+        ['treinos', 'medidas', 'evolucao', 'bf', 'ajuda'].forEach((t) => {
             document.getElementById(`panel-${t}`)?.classList.toggle('active', t === tab);
             document.getElementById(`nav-${t}`)?.classList.toggle('active', t === tab);
         });
         if (tab === 'medidas') renderMedidas();
         if (tab === 'evolucao') renderEvolucao();
+        if (tab === 'bf') calculateBodyFat();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -1944,6 +1945,220 @@
         }
     };
 
+    /* ==================== BODY FAT CALCULATOR (U.S. NAVY + IMC) ==================== */
+    const BF_PROFILE_KEY = 'gymprogress_bf_profile_v1';
+    let bfGender = 'male';
+
+    const ACE_RANGES = {
+        male: [
+            { name: 'Gordura Essencial', min: 2, max: 5.99, label: '2% – 5%' },
+            { name: 'Atleta', min: 6, max: 13.99, label: '6% – 13%' },
+            { name: 'Fitness (Atlético)', min: 14, max: 17.99, label: '14% – 17%' },
+            { name: 'Aceitável (Média)', min: 18, max: 24.99, label: '18% – 24%' },
+            { name: 'Obesidade / Acima', min: 25, max: 100, label: '25%+' }
+        ],
+        female: [
+            { name: 'Gordura Essencial', min: 10, max: 13.99, label: '10% – 13%' },
+            { name: 'Atleta', min: 14, max: 20.99, label: '14% – 20%' },
+            { name: 'Fitness (Atlético)', min: 21, max: 24.99, label: '21% – 24%' },
+            { name: 'Aceitável (Média)', min: 25, max: 31.99, label: '25% – 31%' },
+            { name: 'Obesidade / Acima', min: 32, max: 100, label: '32%+' }
+        ]
+    };
+
+    // Jackson & Pollock Ideal Body Fat % by age
+    function getIdealBodyFatByAge(gender, age) {
+        const a = Math.max(20, Math.min(55, age || 25));
+        if (gender === 'male') {
+            if (a <= 20) return 8.5;
+            if (a <= 25) return 10.5;
+            if (a <= 30) return 12.7;
+            if (a <= 35) return 13.7;
+            if (a <= 40) return 15.3;
+            if (a <= 45) return 16.4;
+            if (a <= 50) return 18.9;
+            return 20.9;
+        } else {
+            if (a <= 20) return 17.7;
+            if (a <= 25) return 18.4;
+            if (a <= 30) return 19.3;
+            if (a <= 35) return 21.5;
+            if (a <= 40) return 22.2;
+            if (a <= 45) return 22.9;
+            if (a <= 50) return 25.2;
+            return 26.3;
+        }
+    }
+
+    function getAceCategory(gender, bf) {
+        const ranges = ACE_RANGES[gender] || ACE_RANGES.male;
+        if (bf < ranges[0].min) return ranges[0];
+        return ranges.find((r) => bf >= r.min && bf <= r.max) || ranges[ranges.length - 1];
+    }
+
+    window.setBFGender = function (g) {
+        bfGender = g === 'female' ? 'female' : 'male';
+        document.getElementById('bf-gender-male')?.classList.toggle('active', bfGender === 'male');
+        document.getElementById('bf-gender-female')?.classList.toggle('active', bfGender === 'female');
+        const hipWrap = document.getElementById('bf-hip-wrap');
+        const waistWrap = document.getElementById('bf-waist-wrap');
+        if (hipWrap) hipWrap.classList.toggle('hidden', bfGender !== 'female');
+        if (waistWrap) waistWrap.style.gridColumn = bfGender === 'female' ? '' : '1/-1';
+        calculateBodyFat();
+    };
+
+    window.pullLatestMeasurementsToBF = function () {
+        const list = getSortedMeasurements();
+        const latest = list[list.length - 1];
+        if (!latest) {
+            showToast('Nenhuma medida salva ainda na aba Medidas.');
+            return;
+        }
+        if (latest.weight && document.getElementById('bf-weight')) document.getElementById('bf-weight').value = latest.weight;
+        if (latest.waist && document.getElementById('bf-waist')) document.getElementById('bf-waist').value = latest.waist;
+        if (latest.neck && document.getElementById('bf-neck')) document.getElementById('bf-neck').value = latest.neck;
+        calculateBodyFat(true);
+        showToast('⚡ Peso, Cintura e Pescoço puxados da aba Medidas!');
+    };
+
+    function loadSavedBFProfile() {
+        try {
+            const raw = localStorage.getItem(BF_PROFILE_KEY);
+            if (!raw) return;
+            const p = JSON.parse(raw);
+            if (p.gender) setBFGender(p.gender);
+            if (p.age && document.getElementById('bf-age')) document.getElementById('bf-age').value = p.age;
+            if (p.height && document.getElementById('bf-height')) document.getElementById('bf-height').value = p.height;
+            if (p.weight && document.getElementById('bf-weight')) document.getElementById('bf-weight').value = p.weight;
+            if (p.neck && document.getElementById('bf-neck')) document.getElementById('bf-neck').value = p.neck;
+            if (p.waist && document.getElementById('bf-waist')) document.getElementById('bf-waist').value = p.waist;
+            if (p.hip && document.getElementById('bf-hip')) document.getElementById('bf-hip').value = p.hip;
+        } catch (_) {}
+    }
+
+    window.calculateBodyFat = function (notify) {
+        const resBox = document.getElementById('bf-result-container');
+        const aceBox = document.getElementById('bf-ace-table-wrap');
+        if (!resBox) return;
+
+        const age = parseFloat(document.getElementById('bf-age')?.value) || 25;
+        const weight = parseFloat(document.getElementById('bf-weight')?.value) || 0;
+        const height = parseFloat(document.getElementById('bf-height')?.value) || 0;
+        const neck = parseFloat(document.getElementById('bf-neck')?.value) || 0;
+        const waist = parseFloat(document.getElementById('bf-waist')?.value) || 0;
+        const hip = parseFloat(document.getElementById('bf-hip')?.value) || 0;
+
+        try {
+            localStorage.setItem(BF_PROFILE_KEY, JSON.stringify({ gender: bfGender, age, weight, height, neck, waist, hip }));
+        } catch (_) {}
+
+        let bfNavy = NaN;
+        if (bfGender === 'male') {
+            if (waist > neck && height > 0) {
+                bfNavy = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+            }
+        } else {
+            if (waist + hip > neck && height > 0) {
+                bfNavy = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+            }
+        }
+
+        if (isNaN(bfNavy) || !isFinite(bfNavy) || weight <= 0 || height <= 0) {
+            resBox.innerHTML = `
+                <div class="card" style="text-align:center;">
+                    <p class="section-sub">Preencha <strong>Altura, Peso, Pescoço e Cintura</strong> (e Quadril, se feminino) com valores válidos para ver o resultado.</p>
+                </div>`;
+            return;
+        }
+
+        bfNavy = Math.max(2, Math.min(60, bfNavy));
+        const fatMass = weight * (bfNavy / 100);
+        const leanMass = weight - fatMass;
+        const idealBF = getIdealBodyFatByAge(bfGender, age);
+        const targetWeightAtIdeal = leanMass / (1 - idealBF / 100);
+        const fatToLose = weight - targetWeightAtIdeal;
+
+        // BMI & Deurenberg Body Fat estimate for comparison
+        const hMeters = height / 100;
+        const bmi = weight / (hMeters * hMeters);
+        const sexBit = bfGender === 'male' ? 1 : 0;
+        const bfBmi = Math.max(2, Math.min(60, 1.2 * bmi + 0.23 * age - 10.8 * sexBit - 5.4));
+
+        const aceCat = getAceCategory(bfGender, bfNavy);
+        const minScale = bfGender === 'male' ? 4 : 10;
+        const maxScale = bfGender === 'male' ? 35 : 42;
+        const markerPct = Math.max(0, Math.min(100, ((bfNavy - minScale) / (maxScale - minScale)) * 100));
+
+        const goalActionText = fatToLose > 0.3
+            ? `Perder ~<strong>${fmtNum(fatToLose, 1)} kg</strong> de gordura para atingir o ideal (${fmtNum(idealBF, 1)}%)`
+            : (fatToLose < -0.5
+                ? `Você já está abaixo do ideal (${fmtNum(idealBF, 1)}%) — ótimo momento para foco em ganho de massa magra!`
+                : `🔥 Você está exatamente na faixa ideal para sua idade (${fmtNum(idealBF, 1)}%)!`);
+
+        resBox.innerHTML = `
+            <div class="ratio-card">
+                <div class="card-header" style="margin-bottom:4px;">
+                    <div>
+                        <span class="eyebrow" style="color:var(--neon-soft);">Resultado (Método Marinha EUA)</span>
+                        <h3 class="section-title" style="font-size:17px; margin-top:2px;">${aceCat.name}</h3>
+                    </div>
+                    <div class="font-mono" style="font-size:32px; font-weight:800; color:var(--neon);">${fmtNum(bfNavy, 1)}%</div>
+                </div>
+
+                <div class="bf-scale-bar">
+                    <div class="bf-scale-marker" style="left:${markerPct.toFixed(1)}%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-bottom:14px;">
+                    <span>Essencial</span>
+                    <span>Atleta</span>
+                    <span>Fitness</span>
+                    <span>Aceitável</span>
+                    <span>Alto</span>
+                </div>
+
+                <div class="stat-row-3" style="margin-bottom:12px;">
+                    <div class="stat-mini">
+                        <span class="stat-mini-val">${fmtNum(leanMass, 1)} kg</span>
+                        <span class="stat-mini-lbl">Massa Magra</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-mini-val" style="color:var(--warn);">${fmtNum(fatMass, 1)} kg</span>
+                        <span class="stat-mini-lbl">Massa Gorda</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-mini-val" style="color:var(--info);">${fmtNum(idealBF, 1)}%</span>
+                        <span class="stat-mini-lbl">Ideal (${Math.round(age)}a)</span>
+                    </div>
+                </div>
+
+                <div class="guide-box" style="margin-bottom:0;">
+                    <div>🎯 ${goalActionText}</div>
+                    <div>📊 <strong>Comparativo pelo IMC (${fmtNum(bmi, 1)}):</strong> ~<strong>${fmtNum(bfBmi, 1)}%</strong> <span style="color:var(--text-muted);">(o método da Marinha é mais fiel para quem faz musculação porque considera a cintura e o pescoço!)</span></div>
+                </div>
+            </div>
+        `;
+
+        if (aceBox) {
+            const rows = ACE_RANGES[bfGender] || ACE_RANGES.male;
+            aceBox.innerHTML = `
+                <table class="ace-table">
+                    <thead>
+                        <tr><th>Categoria</th><th>Faixa (${bfGender === 'male' ? 'Homens' : 'Mulheres'})</th></tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map((r) => `
+                            <tr class="${r.name === aceCat.name ? 'active-row' : ''}">
+                                <td>${r.name === aceCat.name ? '👉 ' : ''}${r.name}</td>
+                                <td class="font-mono">${r.label}</td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        if (notify) showToast(`🧮 BF% calculado: ${fmtNum(bfNavy, 1)}% (${aceCat.name})`);
+    };
+
     /* ==================== INIT ==================== */
     function init() {
         // Dynamic Branding for Licensed Clients
@@ -1964,6 +2179,8 @@
 
         renderTreinos();
         renderMedidas();
+        loadSavedBFProfile();
+        calculateBodyFat();
     }
 
     document.addEventListener('DOMContentLoaded', init);

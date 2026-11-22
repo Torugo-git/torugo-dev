@@ -173,7 +173,88 @@
             </div>
         </section>
 
-        <!-- ==================== ABA 4: AJUDA & TUTORIAL ==================== -->
+        <!-- ==================== ABA 4: CALCULADORA DE GORDURA (BF% — MÉTODO MARINHA EUA) ==================== -->
+        <section id="panel-bf" class="tab-panel">
+            <div class="card-header" style="margin-bottom:14px;">
+                <div>
+                    <h2 class="section-title">Calculadora de % de Gordura</h2>
+                    <p class="section-sub">Método Oficial da Marinha dos EUA (U.S. Navy) + Comparativo IMC</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="pullLatestMeasurementsToBF()">⚡ Puxar Medidas</button>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft); display:block; margin-bottom:8px;">1. Seus Dados Corporais</span>
+                <div class="gender-switch">
+                    <button type="button" id="bf-gender-male" class="gender-btn active" onclick="setBFGender('male')">👨 Masculino</button>
+                    <button type="button" id="bf-gender-female" class="gender-btn" onclick="setBFGender('female')">👩 Feminino</button>
+                </div>
+                <div class="form-grid-2" style="margin-bottom:12px;">
+                    <div class="field">
+                        <label for="bf-age">Idade (anos)</label>
+                        <input type="number" inputmode="numeric" id="bf-age" class="input" value="25" min="14" max="90" oninput="calculateBodyFat()">
+                    </div>
+                    <div class="field">
+                        <label for="bf-weight">Peso (kg)</label>
+                        <input type="number" inputmode="decimal" step="0.1" id="bf-weight" class="input" value="80.8" min="30" max="250" oninput="calculateBodyFat()">
+                    </div>
+                    <div class="field">
+                        <label for="bf-height">Altura (cm)</label>
+                        <input type="number" inputmode="decimal" step="0.5" id="bf-height" class="input" value="178" min="120" max="230" oninput="calculateBodyFat()">
+                    </div>
+                    <div class="field">
+                        <label for="bf-neck">Pescoço (cm)</label>
+                        <input type="number" inputmode="decimal" step="0.1" id="bf-neck" class="input" value="39.4" min="20" max="70" oninput="calculateBodyFat()">
+                    </div>
+                    <div class="field" id="bf-waist-wrap" style="grid-column:1/-1;">
+                        <label for="bf-waist">Cintura / Umbigo (cm)</label>
+                        <input type="number" inputmode="decimal" step="0.1" id="bf-waist" class="input" value="84.5" min="45" max="180" oninput="calculateBodyFat()">
+                    </div>
+                    <div class="field hidden" id="bf-hip-wrap">
+                        <label for="bf-hip">Quadril (cm) — parte mais larga</label>
+                        <input type="number" inputmode="decimal" step="0.1" id="bf-hip" class="input" value="98.0" min="55" max="180" oninput="calculateBodyFat()">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="calculateBodyFat(true)">🧮 Calcular % de Gordura</button>
+            </div>
+
+            <div id="bf-result-container"></div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Tutorial de Medição</span>
+                <h3 class="section-title" style="font-size:16px; margin:2px 0 10px;">📏 Como medir corretamente com a fita métrica</h3>
+                <div class="help-step">
+                    <span class="help-step-num">1</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Pescoço (cm)</strong>
+                        <p class="section-sub">Passe a fita <strong>logo abaixo da laringe (pomo de Adão)</strong>, levemente inclinada para baixo na frente, com ombros relaxados.</p>
+                    </div>
+                </div>
+                <div class="help-step">
+                    <span class="help-step-num">2</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Cintura (cm)</strong>
+                        <p class="section-sub"><strong>Homens:</strong> na <strong>altura do umbigo</strong>. <strong>Mulheres:</strong> na parte mais fina do tronco. Solte o ar e <strong>não murche a barriga</strong>!</p>
+                    </div>
+                </div>
+                <div class="help-step">
+                    <span class="help-step-num">3</span>
+                    <div>
+                        <strong style="font-size:13.5px;">Quadril (cm — apenas Mulheres)</strong>
+                        <p class="section-sub">Passe a fita horizontalmente na <strong>parte mais larga dos glúteos/quadril</strong> com os pés juntos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow" style="color:var(--neon-soft);">Referência Científica</span>
+                <h3 class="section-title" style="font-size:15.5px; margin:2px 0 4px;">Tabela de Classificação (ACE)</h3>
+                <p class="section-sub" style="font-size:11.5px; margin-bottom:8px;">American Council on Exercise — sua faixa atual fica destacada em verde.</p>
+                <div id="bf-ace-table-wrap"></div>
+            </div>
+        </section>
+
+        <!-- ==================== ABA 5: AJUDA & TUTORIAL ==================== -->
         <section id="panel-ajuda" class="tab-panel">
             <div class="card-header" style="margin-bottom:14px;">
                 <div>
@@ -279,23 +360,27 @@
         </div>
     </div>
 
-    <!-- Navegação Inferior Fixa (4 Abas) -->
+    <!-- Navegação Inferior Fixa (5 Abas) -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <div class="bottom-nav-inner">
             <button type="button" id="nav-treinos" class="nav-btn active" onclick="switchTab('treinos')">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
                 <span>Treinos</span>
             </button>
             <button type="button" id="nav-medidas" class="nav-btn" onclick="switchTab('medidas')">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg>
                 <span>Medidas</span>
             </button>
             <button type="button" id="nav-evolucao" class="nav-btn" onclick="switchTab('evolucao')">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 <span>Evolução</span>
             </button>
+            <button type="button" id="nav-bf" class="nav-btn" onclick="switchTab('bf')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                <span>BF%</span>
+            </button>
             <button type="button" id="nav-ajuda" class="nav-btn" onclick="switchTab('ajuda')">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
                 <span>Ajuda</span>
             </button>
         </div>
