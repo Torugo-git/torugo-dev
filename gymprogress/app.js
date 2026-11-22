@@ -7,6 +7,7 @@
 
     const METRICS = [
         { key: 'weight', label: 'Peso', unit: 'kg', defaultGoal: 79.0 },
+        { key: 'bodyFat', label: '% de Gordura (BF)', unit: '%', defaultGoal: 12.0 },
         { key: 'waist', label: 'Cintura / Umbigo', unit: 'cm', defaultGoal: 82.0 },
         { key: 'chest', label: 'Peito', unit: 'cm', defaultGoal: 104.0 },
         { key: 'armFlexed', label: 'Braço Contraído', unit: 'cm', defaultGoal: 40.0 },
@@ -226,6 +227,7 @@
                     id: 'm-1',
                     date: daysAgoISO(28),
                     weight: 82.4,
+                    bodyFat: 17.2,
                     waist: 87.5,
                     chest: 100.5,
                     armRelaxed: 34.5,
@@ -237,6 +239,7 @@
                     id: 'm-2',
                     date: daysAgoISO(2),
                     weight: 80.8,
+                    bodyFat: 14.9,
                     waist: 84.5,
                     chest: 102.2,
                     armRelaxed: 35.3,
@@ -247,6 +250,7 @@
             ],
             goals: {
                 weight: 79.0,
+                bodyFat: 12.0,
                 waist: 82.0,
                 chest: 104.0,
                 armRelaxed: 36.5,
@@ -1238,9 +1242,14 @@
                 </div>
             </div>
             ${m.bestExerciseName ? `<p style="font-size:12.5px; color:var(--text-secondary); text-align:center; margin:0 0 14px;">🏆 Destaque 1RM (Epley): <strong style="color:var(--neon-soft);">${escapeHtml(m.bestExerciseName)}</strong></p>` : ''}
-            <button class="btn btn-primary btn-block" onclick="document.getElementById('modal-summary').classList.remove('open'); switchTab('evolucao');">
-                Ver Gráficos de Evolução →
-            </button>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button type="button" class="btn btn-primary btn-block" onclick="shareWorkoutCard('${newLog.id}')">
+                    📸 Gerar Card p/ Stories / WhatsApp
+                </button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="document.getElementById('modal-summary').classList.remove('open'); switchTab('evolucao');">
+                    Ver Gráficos de Evolução →
+                </button>
+            </div>
         `;
         document.getElementById('modal-summary').classList.add('open');
     };
@@ -1760,6 +1769,9 @@
                     </div>
                     ${ex.note ? `<div style="font-size:11.5px; color:var(--text-secondary); margin-top:6px;">📝 ${escapeHtml(ex.note)}</div>` : ''}
                 </div>`).join('')}
+            <button type="button" class="btn btn-primary btn-block" style="margin-top:12px;" onclick="shareWorkoutCard('${log.id}')">
+                📸 Gerar Card p/ Stories / WhatsApp
+            </button>
         `;
         document.getElementById('modal-detail').classList.add('open');
     };
@@ -2131,10 +2143,14 @@
                     </div>
                 </div>
 
-                <div class="guide-box" style="margin-bottom:0;">
+                <div class="guide-box" style="margin-bottom:12px;">
                     <div>🎯 ${goalActionText}</div>
                     <div>📊 <strong>Comparativo pelo IMC (${fmtNum(bmi, 1)}):</strong> ~<strong>${fmtNum(bfBmi, 1)}%</strong> <span style="color:var(--text-muted);">(o método da Marinha é mais fiel para quem faz musculação porque considera a cintura e o pescoço!)</span></div>
                 </div>
+
+                <button type="button" class="btn btn-secondary btn-block btn-sm" onclick="saveBFToEvolution(${bfNavy.toFixed(1)})">
+                    💾 Salvar ${fmtNum(bfNavy, 1)}% no Gráfico de Evolução
+                </button>
             </div>
         `;
 
@@ -2156,7 +2172,281 @@
             `;
         }
 
+        calculateMacros();
         if (notify) showToast(`🧮 BF% calculado: ${fmtNum(bfNavy, 1)}% (${aceCat.name})`);
+    };
+
+    window.saveBFToEvolution = function (bfVal) {
+        if (!requireFullLicense('Salvar BF% no Gráfico de Evolução')) return;
+        const val = parseFloat(bfVal);
+        if (isNaN(val)) return;
+        const today = new Date().toISOString().slice(0, 10);
+        const existingToday = db.measurements.find((m) => m.date === today);
+        const curWeight = parseFloat(document.getElementById('bf-weight')?.value);
+        const curWaist = parseFloat(document.getElementById('bf-waist')?.value);
+        const curNeck = parseFloat(document.getElementById('bf-neck')?.value);
+
+        if (existingToday) {
+            existingToday.bodyFat = Number(val.toFixed(1));
+        } else {
+            const rec = { id: 'm-' + Date.now(), date: today, bodyFat: Number(val.toFixed(1)) };
+            if (!isNaN(curWeight) && curWeight > 0) rec.weight = curWeight;
+            if (!isNaN(curWaist) && curWaist > 0) rec.waist = curWaist;
+            if (!isNaN(curNeck) && curNeck > 0) rec.neck = curNeck;
+            db.measurements.push(rec);
+        }
+        db.isSample = false;
+        saveDB();
+        renderMedidas();
+        showToast(`✅ BF% (${fmtNum(val, 1)}%) salvo na sua evolução!`);
+    };
+
+    /* ==================== MACROS, TDEE & WATER CALCULATOR ==================== */
+    window.calculateMacros = function () {
+        const box = document.getElementById('macro-result-container');
+        if (!box) return;
+
+        const age = parseFloat(document.getElementById('bf-age')?.value) || 25;
+        const weight = parseFloat(document.getElementById('bf-weight')?.value) || 0;
+        const height = parseFloat(document.getElementById('bf-height')?.value) || 0;
+        const goal = document.getElementById('macro-goal')?.value || 'maintain';
+        const activity = parseFloat(document.getElementById('macro-activity')?.value) || 1.55;
+
+        if (weight <= 0 || height <= 0) {
+            box.innerHTML = `<p class="section-sub" style="text-align:center;">Preencha Peso, Altura e Idade acima para calcular seus macros.</p>`;
+            return;
+        }
+
+        // Mifflin-St Jeor BMR (TMB)
+        const bmr = bfGender === 'male'
+            ? (10 * weight) + (6.25 * height) - (5 * age) + 5
+            : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+        const tdee = bmr * activity;
+
+        let targetKcal = tdee;
+        let proteinPerKg = 2.0;
+        let fatPerKg = 0.85;
+        let goalBadge = '⚖️ Manutenção / Recomposição';
+        let goalTip = 'Calorias equilibradas para manter o peso enquanto troca gordura por massa magra.';
+
+        if (goal === 'cut') {
+            targetKcal = Math.max(bmr * 1.05, tdee - 450);
+            proteinPerKg = 2.2;
+            fatPerKg = 0.75;
+            goalBadge = '🔥 Déficit Calórico (Cutting)';
+            goalTip = 'Déficit seguro (~450 kcal/dia) com proteína alta (2,2 g/kg) para queimar gordura preservando seus músculos.';
+        } else if (goal === 'bulk') {
+            targetKcal = tdee + 300;
+            proteinPerKg = 2.0;
+            fatPerKg = 0.9;
+            goalBadge = '💪 Superávit Limpo (Bulking)';
+            goalTip = 'Superávit controlado (+300 kcal/dia) com carboidratos altos para gerar energia no treino e ganhar massa magra sem acumular excesso de gordura.';
+        }
+
+        const proteinG = Math.round(weight * proteinPerKg);
+        const fatG = Math.round(weight * fatPerKg);
+        const proteinKcal = proteinG * 4;
+        const fatKcal = fatG * 9;
+        const remainingKcal = Math.max(160, targetKcal - proteinKcal - fatKcal);
+        const carbsG = Math.round(remainingKcal / 4);
+        const finalKcal = proteinKcal + fatKcal + (carbsG * 4);
+
+        const pPct = Math.round((proteinKcal / finalKcal) * 100);
+        const cPct = Math.round(((carbsG * 4) / finalKcal) * 100);
+        const fPct = Math.max(0, 100 - pPct - cPct);
+
+        // Água recomendada: 35ml/kg base + bônus pelo nível de treino
+        const waterMlPerKg = activity >= 1.725 ? 42 : (activity >= 1.55 ? 38 : 35);
+        const waterLiters = (weight * waterMlPerKg) / 1000;
+        const bottles500 = Math.round(waterLiters / 0.5);
+
+        box.innerHTML = `
+            <div style="background:linear-gradient(145deg, #121c14 0%, #0e1319 100%); border:1px solid rgba(57,255,20,0.28); border-radius:14px; padding:14px; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow" style="color:var(--neon-soft);">${goalBadge}</span>
+                        <div class="font-mono" style="font-size:28px; font-weight:800; color:var(--neon); line-height:1.15;">${fmtInt(finalKcal)} <span style="font-size:13px; color:var(--text-secondary);">kcal/dia</span></div>
+                    </div>
+                    <div style="text-align:right; font-size:11px; color:var(--text-secondary);">
+                        <div>TMB (repouso): <strong class="font-mono">${fmtInt(bmr)} kcal</strong></div>
+                        <div>Gasto (TDEE): <strong class="font-mono">${fmtInt(tdee)} kcal</strong></div>
+                    </div>
+                </div>
+
+                <!-- Barra de distribuição dos macros -->
+                <div style="display:flex; height:10px; border-radius:999px; overflow:hidden; margin-bottom:12px; gap:2px;">
+                    <div style="width:${pPct}%; background:#39ff14;" title="Proteína ${pPct}%"></div>
+                    <div style="width:${cPct}%; background:#38bdf8;" title="Carboidratos ${cPct}%"></div>
+                    <div style="width:${fPct}%; background:#f59e0b;" title="Gorduras ${fPct}%"></div>
+                </div>
+
+                <div class="stat-row-3" style="margin-bottom:10px;">
+                    <div class="stat-mini">
+                        <span class="stat-mini-val" style="color:#39ff14;">${proteinG}g</span>
+                        <span class="stat-mini-lbl">🥩 Proteína (${pPct}%)</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-mini-val" style="color:#38bdf8;">${carbsG}g</span>
+                        <span class="stat-mini-lbl">🍚 Carbos (${cPct}%)</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-mini-val" style="color:#f59e0b;">${fatG}g</span>
+                        <span class="stat-mini-lbl">🥑 Gordura (${fPct}%)</span>
+                    </div>
+                </div>
+
+                <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:11px; padding:9px 11px; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+                    <div style="font-size:12px; color:var(--text-primary);">💧 <strong>Meta de Água Diária</strong></div>
+                    <div class="font-mono" style="font-size:13.5px; font-weight:800; color:var(--info);">${fmtNum(waterLiters, 1)} L <span style="font-size:10.5px; font-weight:500; color:var(--text-secondary);">(~${bottles500} garrafas 500ml)</span></div>
+                </div>
+
+                <p style="margin:0; font-size:11.5px; color:var(--text-secondary);">💡 ${goalTip}</p>
+            </div>
+        `;
+    };
+
+    /* ==================== SHARE WORKOUT CARD (STORIES / WHATSAPP PNG) ==================== */
+    window.shareWorkoutCard = async function (logId) {
+        const log = db.history.find((h) => h.id === logId);
+        if (!log) return;
+
+        const W = 1080;
+        const H = 1350;
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Background gradient
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#090b0e');
+        bg.addColorStop(0.55, '#0f1612');
+        bg.addColorStop(1, '#090b0e');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle radial neon glow top-right
+        const glow = ctx.createRadialGradient(W * 0.85, H * 0.12, 20, W * 0.85, H * 0.12, 460);
+        glow.addColorStop(0, 'rgba(57, 255, 20, 0.22)');
+        glow.addColorStop(1, 'rgba(57, 255, 20, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, W, H);
+
+        // Helper rounded rect
+        function roundRect(x, y, w, h, r, fill, stroke) {
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, r);
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+        }
+
+        // Brand Header
+        roundRect(72, 76, 310, 56, 28, 'rgba(57,255,20,0.14)', 'rgba(57,255,20,0.45)');
+        ctx.fillStyle = '#39ff14';
+        ctx.font = '800 24px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('⚡ TREINO CONCLUÍDO', 102, 113);
+
+        ctx.fillStyle = '#9aa4b2';
+        ctx.font = '700 26px "JetBrains Mono", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(fmtDateBR(log.date), W - 72, 113);
+        ctx.textAlign = 'left';
+
+        // Split Title
+        ctx.fillStyle = '#f4f6f9';
+        ctx.font = '800 58px "Plus Jakarta Sans", sans-serif';
+        const titleStr = (log.splitName || 'Treino').slice(0, 32);
+        ctx.fillText(titleStr, 72, 232);
+
+        const totalSets = (log.exercises || []).reduce((acc, ex) => acc + (ex.sets || []).length, 0);
+
+        // 3 Big KPI Cards
+        const kpis = [
+            { label: 'VOLUME TOTAL', val: `${fmtInt(log.totalVolume)} kg`, color: '#39ff14' },
+            { label: 'MELHOR 1RM', val: `${fmtNum(log.bestEpley1RM, 1)} kg`, color: '#f4f6f9' },
+            { label: 'SÉRIES FEITAS', val: `${totalSets} OK`, color: '#38bdf8' }
+        ];
+        kpis.forEach((k, i) => {
+            const x = 72 + i * 320;
+            roundRect(x, 290, 296, 175, 26, '#12171e', 'rgba(255,255,255,0.12)');
+            ctx.fillStyle = '#687385';
+            ctx.font = '700 21px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(k.label, x + 28, 342);
+            ctx.fillStyle = k.color;
+            ctx.font = '800 44px "JetBrains Mono", monospace';
+            ctx.fillText(k.val, x + 28, 418);
+        });
+
+        // Exercises Breakdown Card
+        roundRect(72, 510, W - 144, 650, 30, '#11161c', 'rgba(255,255,255,0.1)');
+        ctx.fillStyle = '#39ff14';
+        ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('RESUMO DOS EXERCÍCIOS', 112, 568);
+
+        const exList = (log.exercises || []).slice(0, 6);
+        exList.forEach((ex, i) => {
+            const y = 626 + i * 86;
+            const maxW = Math.max(...(ex.sets || []).map((s) => parseFloat(s.weight) || 0), 0);
+            const repsStr = (ex.sets || []).map((s) => s.reps).join(', ');
+
+            ctx.fillStyle = '#f4f6f9';
+            ctx.font = '700 28px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(ex.name.slice(0, 34), 112, y);
+
+            ctx.fillStyle = '#4ade80';
+            ctx.font = '700 24px "JetBrains Mono", monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText(`${maxW}kg × ${repsStr}`, W - 112, y);
+            ctx.textAlign = 'left';
+
+            if (i < exList.length - 1) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(112, y + 28);
+                ctx.lineTo(W - 112, y + 28);
+                ctx.stroke();
+            }
+        });
+
+        // Footer Branding
+        ctx.fillStyle = '#f4f6f9';
+        ctx.font = '800 36px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Gym', 72, H - 86);
+        const gymW = ctx.measureText('Gym').width;
+        ctx.fillStyle = '#39ff14';
+        ctx.fillText('Progress', 72 + gymW, H - 86);
+
+        ctx.fillStyle = '#687385';
+        ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('App desenvolvido por Torugo Dev', W - 72, H - 86);
+        ctx.textAlign = 'left';
+
+        canvas.toBlob(async (blob) => {
+            if (!blob) return;
+            const fileName = `gymprogress-treino-${log.date || 'hoje'}.png`;
+            const file = new File([blob], fileName, { type: 'image/png' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: `Treino Concluído — ${log.splitName}`,
+                        text: `🔥 ${log.splitName} concluído no GymProgress! Volume: ${fmtInt(log.totalVolume)} kg`
+                    });
+                    return;
+                } catch (_) {}
+            }
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📸 Card salvo! Pronto para postar nos Stories ou WhatsApp.');
+        }, 'image/png');
     };
 
     /* ==================== INIT ==================== */
@@ -2181,6 +2471,7 @@
         renderMedidas();
         loadSavedBFProfile();
         calculateBodyFat();
+        calculateMacros();
     }
 
     document.addEventListener('DOMContentLoaded', init);

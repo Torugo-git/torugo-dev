@@ -220,6 +220,40 @@
 
             <div id="bf-result-container"></div>
 
+            <!-- Calculadora de Macros, Calorias (TDEE) & Água por Objetivo -->
+            <div class="card">
+                <div class="card-header" style="margin-bottom:10px;">
+                    <div>
+                        <span class="eyebrow" style="color:var(--neon-soft);">Nutrição Inteligente (Mifflin-St Jeor)</span>
+                        <h3 class="section-title" style="font-size:16px; margin-top:2px;">🥩 Calculadora de Macros & Água</h3>
+                        <p class="section-sub" style="font-size:11.5px;">Usa automaticamente seu Sexo, Idade, Peso e Altura preenchidos acima.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid-2" style="margin-bottom:12px;">
+                    <div class="field">
+                        <label for="macro-goal">Seu Objetivo</label>
+                        <select id="macro-goal" class="select" style="font-size:13px;" onchange="calculateMacros()">
+                            <option value="cut">🔥 Secar Gordura (Cutting)</option>
+                            <option value="maintain" selected>⚖️ Recomposição / Manter</option>
+                            <option value="bulk">💪 Ganhar Massa (Bulking)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="macro-activity">Nível de Treino</label>
+                        <select id="macro-activity" class="select" style="font-size:13px;" onchange="calculateMacros()">
+                            <option value="1.2">Sedentário (sem treino)</option>
+                            <option value="1.375">Leve (1–3x / semana)</option>
+                            <option value="1.55" selected>Moderado (3–5x / sem)</option>
+                            <option value="1.725">Intenso (6–7x / sem)</option>
+                            <option value="1.9">Atleta (2x por dia)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="macro-result-container"></div>
+            </div>
+
             <div class="card">
                 <span class="eyebrow" style="color:var(--neon-soft);">Tutorial de Medição</span>
                 <h3 class="section-title" style="font-size:16px; margin:2px 0 10px;">📏 Como medir corretamente com a fita métrica</h3>
