@@ -300,9 +300,29 @@
     let restDefault = 90;
     let restPaused = false;
 
+    let cloudPushTimer = null;
+    function scheduleCloudPush() {
+        if (MODE === 'demo' || !window.GymCloud || !window.GymCloud.isConfigured()) return;
+        clearTimeout(cloudPushTimer);
+        cloudPushTimer = setTimeout(async () => {
+            try {
+                const bfRaw = localStorage.getItem('gymprogress_bf_profile_v1');
+                const bfProfile = bfRaw ? JSON.parse(bfRaw) : {};
+                const res = await window.GymCloud.pushLocalToCloud(db, bfProfile);
+                if (res && res.ok) {
+                    const st = document.getElementById('cloud-sync-status');
+                    if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                }
+            } catch (e) {
+                console.warn('Cloud push pendente (offline):', e.message);
+            }
+        }, 1200);
+    }
+
     function saveDB() {
         if (MODE === 'demo') return;
         localStorage.setItem(DB_KEY, JSON.stringify(db));
+        scheduleCloudPush();
     }
 
     function saveActiveSession() {
@@ -1019,6 +1039,7 @@
         if (!confirm(`Excluir a ficha "${sp.name}"? (Seu histórico de treinos já finalizados será mantido.)`)) return;
         db.splits = db.splits.filter((s) => s.id !== splitId);
         saveDB();
+        window.GymCloud?.deleteCloudRow?.('workout_splits', splitId).catch(() => {});
         renderTreinos();
         showToast('🗑️ Ficha excluída');
     };
@@ -1777,6 +1798,7 @@
         if (!confirm('Excluir este registro de medidas?')) return;
         db.measurements = db.measurements.filter((m) => m.id !== id);
         saveDB();
+        window.GymCloud?.deleteCloudRow?.('body_measurements', id).catch(() => {});
         renderMedidas();
         showToast('🗑️ Registro removido');
     };
@@ -2139,6 +2161,7 @@
         if (!confirm('Excluir este treino do histórico?')) return;
         db.history = db.history.filter((h) => h.id !== logId);
         saveDB();
+        window.GymCloud?.deleteCloudRow?.('workout_logs', logId).catch(() => {});
         renderEvolucao();
         showToast('🗑️ Treino removido');
     };
@@ -2816,6 +2839,186 @@
         }, 'image/png');
     };
 
+    /* ==================== CLOUD AUTH & SYNC UI (SUPABASE) ==================== */
+    function showCloudAuthMsg(text, isError) {
+        const el = document.getElementById('cloud-auth-msg');
+        if (!el) return;
+        el.textContent = text;
+        el.style.color = isError ? '#fda4af' : 'var(--neon-soft)';
+        el.classList.remove('hidden');
+    }
+
+    function updateCloudUI(user) {
+        const loggedOut = document.getElementById('cloud-logged-out');
+        const loggedIn = document.getElementById('cloud-logged-in');
+        const emailEl = document.getElementById('cloud-user-email');
+        const headerBtn = document.getElementById('btn-header-cloud');
+
+        if (user) {
+            loggedOut?.classList.add('hidden');
+            loggedIn?.classList.remove('hidden');
+            if (emailEl) emailEl.textContent = user.email || 'Conectado';
+            if (headerBtn) {
+                headerBtn.textContent = '☁️✓';
+                headerBtn.style.borderColor = 'rgba(57,255,20,0.45)';
+                headerBtn.style.color = 'var(--neon)';
+                headerBtn.title = `Nuvem conectada: ${user.email}`;
+            }
+        } else {
+            loggedIn?.classList.add('hidden');
+            loggedOut?.classList.remove('hidden');
+            if (headerBtn) {
+                headerBtn.textContent = '☁️';
+                headerBtn.style.borderColor = '';
+                headerBtn.style.color = '';
+                headerBtn.title = 'Conta & Nuvem';
+            }
+        }
+    }
+
+    function mergeCloudIntoLocal(cloudData) {
+        if (!cloudData) return false;
+        const hasCloudContent = (cloudData.splits && cloudData.splits.length > 0)
+            || (cloudData.history && cloudData.history.length > 0)
+            || (cloudData.measurements && cloudData.measurements.length > 0);
+        if (!hasCloudContent) return false;
+
+        // Replace sample data directly, or merge by ID preserving any newer local items
+        if (db.isSample) {
+            db = {
+                isSample: false,
+                weeklyGoal: cloudData.weeklyGoal || 4,
+                splits: cloudData.splits || [],
+                history: cloudData.history || [],
+                measurements: cloudData.measurements || [],
+                goals: cloudData.goals || createSampleData().goals
+            };
+        } else {
+            const mergeById = (localArr, cloudArr) => {
+                const map = new Map();
+                (localArr || []).forEach((x) => map.set(x.id, x));
+                (cloudArr || []).forEach((x) => map.set(x.id, x));
+                return [...map.values()];
+            };
+            db.splits = mergeById(db.splits, cloudData.splits);
+            db.history = mergeById(db.history, cloudData.history);
+            db.measurements = mergeById(db.measurements, cloudData.measurements);
+            if (cloudData.goals) db.goals = { ...(db.goals || {}), ...cloudData.goals };
+            if (cloudData.weeklyGoal) db.weeklyGoal = cloudData.weeklyGoal;
+            db.isSample = false;
+        }
+
+        if (cloudData.bfProfile && Object.keys(cloudData.bfProfile).length) {
+            try {
+                localStorage.setItem(BF_PROFILE_KEY, JSON.stringify(cloudData.bfProfile));
+                loadSavedBFProfile();
+            } catch (_) {}
+        }
+
+        localStorage.setItem(DB_KEY, JSON.stringify(db));
+        renderTreinos();
+        renderMedidas();
+        if (activeTab === 'evolucao') renderEvolucao();
+        calculateBodyFat();
+        calculateMacros();
+        return true;
+    }
+
+    window.handleCloudSignUp = async function () {
+        if (!window.GymCloud || !window.GymCloud.isConfigured()) return;
+        const name = (document.getElementById('cloud-name')?.value || '').trim();
+        const email = (document.getElementById('cloud-email')?.value || '').trim();
+        const pass = document.getElementById('cloud-password')?.value || '';
+        if (!email || pass.length < 6) {
+            showCloudAuthMsg('Informe um e-mail válido e senha com pelo menos 6 caracteres.', true);
+            return;
+        }
+        try {
+            showCloudAuthMsg('Criando sua conta...', false);
+            const user = await window.GymCloud.signUp(email, pass, name);
+            if (user) {
+                const activeUser = await window.GymCloud.getCurrentUser();
+                if (activeUser) {
+                    updateCloudUI(activeUser);
+                    const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
+                    await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
+                    showToast('☁️ Conta criada e treinos salvos na nuvem!');
+                } else {
+                    showCloudAuthMsg('✅ Conta criada! Verifique seu e-mail para confirmar e depois clique em Entrar.', false);
+                }
+            }
+        } catch (err) {
+            showCloudAuthMsg(err?.message || 'Erro ao criar conta.', true);
+        }
+    };
+
+    window.handleCloudSignIn = async function () {
+        if (!window.GymCloud || !window.GymCloud.isConfigured()) return;
+        const email = (document.getElementById('cloud-email')?.value || '').trim();
+        const pass = document.getElementById('cloud-password')?.value || '';
+        if (!email || !pass) {
+            showCloudAuthMsg('Preencha e-mail e senha para entrar.', true);
+            return;
+        }
+        try {
+            showCloudAuthMsg('Entrando e sincronizando...', false);
+            const user = await window.GymCloud.signIn(email, pass);
+            updateCloudUI(user);
+            const cloudData = await window.GymCloud.pullCloudToLocal();
+            const merged = mergeCloudIntoLocal(cloudData);
+            // Push any local-only records up to cloud too
+            const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
+            await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
+            const st = document.getElementById('cloud-sync-status');
+            if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            showToast(merged ? '☁️ Conectado! Seus treinos da nuvem foram carregados.' : '☁️ Conectado! Seus treinos locais foram salvos na nuvem.');
+        } catch (err) {
+            showCloudAuthMsg(err?.message || 'E-mail ou senha inválidos.', true);
+        }
+    };
+
+    window.handleManualCloudSync = async function () {
+        if (!window.GymCloud || !window.GymCloud.isConfigured()) return;
+        const btn = document.getElementById('btn-cloud-sync');
+        if (btn) btn.textContent = '⏳ Sincronizando...';
+        try {
+            const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
+            await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
+            const cloudData = await window.GymCloud.pullCloudToLocal();
+            mergeCloudIntoLocal(cloudData);
+            const st = document.getElementById('cloud-sync-status');
+            if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            showToast('☁️ Tudo sincronizado com a nuvem!');
+        } catch (err) {
+            showToast('⚠️ Sem conexão agora — seus dados continuam salvos no aparelho.');
+        } finally {
+            if (btn) btn.textContent = '🔄 Sincronizar Agora';
+        }
+    };
+
+    window.handleCloudSignOut = async function () {
+        if (!window.GymCloud) return;
+        await window.GymCloud.signOut();
+        updateCloudUI(null);
+        showToast('👋 Você saiu da nuvem (dados locais preservados).');
+    };
+
+    async function initCloudAuth() {
+        if (MODE === 'demo' || !window.GymCloud || !window.GymCloud.isConfigured()) return;
+        try {
+            const user = await window.GymCloud.getCurrentUser();
+            updateCloudUI(user);
+            if (user) {
+                const cloudData = await window.GymCloud.pullCloudToLocal();
+                mergeCloudIntoLocal(cloudData);
+                const st = document.getElementById('cloud-sync-status');
+                if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            }
+        } catch (e) {
+            console.warn('Cloud init offline:', e.message);
+        }
+    }
+
     /* ==================== INIT ==================== */
     function init() {
         // Dynamic Branding for Licensed Clients
@@ -2840,6 +3043,7 @@
         loadSavedBFProfile();
         calculateBodyFat();
         calculateMacros();
+        initCloudAuth();
 
         if (activeSession) {
             showToast('🔄 Treino em andamento restaurado!');

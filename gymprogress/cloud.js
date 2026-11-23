@@ -5,8 +5,8 @@
 (function () {
     'use strict';
 
-    const SUPABASE_URL = '';       // Ex: 'https://xxxxxxxxxxxx.supabase.co'
-    const SUPABASE_ANON_KEY = '';  // Ex: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    const SUPABASE_URL = 'https://knshjkujdshbbtwvnavz.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_g3pibCE4Qmd6_vwpxDlTew_PRdGvmoO';
 
     let client = null;
 
@@ -190,6 +190,13 @@
         };
     }
 
+    async function deleteCloudRow(table, id) {
+        const sb = getClient();
+        const user = await getCurrentUser();
+        if (!sb || !user || !id) return;
+        await sb.from(table).delete().eq('user_id', user.id).eq('id', id);
+    }
+
     window.GymCloud = {
         isConfigured,
         getCurrentUser,
@@ -197,6 +204,7 @@
         signIn,
         signOut,
         pushLocalToCloud,
-        pullCloudToLocal
+        pullCloudToLocal,
+        deleteCloudRow
     };
 })();

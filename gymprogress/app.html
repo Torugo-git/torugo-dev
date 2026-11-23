@@ -31,6 +31,7 @@
                 </div>
             </div>
             <div class="header-actions">
+                <button type="button" id="btn-header-cloud" class="icon-btn" onclick="openSettingsModal()" title="Conta & Nuvem">☁️</button>
                 <button type="button" class="icon-btn" onclick="startRestTimer(90)" title="Cronômetro de Descanso">⏱️</button>
                 <button type="button" class="icon-btn" onclick="openSettingsModal()" title="Configurações e Backup">⚙️</button>
             </div>
@@ -570,29 +571,66 @@
         </div>
     </div>
 
-    <!-- Modal: Configurações & Backup JSON -->
+    <!-- Modal: Configurações, Conta em Nuvem & Backup JSON -->
     <div id="modal-settings" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="modal-title">⚙️ Configurações & Backup</h3>
+                <h3 class="modal-title">⚙️ Conta, Nuvem & Backup</h3>
                 <button type="button" class="icon-btn" style="width:34px; height:34px;" onclick="document.getElementById('modal-settings').classList.remove('open')">✕</button>
             </div>
-            <p class="section-sub" style="margin-bottom:14px;">Seus treinos e medidas ficam salvos automaticamente neste aparelho. Exporte um backup em JSON sempre que quiser guardar uma cópia de segurança.</p>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-                <button type="button" class="btn btn-primary btn-block" onclick="exportBackupJSON()">💾 Exportar Backup (JSON)</button>
-                <button type="button" class="btn btn-secondary btn-block" onclick="triggerImportBackup()">📂 Importar Backup (JSON)</button>
+
+            <!-- Painel de Conta & Sincronização em Nuvem (Supabase) -->
+            <div style="background:rgba(57,255,20,0.06); border:1px solid rgba(57,255,20,0.28); border-radius:14px; padding:13px; margin-bottom:14px;">
+                <span class="eyebrow" style="color:var(--neon-soft); display:block; margin-bottom:6px;">☁️ Sincronização em Nuvem (Supabase)</span>
+
+                <!-- Estado: Deslogado -->
+                <div id="cloud-logged-out">
+                    <p class="section-sub" style="font-size:12px; margin-bottom:10px;">Entre ou crie sua conta para sincronizar seus treinos, medidas e BF% entre celular e PC. O app continua funcionando <strong>100% offline</strong> na academia!</p>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
+                        <input type="text" id="cloud-name" class="input" style="min-height:38px; font-size:13px;" placeholder="Seu nome (opcional p/ cadastro)">
+                        <input type="email" id="cloud-email" class="input" style="min-height:40px; font-size:13.5px;" placeholder="Seu e-mail" autocomplete="email">
+                        <input type="password" id="cloud-password" class="input" style="min-height:40px; font-size:13.5px;" placeholder="Sua senha (mín. 6 caracteres)" autocomplete="current-password">
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <button type="button" id="btn-cloud-signin" class="btn btn-primary btn-sm" onclick="handleCloudSignIn()">Entrar</button>
+                        <button type="button" id="btn-cloud-signup" class="btn btn-secondary btn-sm" onclick="handleCloudSignUp()">Criar Conta</button>
+                    </div>
+                    <p id="cloud-auth-msg" class="hidden" style="font-size:11.5px; margin:8px 0 0; font-weight:600;"></p>
+                </div>
+
+                <!-- Estado: Logado -->
+                <div id="cloud-logged-in" class="hidden">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+                        <div style="min-width:0;">
+                            <div style="font-size:13px; font-weight:700; color:var(--neon-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🟢 <span id="cloud-user-email"></span></div>
+                            <span id="cloud-sync-status" style="font-size:11px; color:var(--text-secondary);">Sincronização automática ativa</span>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+                        <button type="button" id="btn-cloud-sync" class="btn btn-primary btn-sm" onclick="handleManualCloudSync()">🔄 Sincronizar Agora</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="handleCloudSignOut()">Sair</button>
+                    </div>
+                </div>
+            </div>
+
+            <span class="eyebrow" style="display:block; margin-bottom:8px;">💾 Backup Local (Arquivo JSON)</span>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+                <button type="button" class="btn btn-secondary btn-block btn-sm" onclick="exportBackupJSON()">💾 Exportar Backup (JSON)</button>
+                <button type="button" class="btn btn-secondary btn-block btn-sm" onclick="triggerImportBackup()">📂 Importar Backup (JSON)</button>
                 <input type="file" id="import-backup-file" accept=".json,application/json" class="hidden" onchange="handleImportBackupFile(event)">
                 <hr style="border:none; border-top:1px solid var(--border-subtle); margin:4px 0;">
-                <button type="button" class="btn btn-danger btn-block" onclick="clearSampleData()">🧹 Limpar Dados / Começar do Zero</button>
+                <button type="button" class="btn btn-danger btn-block btn-sm" onclick="clearSampleData()">🧹 Limpar Dados / Começar do Zero</button>
                 <button type="button" class="btn btn-ghost btn-block btn-sm" onclick="restoreSampleData()">✨ Restaurar Dados de Exemplo</button>
             </div>
-            <p style="text-align:center; font-size:11px; color:var(--text-muted); margin:16px 0 0;">
-                Desenvolvido por <strong style="color:var(--neon-soft);">Torugo Dev</strong> · GymProgress v1.0
+            <p style="text-align:center; font-size:11px; color:var(--text-muted); margin:14px 0 0;">
+                Desenvolvido por <strong style="color:var(--neon-soft);">Torugo Dev</strong> · GymProgress Cloud
             </p>
         </div>
     </div>
 
     <script>window.GYMPROGRESS_MODE = 'full';</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cloud.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
