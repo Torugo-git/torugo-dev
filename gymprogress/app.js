@@ -1181,12 +1181,50 @@
         renderActiveSession();
     };
 
+    window.setExerciseLoadType = function (exIdx, newType) {
+        if (!activeSession) return;
+        const ex = activeSession.exercises[exIdx];
+        const targetType = newType === 'placas' ? 'placas' : 'kg';
+        if (ex.loadType === targetType) return;
+        ex.loadType = targetType;
+        if (!ex.kgPerPlate) ex.kgPerPlate = 5;
+        const split = db.splits.find((s) => s.id === activeSession.splitId);
+        if (split) {
+            const spEx = (split.exercises || []).find((e) => normText(e.name) === normText(ex.name));
+            if (spEx) {
+                spEx.loadType = ex.loadType;
+                spEx.kgPerPlate = ex.kgPerPlate;
+                saveDB();
+            }
+        }
+        const last = getLastExerciseLog(ex.name);
+        ex.overloadTip = buildOverloadTip(last, ex.targetReps, ex.loadType);
+        renderActiveSession();
+        showToast(ex.loadType === 'placas' ? `🧱 Modo Placas (1 placa ≈ ${ex.kgPerPlate}kg)` : '⚖️ Modo Quilos (kg)');
+    };
+
     window.addExtraSet = function (exIdx) {
         if (!activeSession) return;
         const sets = activeSession.exercises[exIdx].sets;
         const prev = sets[sets.length - 1];
         sets.push({ weight: prev ? prev.weight : '', reps: '', rir: '', done: false });
         renderActiveSession();
+    };
+
+    window.removeLastSet = function (exIdx) {
+        if (!activeSession) return;
+        const sets = activeSession.exercises[exIdx].sets;
+        if (sets.length <= 1) {
+            showToast('O exercício precisa ter pelo menos 1 série.');
+            return;
+        }
+        const lastSet = sets[sets.length - 1];
+        if (lastSet.done && !confirm('Remover a última série (já marcada como concluída)?')) {
+            return;
+        }
+        sets.pop();
+        renderActiveSession();
+        showToast('🗑️ Última série removida');
     };
 
     function computeSessionMetrics(session) {
@@ -1244,7 +1282,7 @@
 
             ${showWorkoutGuide ? `
                 <div class="guide-box">
-                    <div><strong>• 🧱 Placas (Polia):</strong> toque em <strong>⚖️ kg / 🧱 Placas</strong> no exercício para anotar por número de placas (ex.: 9 placas). Por padrão 1 placa ≈ 5 kg (você pode ajustar se souber).</div>
+                    <div><strong>• ⚖️ kg / 🧱 Placas:</strong> alterne a qualquer momento em cada exercício entre peso em quilos ou número de placas da polia (1 placa ≈ 5 kg por padrão).</div>
                     <div><strong>• RIR (Repetições na Reserva):</strong> quantas reps ainda sobrariam antes da falha. <strong>0</strong> = falha total · <strong>1–2</strong> = zona ideal para hipertrofia.</div>
                     <div><strong>• Volume Total:</strong> Carga × Reps × Séries concluídas. Subir esse número nas semanas gera progressão real.</div>
                     <div><strong>• 1RM (Fórmula de Epley):</strong> estima sua força máxima para 1 repetição sem precisar arriscar carga máxima.</div>
@@ -1256,7 +1294,7 @@
                 const kpp = ex.kgPerPlate || 5;
                 return `
                 <div class="card" style="${hasExPR ? 'border-color:rgba(57,255,20,0.45);' : ''}">
-                    <div class="card-header" style="margin-bottom:6px; flex-wrap:wrap;">
+                    <div class="card-header" style="margin-bottom:8px; flex-wrap:wrap; gap:8px;">
                         <div>
                             <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
                                 <h3 class="section-title" style="font-size:16px;">${escapeHtml(ex.name)}</h3>
@@ -1264,12 +1302,15 @@
                             </div>
                             <span class="eyebrow">Meta: ${ex.targetSets}× ${escapeHtml(ex.targetReps)} reps</span>
                         </div>
-                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                            <button type="button" class="btn ${isPlacas ? 'btn-primary' : 'btn-secondary'} btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="toggleExerciseLoadType(${exIdx})" title="Alternar entre Quilos (kg) e Placas de Polia">
-                                ${isPlacas ? '🧱 Placas' : '⚖️ kg'}
-                            </button>
+                        <div style="display:flex; gap:5px; flex-wrap:wrap; align-items:center;">
+                            <!-- Seletor claro kg | Placas -->
+                            <div style="display:inline-flex; background:var(--bg-input); border:1px solid var(--border-strong); border-radius:10px; padding:2px; gap:2px;">
+                                <button type="button" onclick="setExerciseLoadType(${exIdx}, 'kg')" style="min-height:28px; padding:3px 9px; border-radius:8px; border:none; font-family:inherit; font-size:11.5px; font-weight:700; cursor:pointer; ${!isPlacas ? 'background:var(--neon); color:var(--neon-ink);' : 'background:transparent; color:var(--text-secondary);'}">⚖️ kg</button>
+                                <button type="button" onclick="setExerciseLoadType(${exIdx}, 'placas')" style="min-height:28px; padding:3px 9px; border-radius:8px; border:none; font-family:inherit; font-size:11.5px; font-weight:700; cursor:pointer; ${isPlacas ? 'background:var(--neon); color:var(--neon-ink);' : 'background:transparent; color:var(--text-secondary);'}">🧱 Placas</button>
+                            </div>
                             ${ex.lastSetsRaw && ex.lastSetsRaw.length ? `<button type="button" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="repeatLastExerciseSets(${exIdx})" title="Preencher com cargas e reps da última vez">⚡ Repetir</button>` : ''}
                             <button type="button" class="btn btn-ghost btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="addExtraSet(${exIdx})">+ Série</button>
+                            ${ex.sets.length > 1 ? `<button type="button" class="btn btn-danger btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="removeLastSet(${exIdx})" title="Remover última série">− Série</button>` : ''}
                         </div>
                     </div>
 
@@ -1298,7 +1339,7 @@
                     ${ex.sets.map((s, sIdx) => `
                         <div class="set-row ${s.done ? 'done' : ''}">
                             <span class="set-num">${s.isPR ? '🏆' : sIdx + 1}</span>
-                            <input type="number" inputmode="${isPlacas ? 'numeric' : 'decimal'}" step="${isPlacas ? '1' : '0.5'}" min="0" class="input-compact" placeholder="${isPlacas ? 'placas' : 'kg'}" value="${escapeHtml(s.weight)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)">
+                            <input type="number" inputmode="${isPlacas ? 'numeric' : 'decimal'}" step="${isPlacas ? '1' : '0.5'}" min="0" class="input-compact" placeholder="${isPlacas ? 'nº' : 'kg'}" value="${escapeHtml(s.weight)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)">
                             <input type="number" inputmode="numeric" min="0" class="input-compact" placeholder="reps" value="${escapeHtml(s.reps)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'reps', this.value)">
                             <input type="number" inputmode="numeric" min="0" max="10" class="input-compact" placeholder="—" value="${escapeHtml(s.rir)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'rir', this.value)">
                             <button type="button" class="set-check-btn ${s.done ? 'checked' : ''}" onclick="toggleSetDone(${exIdx}, ${sIdx})" aria-label="Marcar série ${sIdx + 1}">
