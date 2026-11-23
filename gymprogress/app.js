@@ -399,17 +399,33 @@
         return null;
     }
 
+    function effectiveKg(weightVal, loadType, kgPerPlate) {
+        const w = parseFloat(weightVal) || 0;
+        if (loadType === 'placas') {
+            return w * (parseFloat(kgPerPlate) || 5);
+        }
+        return w;
+    }
+
+    function formatLoadLabel(weightVal, loadType) {
+        if (loadType === 'placas') {
+            return `${weightVal} ${Number(weightVal) === 1 ? 'placa' : 'placas'}`;
+        }
+        return `${weightVal}kg`;
+    }
+
     function formatLastTimeSummary(last) {
         if (!last) return 'Primeira vez registrando este exercício';
         const doneSets = last.exercise.sets.filter((s) => s.done !== false && (parseFloat(s.weight) > 0 || parseInt(s.reps, 10) > 0));
         if (!doneSets.length) return 'Sem séries concluídas no último treino';
+        const lt = last.exercise.loadType || 'kg';
         const weights = doneSets.map((s) => Number(s.weight));
         const allSameWeight = weights.every((w) => w === weights[0]);
         const repsList = doneSets.map((s) => s.reps).join(', ');
         if (allSameWeight) {
-            return `Última vez (${fmtDateBR(last.date)}): ${weights[0]}kg × ${repsList}`;
+            return `Última vez (${fmtDateBR(last.date)}): ${formatLoadLabel(weights[0], lt)} × ${repsList}`;
         }
-        const pairs = doneSets.map((s) => `${s.weight}kg×${s.reps}`).join(' · ');
+        const pairs = doneSets.map((s) => `${formatLoadLabel(s.weight, lt)}×${s.reps}`).join(' · ');
         return `Última vez (${fmtDateBR(last.date)}): ${pairs}`;
     }
 
@@ -469,7 +485,7 @@
         db.history.forEach((h) => {
             (h.exercises || []).forEach((ex) => {
                 (ex.sets || []).forEach((s) => {
-                    const est = epley1RM(s.weight, s.reps);
+                    const est = epley1RM(effectiveKg(s.weight, ex.loadType, ex.kgPerPlate), s.reps);
                     if (est > best1RM) {
                         best1RM = est;
                         bestExName = ex.name;
@@ -560,14 +576,15 @@
             const exHtml = (split.exercises || []).length
                 ? split.exercises.map((ex) => {
                     const lastEx = getLastExerciseLog(ex.name);
+                    const lastLt = lastEx?.exercise?.loadType || ex.loadType || 'kg';
                     const lastMaxW = lastEx?.exercise?.sets?.length
                         ? Math.max(...lastEx.exercise.sets.map((s) => parseFloat(s.weight) || 0))
                         : 0;
                     return `
                     <div class="exercise-preview-item">
-                        <span class="exercise-preview-name">${escapeHtml(ex.name)}</span>
+                        <span class="exercise-preview-name">${escapeHtml(ex.name)}${ex.loadType === 'placas' ? ' <span style="font-size:10.5px; color:var(--text-muted);">(🧱 polia)</span>' : ''}</span>
                         <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-                            ${lastMaxW > 0 ? `<span class="font-mono" style="font-size:11px; color:var(--text-secondary);">Últ: <strong style="color:var(--text-primary);">${lastMaxW}kg</strong></span>` : ''}
+                            ${lastMaxW > 0 ? `<span class="font-mono" style="font-size:11px; color:var(--text-secondary);">Últ: <strong style="color:var(--text-primary);">${formatLoadLabel(lastMaxW, lastLt)}</strong></span>` : ''}
                             <span class="exercise-preview-target">${ex.targetSets}× ${escapeHtml(ex.targetReps)}</span>
                         </div>
                     </div>`;
@@ -901,7 +918,7 @@
                     <button type="button" class="btn btn-ghost btn-sm" style="padding:0 8px;" title="Descer" onclick="moveEditorExercise(${idx}, 1)">↓</button>
                     <button type="button" class="btn btn-danger btn-sm" style="padding:0 10px;" onclick="removeExerciseRowFromEditor(${idx})">✕</button>
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
                     <div class="field">
                         <label style="font-size:10px;">Séries</label>
                         <input type="number" inputmode="numeric" min="1" max="15" class="input" style="min-height:36px; font-size:13.5px;" value="${ex.targetSets}" oninput="updateEditorExercise(${idx}, 'targetSets', this.value)">
@@ -909,6 +926,13 @@
                     <div class="field">
                         <label style="font-size:10px;">Faixa de Reps</label>
                         <input type="text" class="input" style="min-height:36px; font-size:13.5px;" placeholder="Ex: 6-8" value="${escapeHtml(ex.targetReps)}" oninput="updateEditorExercise(${idx}, 'targetReps', this.value)">
+                    </div>
+                    <div class="field">
+                        <label style="font-size:10px;">Carga em</label>
+                        <select class="select" style="min-height:36px; font-size:12.5px; padding:4px 8px;" onchange="updateEditorExercise(${idx}, 'loadType', this.value)">
+                            <option value="kg" ${(ex.loadType || 'kg') === 'kg' ? 'selected' : ''}>⚖️ kg</option>
+                            <option value="placas" ${ex.loadType === 'placas' ? 'selected' : ''}>🧱 Placas</option>
+                        </select>
                     </div>
                 </div>
             </div>`).join('');
@@ -925,7 +949,9 @@
                 id: ex.id || 'ex-' + Date.now(),
                 name: (ex.name || '').trim(),
                 targetSets: Math.max(1, parseInt(ex.targetSets, 10) || 3),
-                targetReps: (ex.targetReps || '8-12').trim()
+                targetReps: (ex.targetReps || '8-12').trim(),
+                loadType: ex.loadType === 'placas' ? 'placas' : 'kg',
+                kgPerPlate: parseFloat(ex.kgPerPlate) || 5
             }))
             .filter((ex) => ex.name.length > 0);
 
@@ -961,26 +987,64 @@
         showToast('🗑️ Ficha excluída');
     };
 
-    function buildOverloadTip(last, targetReps) {
+    function buildOverloadTip(last, targetReps, loadType) {
         if (!last || !last.exercise?.sets?.length) {
             return '💡 Primeira sessão: escolha uma carga que permita fazer a faixa de reps com boa técnica.';
         }
         const sets = last.exercise.sets;
+        const lt = loadType || last.exercise.loadType || 'kg';
         const maxW = Math.max(...sets.map((s) => parseFloat(s.weight) || 0));
         const maxR = Math.max(...sets.map((s) => parseInt(s.reps, 10) || 0));
         const minR = Math.min(...sets.map((s) => parseInt(s.reps, 10) || 0));
         const upperTarget = parseInt((String(targetReps || '').split('-')[1] || targetReps || '0').replace(/\D/g, ''), 10) || 0;
+        const nextLoadStr = lt === 'placas' ? `${maxW + 1} placas` : `${maxW + 2}kg`;
 
         if (upperTarget > 0 && minR >= upperTarget) {
-            return `💡 Meta hoje: você bateu o teto (${upperTarget} reps)! Tente subir para ${maxW + 2}kg.`;
+            return `💡 Meta hoje: você bateu o teto (${upperTarget} reps)! Tente subir para ${nextLoadStr}.`;
         }
-        return `💡 Meta hoje: tente fazer +1 rep em alguma série (${maxR + 1} reps) ou subir para ${maxW + 2}kg.`;
+        return `💡 Meta hoje: tente fazer +1 rep em alguma série (${maxR + 1} reps) ou subir para ${nextLoadStr}.`;
     }
 
     let showWorkoutGuide = false;
 
     window.toggleWorkoutGuide = function () {
         showWorkoutGuide = !showWorkoutGuide;
+        renderActiveSession();
+    };
+
+    window.toggleExerciseLoadType = function (exIdx) {
+        if (!activeSession) return;
+        const ex = activeSession.exercises[exIdx];
+        ex.loadType = ex.loadType === 'placas' ? 'kg' : 'placas';
+        if (!ex.kgPerPlate) ex.kgPerPlate = 5;
+        // Persist preference back to split so next workout remembers it automatically
+        const split = db.splits.find((s) => s.id === activeSession.splitId);
+        if (split) {
+            const spEx = (split.exercises || []).find((e) => normText(e.name) === normText(ex.name));
+            if (spEx) {
+                spEx.loadType = ex.loadType;
+                spEx.kgPerPlate = ex.kgPerPlate;
+                saveDB();
+            }
+        }
+        const last = getLastExerciseLog(ex.name);
+        ex.overloadTip = buildOverloadTip(last, ex.targetReps, ex.loadType);
+        renderActiveSession();
+        showToast(ex.loadType === 'placas' ? '🧱 Modo Placas ativado (1 placa ≈ ' + ex.kgPerPlate + 'kg)' : '⚖️ Modo Quilos (kg) ativado');
+    };
+
+    window.setExerciseKgPerPlate = function (exIdx, kgVal) {
+        if (!activeSession) return;
+        const ex = activeSession.exercises[exIdx];
+        ex.kgPerPlate = Math.max(1, parseFloat(kgVal) || 5);
+        const split = db.splits.find((s) => s.id === activeSession.splitId);
+        if (split) {
+            const spEx = (split.exercises || []).find((e) => normText(e.name) === normText(ex.name));
+            if (spEx) {
+                spEx.kgPerPlate = ex.kgPerPlate;
+                saveDB();
+            }
+        }
         renderActiveSession();
     };
 
@@ -1013,6 +1077,8 @@
             exercises: split.exercises.map((ex) => {
                 const last = getLastExerciseLog(ex.name);
                 const lastSets = last?.exercise?.sets || [];
+                const loadType = ex.loadType || last?.exercise?.loadType || 'kg';
+                const kgPerPlate = parseFloat(ex.kgPerPlate || last?.exercise?.kgPerPlate) || 5;
                 const setsCount = Math.max(1, parseInt(ex.targetSets, 10) || 3);
                 const sets = Array.from({ length: setsCount }, (_, i) => ({
                     weight: lastSets[i]?.weight ?? (lastSets[0]?.weight ?? ''),
@@ -1022,12 +1088,14 @@
                 }));
                 return {
                     name: ex.name,
+                    loadType,
+                    kgPerPlate,
                     targetSets: setsCount,
                     targetReps: ex.targetReps,
                     lastSummary: formatLastTimeSummary(last),
                     lastNote: last?.exercise?.note || '',
                     lastSetsRaw: lastSets,
-                    overloadTip: buildOverloadTip(last, ex.targetReps),
+                    overloadTip: buildOverloadTip(last, ex.targetReps, loadType),
                     note: '',
                     sets
                 };
@@ -1064,13 +1132,15 @@
         db.history.forEach((h) => {
             (h.exercises || []).forEach((ex) => {
                 if (normText(ex.name) !== target) return;
+                const lt = ex.loadType || 'kg';
+                const kpp = ex.kgPerPlate || 5;
                 (ex.sets || []).forEach((s) => {
-                    const w = parseFloat(s.weight) || 0;
+                    const wKg = effectiveKg(s.weight, lt, kpp);
                     const r = parseInt(s.reps, 10) || 0;
-                    if (w > 0 && r > 0) {
+                    if (wKg > 0 && r > 0) {
                         hasHistory = true;
-                        if (w > maxWeight) maxWeight = w;
-                        const est = epley1RM(w, r);
+                        if (wKg > maxWeight) maxWeight = wKg;
+                        const est = epley1RM(wKg, r);
                         if (est > max1RM) max1RM = est;
                     }
                 });
@@ -1079,14 +1149,14 @@
         return { hasHistory, maxWeight, max1RM };
     }
 
-    function checkSetIsPR(exerciseName, weight, reps) {
-        const w = parseFloat(weight) || 0;
+    function checkSetIsPR(ex, weight, reps) {
+        const wKg = effectiveKg(weight, ex.loadType, ex.kgPerPlate);
         const r = parseInt(reps, 10) || 0;
-        if (w <= 0 || r <= 0) return false;
-        const prev = getExerciseHistoricalPR(exerciseName);
+        if (wKg <= 0 || r <= 0) return false;
+        const prev = getExerciseHistoricalPR(ex.name);
         if (!prev.hasHistory) return false;
-        const est = epley1RM(w, r);
-        return (w > prev.maxWeight) || (est > prev.max1RM + 0.25);
+        const est = epley1RM(wKg, r);
+        return (wKg > prev.maxWeight) || (est > prev.max1RM + 0.25);
     }
 
     window.toggleSetDone = function (exIdx, setIdx) {
@@ -1096,10 +1166,11 @@
         setObj.done = !setObj.done;
         if (setObj.done) {
             startRestTimer(restDefault);
-            if (checkSetIsPR(ex.name, setObj.weight, setObj.reps)) {
+            if (checkSetIsPR(ex, setObj.weight, setObj.reps)) {
                 setObj.isPR = true;
-                const est = epley1RM(setObj.weight, setObj.reps);
-                showToast(`🏆 NOVO PR em ${ex.name}! (${setObj.weight}kg · 1RM ${fmtNum(est, 1)}kg)`);
+                const wKg = effectiveKg(setObj.weight, ex.loadType, ex.kgPerPlate);
+                const est = epley1RM(wKg, setObj.reps);
+                showToast(`🏆 NOVO PR em ${ex.name}! (${formatLoadLabel(setObj.weight, ex.loadType)} · 1RM ${fmtNum(est, 1)}kg)`);
                 if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 200]);
             } else {
                 setObj.isPR = false;
@@ -1127,11 +1198,11 @@
         (session.exercises || []).forEach((ex) => {
             (ex.sets || []).forEach((s) => {
                 if (s.done) {
-                    const w = parseFloat(s.weight) || 0;
+                    const wKg = effectiveKg(s.weight, ex.loadType, ex.kgPerPlate);
                     const r = parseInt(s.reps, 10) || 0;
                     completedSets++;
-                    totalVolume += w * r;
-                    const est = epley1RM(w, r);
+                    totalVolume += wKg * r;
+                    const est = epley1RM(wKg, r);
                     if (est > bestEpley) {
                         bestEpley = est;
                         bestExerciseName = ex.name;
@@ -1173,6 +1244,7 @@
 
             ${showWorkoutGuide ? `
                 <div class="guide-box">
+                    <div><strong>• 🧱 Placas (Polia):</strong> toque em <strong>⚖️ kg / 🧱 Placas</strong> no exercício para anotar por número de placas (ex.: 9 placas). Por padrão 1 placa ≈ 5 kg (você pode ajustar se souber).</div>
                     <div><strong>• RIR (Repetições na Reserva):</strong> quantas reps ainda sobrariam antes da falha. <strong>0</strong> = falha total · <strong>1–2</strong> = zona ideal para hipertrofia.</div>
                     <div><strong>• Volume Total:</strong> Carga × Reps × Séries concluídas. Subir esse número nas semanas gera progressão real.</div>
                     <div><strong>• 1RM (Fórmula de Epley):</strong> estima sua força máxima para 1 repetição sem precisar arriscar carga máxima.</div>
@@ -1180,9 +1252,11 @@
 
             ${activeSession.exercises.map((ex, exIdx) => {
                 const hasExPR = (ex.sets || []).some((s) => s.done && s.isPR);
+                const isPlacas = ex.loadType === 'placas';
+                const kpp = ex.kgPerPlate || 5;
                 return `
                 <div class="card" style="${hasExPR ? 'border-color:rgba(57,255,20,0.45);' : ''}">
-                    <div class="card-header" style="margin-bottom:4px;">
+                    <div class="card-header" style="margin-bottom:6px; flex-wrap:wrap;">
                         <div>
                             <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
                                 <h3 class="section-title" style="font-size:16px;">${escapeHtml(ex.name)}</h3>
@@ -1190,11 +1264,22 @@
                             </div>
                             <span class="eyebrow">Meta: ${ex.targetSets}× ${escapeHtml(ex.targetReps)} reps</span>
                         </div>
-                        <div style="display:flex; gap:6px;">
-                            ${ex.lastSetsRaw && ex.lastSetsRaw.length ? `<button type="button" class="btn btn-secondary btn-sm" onclick="repeatLastExerciseSets(${exIdx})" title="Preencher com cargas e reps da última vez">⚡ Repetir</button>` : ''}
-                            <button type="button" class="btn btn-ghost btn-sm" onclick="addExtraSet(${exIdx})">+ Série</button>
+                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                            <button type="button" class="btn ${isPlacas ? 'btn-primary' : 'btn-secondary'} btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="toggleExerciseLoadType(${exIdx})" title="Alternar entre Quilos (kg) e Placas de Polia">
+                                ${isPlacas ? '🧱 Placas' : '⚖️ kg'}
+                            </button>
+                            ${ex.lastSetsRaw && ex.lastSetsRaw.length ? `<button type="button" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="repeatLastExerciseSets(${exIdx})" title="Preencher com cargas e reps da última vez">⚡ Repetir</button>` : ''}
+                            <button type="button" class="btn btn-ghost btn-sm" style="min-height:32px; padding:4px 9px; font-size:11.5px;" onclick="addExtraSet(${exIdx})">+ Série</button>
                         </div>
                     </div>
+
+                    ${isPlacas ? `
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:6px 10px; margin-bottom:8px; font-size:11.5px; color:var(--text-secondary);">
+                            <span>🧱 <strong>Polia:</strong> 1 placa ≈ <strong class="font-mono" style="color:var(--neon-soft);">${kpp} kg</strong></span>
+                            <div style="display:flex; gap:4px; align-items:center;">
+                                ${[5, 7, 10].map((v) => `<button type="button" class="filter-pill ${kpp === v ? 'active' : ''}" style="padding:2px 8px; font-size:10.5px;" onclick="setExerciseKgPerPlate(${exIdx}, ${v})">${v}kg</button>`).join('')}
+                            </div>
+                        </div>` : ''}
 
                     <div class="last-time-box">
                         <strong class="font-mono" style="font-size:12px;">${escapeHtml(ex.lastSummary)}</strong>
@@ -1204,7 +1289,7 @@
 
                     <div class="set-grid-head">
                         <span>#</span>
-                        <span>Carga (kg)</span>
+                        <span>${isPlacas ? 'Placas' : 'Carga (kg)'}</span>
                         <span>Reps</span>
                         <span>RIR</span>
                         <span>OK</span>
@@ -1213,7 +1298,7 @@
                     ${ex.sets.map((s, sIdx) => `
                         <div class="set-row ${s.done ? 'done' : ''}">
                             <span class="set-num">${s.isPR ? '🏆' : sIdx + 1}</span>
-                            <input type="number" inputmode="decimal" step="0.5" min="0" class="input-compact" placeholder="kg" value="${escapeHtml(s.weight)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)">
+                            <input type="number" inputmode="${isPlacas ? 'numeric' : 'decimal'}" step="${isPlacas ? '1' : '0.5'}" min="0" class="input-compact" placeholder="${isPlacas ? 'placas' : 'kg'}" value="${escapeHtml(s.weight)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'weight', this.value)">
                             <input type="number" inputmode="numeric" min="0" class="input-compact" placeholder="reps" value="${escapeHtml(s.reps)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'reps', this.value)">
                             <input type="number" inputmode="numeric" min="0" max="10" class="input-compact" placeholder="—" value="${escapeHtml(s.rir)}" oninput="updateSetField(${exIdx}, ${sIdx}, 'rir', this.value)">
                             <button type="button" class="set-check-btn ${s.done ? 'checked' : ''}" onclick="toggleSetDone(${exIdx}, ${sIdx})" aria-label="Marcar série ${sIdx + 1}">
@@ -1248,23 +1333,27 @@
         activeSession.exercises.forEach((ex) => {
             const prev = getExerciseHistoricalPR(ex.name);
             if (!prev.hasHistory) return;
-            let bestW = 0;
+            let bestWKg = 0;
+            let bestRawW = 0;
             let bestR = 0;
             let bestEst = 0;
             (ex.sets || []).filter((s) => s.done).forEach((s) => {
-                const w = parseFloat(s.weight) || 0;
+                const rawW = parseFloat(s.weight) || 0;
+                const wKg = effectiveKg(rawW, ex.loadType, ex.kgPerPlate);
                 const r = parseInt(s.reps, 10) || 0;
-                const est = epley1RM(w, r);
+                const est = epley1RM(wKg, r);
                 if (est > bestEst) {
                     bestEst = est;
-                    bestW = w;
+                    bestWKg = wKg;
+                    bestRawW = rawW;
                     bestR = r;
                 }
             });
-            if (bestW > prev.maxWeight || bestEst > prev.max1RM + 0.25) {
+            if (bestWKg > prev.maxWeight || bestEst > prev.max1RM + 0.25) {
                 sessionPRs.push({
                     exercise: ex.name,
-                    weight: bestW,
+                    weight: bestRawW,
+                    loadType: ex.loadType || 'kg',
                     reps: bestR,
                     est1RM: Number(bestEst.toFixed(1))
                 });
@@ -1283,6 +1372,8 @@
             prs: sessionPRs,
             exercises: activeSession.exercises.map((ex) => ({
                 name: ex.name,
+                loadType: ex.loadType || 'kg',
+                kgPerPlate: ex.kgPerPlate || 5,
                 note: (ex.note || '').trim(),
                 sets: ex.sets
                     .filter((s) => s.done)
@@ -1309,7 +1400,7 @@
             ${sessionPRs.length ? `
                 <div style="background:rgba(57,255,20,0.1); border:1px solid rgba(57,255,20,0.4); border-radius:14px; padding:12px; margin-bottom:14px;">
                     <div style="font-weight:800; font-size:13px; color:var(--neon); margin-bottom:6px;">🏆 ${sessionPRs.length} NOVO(S) RECORDE(S) PESSOAL(IS)!</div>
-                    ${sessionPRs.map((pr) => `<div style="font-size:12px; color:var(--text-primary); margin-bottom:3px;">• <strong>${escapeHtml(pr.exercise)}</strong>: <span class="font-mono" style="color:var(--neon-soft);">${pr.weight}kg × ${pr.reps}</span> (1RM ${fmtNum(pr.est1RM, 1)}kg)</div>`).join('')}
+                    ${sessionPRs.map((pr) => `<div style="font-size:12px; color:var(--text-primary); margin-bottom:3px;">• <strong>${escapeHtml(pr.exercise)}</strong>: <span class="font-mono" style="color:var(--neon-soft);">${formatLoadLabel(pr.weight, pr.loadType)} × ${pr.reps}</span> (1RM ${fmtNum(pr.est1RM, 1)}kg)</div>`).join('')}
                 </div>` : ''}
             <div class="stat-row-3" style="margin-bottom:16px;">
                 <div class="stat-mini">
@@ -1805,7 +1896,7 @@
             let vol = 0;
             let max1RM = 0;
             ex.sets.forEach((s) => {
-                const w = parseFloat(s.weight) || 0;
+                const w = effectiveKg(s.weight, ex.loadType, ex.kgPerPlate);
                 const r = parseInt(s.reps, 10) || 0;
                 if (w > maxW) maxW = w;
                 vol += w * r;
@@ -1949,7 +2040,7 @@
                     <div style="font-weight:700; font-size:13.5px; margin-bottom:6px;">${escapeHtml(ex.name)}</div>
                     <div style="display:flex; flex-wrap:wrap; gap:6px;">
                         ${(ex.sets || []).map((s, idx) => `
-                            <span class="chip font-mono" style="font-size:11px;">S${idx + 1}: ${s.weight}kg × ${s.reps}${s.rir !== null && s.rir !== undefined ? ` (RIR ${s.rir})` : ''}</span>`).join('')}
+                            <span class="chip font-mono" style="font-size:11px;">S${idx + 1}: ${formatLoadLabel(s.weight, ex.loadType)} × ${s.reps}${s.rir !== null && s.rir !== undefined ? ` (RIR ${s.rir})` : ''}</span>`).join('')}
                     </div>
                     ${ex.note ? `<div style="font-size:11.5px; color:var(--text-secondary); margin-top:6px;">📝 ${escapeHtml(ex.note)}</div>` : ''}
                 </div>`).join('')}
@@ -2587,7 +2678,7 @@
             ctx.fillStyle = '#4ade80';
             ctx.font = '700 24px "JetBrains Mono", monospace';
             ctx.textAlign = 'right';
-            ctx.fillText(`${maxW}kg × ${repsStr}`, W - 112, y);
+            ctx.fillText(`${formatLoadLabel(maxW, ex.loadType)} × ${repsStr}`, W - 112, y);
             ctx.textAlign = 'left';
 
             if (i < exList.length - 1) {
