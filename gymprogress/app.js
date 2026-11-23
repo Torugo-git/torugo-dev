@@ -285,9 +285,11 @@
         return seed;
     }
 
+    const ACTIVE_SESSION_KEY = MODE === 'demo' ? 'gymprogress_demo_active_session_v1' : 'gymprogress_active_session_v1';
+
     let db = loadDB();
     let activeTab = 'treinos';
-    let activeSession = null; // { splitId, splitName, startedAt, exercises: [{ name, targetSets, targetReps, lastSummary, lastNote, note, sets: [...] }] }
+    let activeSession = null; // { splitId, splitName, startedAt, exercises: [...] }
     let selectedMetricChart = 'waist';
     let exerciseChartInstance = null;
     let measureChartInstance = null;
@@ -301,6 +303,40 @@
     function saveDB() {
         if (MODE === 'demo') return;
         localStorage.setItem(DB_KEY, JSON.stringify(db));
+    }
+
+    function saveActiveSession() {
+        if (MODE === 'demo') return;
+        try {
+            if (activeSession) {
+                localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(activeSession));
+            } else {
+                localStorage.removeItem(ACTIVE_SESSION_KEY);
+            }
+        } catch (e) {
+            console.warn('Erro ao salvar treino em andamento:', e);
+        }
+    }
+
+    function clearSavedActiveSession() {
+        try {
+            localStorage.removeItem(ACTIVE_SESSION_KEY);
+        } catch (_) {}
+    }
+
+    function loadSavedActiveSession() {
+        if (MODE === 'demo') return null;
+        try {
+            const raw = localStorage.getItem(ACTIVE_SESSION_KEY);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.splitId && Array.isArray(parsed.exercises)) {
+                return parsed;
+            }
+        } catch (e) {
+            console.warn('Erro ao restaurar treino em andamento:', e);
+        }
+        return null;
     }
 
     function requireFullLicense(featureLabel) {
@@ -1102,6 +1138,7 @@
             })
         };
 
+        saveActiveSession();
         renderTreinos();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -1109,6 +1146,7 @@
     window.cancelWorkout = function () {
         if (!confirm('Descartar o treino em andamento?')) return;
         activeSession = null;
+        clearSavedActiveSession();
         closeRestTimer();
         renderTreinos();
     };
@@ -1116,12 +1154,14 @@
     window.updateSetField = function (exIdx, setIdx, field, val) {
         if (!activeSession) return;
         activeSession.exercises[exIdx].sets[setIdx][field] = val;
+        saveActiveSession();
         updateActiveLiveMetrics();
     };
 
     window.updateExerciseNote = function (exIdx, val) {
         if (!activeSession) return;
         activeSession.exercises[exIdx].note = val;
+        saveActiveSession();
     };
 
     function getExerciseHistoricalPR(exerciseName) {
@@ -1358,6 +1398,7 @@
                 <button type="button" class="btn btn-primary" onclick="finishWorkout()">🏁 Finalizar Treino</button>
             </div>
         `;
+        saveActiveSession();
     }
 
     window.finishWorkout = function () {
@@ -1431,6 +1472,7 @@
         db.isSample = false;
         saveDB();
         activeSession = null;
+        clearSavedActiveSession();
         closeRestTimer();
         renderTreinos();
 
@@ -2117,6 +2159,7 @@
             goals: createSampleData().goals
         };
         activeSession = null;
+        clearSavedActiveSession();
         saveDB();
         document.getElementById('modal-settings')?.classList.remove('open');
         renderTreinos();
@@ -2129,6 +2172,7 @@
         if (!confirm('Carregar novamente os dados de exemplo? (Isso substituirá os dados atuais.)')) return;
         db = createSampleData();
         activeSession = null;
+        clearSavedActiveSession();
         saveDB();
         document.getElementById('modal-settings')?.classList.remove('open');
         renderTreinos();
@@ -2790,12 +2834,22 @@
             waEl.href = `https://wa.me/5521970453147?text=${msg}`;
         }
 
+        activeSession = loadSavedActiveSession();
         renderTreinos();
         renderMedidas();
         loadSavedBFProfile();
         calculateBodyFat();
         calculateMacros();
+
+        if (activeSession) {
+            showToast('🔄 Treino em andamento restaurado!');
+        }
     }
+
+    window.addEventListener('pagehide', saveActiveSession);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) saveActiveSession();
+    });
 
     document.addEventListener('DOMContentLoaded', init);
 })();
