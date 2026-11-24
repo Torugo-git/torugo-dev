@@ -183,3 +183,18 @@ create policy "Users manage own goals"
     on public.body_goals for all
     using (auth.uid() = user_id)
     with check (auth.uid() = user_id);
+
+-- Policy: profiles insert (fallback caso usuário tenha se cadastrado antes do trigger)
+drop policy if exists "Users can insert own profile" on public.profiles;
+create policy "Users can insert own profile"
+    on public.profiles for insert
+    with check (auth.uid() = id);
+
+-- Permissões de tabela para usuários autenticados (mantendo 100% do isolamento via RLS)
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on public.profiles to authenticated;
+grant select, insert, update, delete on public.workout_splits to authenticated;
+grant select, insert, update, delete on public.workout_logs to authenticated;
+grant select, insert, update, delete on public.body_measurements to authenticated;
+grant select, insert, update, delete on public.body_goals to authenticated;
+
