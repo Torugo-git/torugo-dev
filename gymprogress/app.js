@@ -2876,37 +2876,22 @@
         }
     }
 
-    function mergeCloudIntoLocal(cloudData) {
+    function applyCloudSnapshot(cloudData) {
         if (!cloudData) return false;
         const hasCloudContent = (cloudData.splits && cloudData.splits.length > 0)
             || (cloudData.history && cloudData.history.length > 0)
             || (cloudData.measurements && cloudData.measurements.length > 0);
         if (!hasCloudContent) return false;
 
-        // Replace sample data directly, or merge by ID preserving any newer local items
-        if (db.isSample) {
-            db = {
-                isSample: false,
-                weeklyGoal: cloudData.weeklyGoal || 4,
-                splits: cloudData.splits || [],
-                history: cloudData.history || [],
-                measurements: cloudData.measurements || [],
-                goals: cloudData.goals || createSampleData().goals
-            };
-        } else {
-            const mergeById = (localArr, cloudArr) => {
-                const map = new Map();
-                (localArr || []).forEach((x) => map.set(x.id, x));
-                (cloudArr || []).forEach((x) => map.set(x.id, x));
-                return [...map.values()];
-            };
-            db.splits = mergeById(db.splits, cloudData.splits);
-            db.history = mergeById(db.history, cloudData.history);
-            db.measurements = mergeById(db.measurements, cloudData.measurements);
-            if (cloudData.goals) db.goals = { ...(db.goals || {}), ...cloudData.goals };
-            if (cloudData.weeklyGoal) db.weeklyGoal = cloudData.weeklyGoal;
-            db.isSample = false;
-        }
+        // Cloud is the authoritative source of truth so PC and Phone stay 100% identical
+        db = {
+            isSample: false,
+            weeklyGoal: cloudData.weeklyGoal || 4,
+            splits: cloudData.splits || [],
+            history: cloudData.history || [],
+            measurements: cloudData.measurements || [],
+            goals: cloudData.goals || db.goals || createSampleData().goals
+        };
 
         if (cloudData.bfProfile && Object.keys(cloudData.bfProfile).length) {
             try {
@@ -2965,34 +2950,51 @@
             const user = await window.GymCloud.signIn(email, pass);
             updateCloudUI(user);
             const cloudData = await window.GymCloud.pullCloudToLocal();
-            const merged = mergeCloudIntoLocal(cloudData);
-            // Push any local-only records up to cloud too
-            const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
-            await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
+            const applied = applyCloudSnapshot(cloudData);
+            if (!applied && !db.isSample) {
+                // Cloud is empty, seed it with this device's real data
+                const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
+                await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
+            }
             const st = document.getElementById('cloud-sync-status');
             if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-            showToast(merged ? '☁️ Conectado! Seus treinos da nuvem foram carregados.' : '☁️ Conectado! Seus treinos locais foram salvos na nuvem.');
+            showToast(applied ? '☁️ Conectado! Dados da nuvem espelhados neste aparelho.' : '☁️ Conectado! Seus treinos locais foram enviados para a nuvem.');
         } catch (err) {
             showCloudAuthMsg(err?.message || 'E-mail ou senha inválidos.', true);
         }
     };
 
-    window.handleManualCloudSync = async function () {
+    window.handlePullFromCloud = async function () {
         if (!window.GymCloud || !window.GymCloud.isConfigured()) return;
-        const btn = document.getElementById('btn-cloud-sync');
-        if (btn) btn.textContent = '⏳ Sincronizando...';
+        const btn = document.getElementById('btn-cloud-pull');
+        if (btn) btn.textContent = '⏳ Baixando...';
+        try {
+            const cloudData = await window.GymCloud.pullCloudToLocal();
+            const applied = applyCloudSnapshot(cloudData);
+            const st = document.getElementById('cloud-sync-status');
+            if (st) st.textContent = `Baixado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            showToast(applied ? '⬇️ Dados da nuvem carregados! Agora está 100% igual.' : 'ℹ️ A nuvem ainda está vazia — clique em Enviar p/ Nuvem no aparelho que tem seus dados.');
+        } catch (err) {
+            showToast('⚠️ Erro ao baixar da nuvem: ' + (err?.message || 'verifique sua internet.'));
+        } finally {
+            if (btn) btn.textContent = '⬇️ Baixar da Nuvem';
+        }
+    };
+
+    window.handlePushToCloud = async function () {
+        if (!window.GymCloud || !window.GymCloud.isConfigured()) return;
+        const btn = document.getElementById('btn-cloud-push');
+        if (btn) btn.textContent = '⏳ Enviando...';
         try {
             const bfRaw = localStorage.getItem(BF_PROFILE_KEY);
             await window.GymCloud.pushLocalToCloud(db, bfRaw ? JSON.parse(bfRaw) : {});
-            const cloudData = await window.GymCloud.pullCloudToLocal();
-            mergeCloudIntoLocal(cloudData);
             const st = document.getElementById('cloud-sync-status');
-            if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-            showToast('☁️ Tudo sincronizado com a nuvem!');
+            if (st) st.textContent = `Enviado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            showToast('⬆️ Dados deste aparelho enviados para a nuvem!');
         } catch (err) {
-            showToast('⚠️ Sem conexão agora — seus dados continuam salvos no aparelho.');
+            showToast('⚠️ Erro ao enviar p/ nuvem: ' + (err?.message || 'verifique sua internet.'));
         } finally {
-            if (btn) btn.textContent = '🔄 Sincronizar Agora';
+            if (btn) btn.textContent = '⬆️ Enviar p/ Nuvem';
         }
     };
 
@@ -3010,9 +3012,13 @@
             updateCloudUI(user);
             if (user) {
                 const cloudData = await window.GymCloud.pullCloudToLocal();
-                mergeCloudIntoLocal(cloudData);
+                const applied = applyCloudSnapshot(cloudData);
                 const st = document.getElementById('cloud-sync-status');
-                if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                if (st) {
+                    st.textContent = applied
+                        ? `Espelhado da nuvem às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                        : 'Conectado (nuvem vazia — clique em Enviar p/ Nuvem)';
+                }
             }
         } catch (e) {
             console.warn('Cloud init offline:', e.message);

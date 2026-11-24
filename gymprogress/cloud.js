@@ -56,8 +56,8 @@
     }
 
     /**
-     * Envia todo o banco local (splits, history, measurements, goals, weeklyGoal) para a nuvem.
-     * Usa UPSERT para nunca duplicar nem perder dados.
+     * Envia todo o banco local (splits, history, measurements, goals, weeklyGoal) para a nuvem
+     * e remove da nuvem registros que foram excluídos localmente, mantendo PC e celular 100% idênticos.
      */
     async function pushLocalToCloud(localDb, bfProfile) {
         const sb = getClient();
@@ -67,62 +67,70 @@
         const uid = user.id;
 
         // 1. Profile preferences
-        await sb.from('profiles').update({
+        const { error: profErr } = await sb.from('profiles').update({
             weekly_goal: localDb.weeklyGoal || 4,
             bf_profile: bfProfile || {},
             updated_at: new Date().toISOString()
         }).eq('id', uid);
+        if (profErr) console.warn('Profile sync warning:', profErr.message);
+
+        // Helper to sync a table cleanly (upsert current items + delete removed items)
+        async function syncTable(table, rows) {
+            if (rows.length > 0) {
+                const { error: upErr } = await sb.from(table).upsert(rows);
+                if (upErr) throw upErr;
+            }
+            const { data: existing, error: selErr } = await sb.from(table).select('id').eq('user_id', uid);
+            if (selErr) throw selErr;
+            const localIds = new Set(rows.map((r) => r.id));
+            const toDelete = (existing || []).map((r) => r.id).filter((id) => !localIds.has(id));
+            if (toDelete.length > 0) {
+                const { error: delErr } = await sb.from(table).delete().eq('user_id', uid).in('id', toDelete);
+                if (delErr) throw delErr;
+            }
+        }
 
         // 2. Splits
-        if (Array.isArray(localDb.splits) && localDb.splits.length) {
-            const splitRows = localDb.splits.map((s, idx) => ({
-                id: s.id,
-                user_id: uid,
-                name: s.name,
-                exercises: s.exercises || [],
-                sort_order: idx,
-                updated_at: new Date().toISOString()
-            }));
-            const { error } = await sb.from('workout_splits').upsert(splitRows);
-            if (error) throw error;
-        }
+        const splitRows = (localDb.splits || []).map((s, idx) => ({
+            id: s.id,
+            user_id: uid,
+            name: s.name,
+            exercises: s.exercises || [],
+            sort_order: idx,
+            updated_at: new Date().toISOString()
+        }));
+        await syncTable('workout_splits', splitRows);
 
         // 3. Workout Logs
-        if (Array.isArray(localDb.history) && localDb.history.length) {
-            const logRows = localDb.history.map((h) => ({
-                id: h.id,
-                user_id: uid,
-                split_id: h.splitId || null,
-                split_name: h.splitName,
-                workout_date: h.date,
-                duration_min: h.durationMin || 45,
-                total_volume: h.totalVolume || 0,
-                best_epley_1rm: h.bestEpley1RM || 0,
-                prs: h.prs || [],
-                exercises: h.exercises || []
-            }));
-            const { error } = await sb.from('workout_logs').upsert(logRows);
-            if (error) throw error;
-        }
+        const logRows = (localDb.history || []).map((h) => ({
+            id: h.id,
+            user_id: uid,
+            split_id: h.splitId || null,
+            split_name: h.splitName,
+            workout_date: h.date,
+            duration_min: h.durationMin || 45,
+            total_volume: h.totalVolume || 0,
+            best_epley_1rm: h.bestEpley1RM || 0,
+            prs: h.prs || [],
+            exercises: h.exercises || []
+        }));
+        await syncTable('workout_logs', logRows);
 
         // 4. Measurements
-        if (Array.isArray(localDb.measurements) && localDb.measurements.length) {
-            const measRows = localDb.measurements.map((m) => ({
-                id: m.id,
-                user_id: uid,
-                measured_at: m.date,
-                weight: m.weight ?? null,
-                body_fat: m.bodyFat ?? null,
-                waist: m.waist ?? null,
-                chest: m.chest ?? null,
-                arm_relaxed: m.armRelaxed ?? null,
-                arm_flexed: m.armFlexed ?? null,
-                neck: m.neck ?? null,
-                thigh: m.thigh ?? null
-            }));
-            const { error } = await sb.from('body_measurements').upsert(measRows);
-            if (error) throw error;
-        }
+        const measRows = (localDb.measurements || []).map((m) => ({
+            id: m.id,
+            user_id: uid,
+            measured_at: m.date,
+            weight: m.weight ?? null,
+            body_fat: m.bodyFat ?? null,
+            waist: m.waist ?? null,
+            chest: m.chest ?? null,
+            arm_relaxed: m.armRelaxed ?? null,
+            arm_flexed: m.armFlexed ?? null,
+            neck: m.neck ?? null,
+            thigh: m.thigh ?? null
+        }));
+        await syncTable('body_measurements', measRows);
 
         // 5. Goals
         if (localDb.goals) {
@@ -153,6 +161,10 @@
             sb.from('body_measurements').select('*').eq('user_id', uid).order('measured_at', { ascending: true }),
             sb.from('body_goals').select('*').eq('user_id', uid).maybeSingle()
         ]);
+
+        if (splitsRes.error) throw splitsRes.error;
+        if (logsRes.error) throw logsRes.error;
+        if (measRes.error) throw measRes.error;
 
         return {
             isSample: false,
