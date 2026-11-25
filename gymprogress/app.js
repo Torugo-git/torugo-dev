@@ -68,10 +68,18 @@
     checkAutoVipRedirect();
 
     /* ==================== SEED / SAMPLE DATA ==================== */
+    function todayLocalISO(date) {
+        const d = date instanceof Date ? date : new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     function daysAgoISO(days) {
         const d = new Date();
         d.setDate(d.getDate() - days);
-        return d.toISOString().slice(0, 10);
+        return todayLocalISO(d);
     }
 
     function createSampleData() {
@@ -301,22 +309,28 @@
     let restPaused = false;
 
     let cloudPushTimer = null;
+    async function syncNowToCloud() {
+        if (MODE === 'demo' || !window.GymCloud || !window.GymCloud.isConfigured()) return false;
+        clearTimeout(cloudPushTimer);
+        try {
+            const bfRaw = localStorage.getItem('gymprogress_bf_profile_v1');
+            const bfProfile = bfRaw ? JSON.parse(bfRaw) : {};
+            const res = await window.GymCloud.pushLocalToCloud(db, bfProfile);
+            if (res && res.ok) {
+                const st = document.getElementById('cloud-sync-status');
+                if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                return true;
+            }
+        } catch (e) {
+            console.warn('Cloud push pendente (offline):', e.message);
+        }
+        return false;
+    }
+
     function scheduleCloudPush() {
         if (MODE === 'demo' || !window.GymCloud || !window.GymCloud.isConfigured()) return;
         clearTimeout(cloudPushTimer);
-        cloudPushTimer = setTimeout(async () => {
-            try {
-                const bfRaw = localStorage.getItem('gymprogress_bf_profile_v1');
-                const bfProfile = bfRaw ? JSON.parse(bfRaw) : {};
-                const res = await window.GymCloud.pushLocalToCloud(db, bfProfile);
-                if (res && res.ok) {
-                    const st = document.getElementById('cloud-sync-status');
-                    if (st) st.textContent = `Sincronizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-                }
-            } catch (e) {
-                console.warn('Cloud push pendente (offline):', e.message);
-            }
-        }, 1200);
+        cloudPushTimer = setTimeout(syncNowToCloud, 1200);
     }
 
     function saveDB() {
@@ -1468,7 +1482,7 @@
             id: 'log-' + Date.now(),
             splitId: activeSession.splitId,
             splitName: activeSession.splitName,
-            date: new Date().toISOString().slice(0, 10),
+            date: todayLocalISO(),
             durationMin,
             totalVolume: Math.round(m.totalVolume),
             bestEpley1RM: Number(m.bestEpley.toFixed(1)),
@@ -1742,7 +1756,7 @@
         // 3. Default date in form
         const dateInp = document.getElementById('measure-date');
         if (dateInp && !dateInp.value) {
-            dateInp.value = new Date().toISOString().slice(0, 10);
+            dateInp.value = todayLocalISO();
         }
 
         // 4. Recent Measurements List
@@ -1767,7 +1781,7 @@
     window.saveMeasurementForm = function (e) {
         e.preventDefault();
         if (!requireFullLicense('Registrar Novas Medidas Corporais')) return;
-        const date = document.getElementById('measure-date').value || new Date().toISOString().slice(0, 10);
+        const date = document.getElementById('measure-date').value || todayLocalISO();
         const rec = { id: 'm-' + Date.now(), date };
         let hasAny = false;
 
@@ -1788,7 +1802,7 @@
         db.isSample = false;
         saveDB();
         e.target.reset();
-        document.getElementById('measure-date').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('measure-date').value = todayLocalISO();
         renderMedidas();
         showToast('📏 Medidas salvas com sucesso!');
     };
@@ -1850,7 +1864,7 @@
         const now = new Date();
         const year = now.getFullYear();
         const month = now.getMonth();
-        const todayISO = now.toISOString().slice(0, 10);
+        const todayISO = todayLocalISO(now);
         const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
         // Map trained dates -> latest logId on that date
@@ -1970,8 +1984,9 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:6px; flex-shrink:0;">
+                        <button class="icon-btn" style="width:36px; height:36px;" title="Editar data do treino" onclick="openEditWorkoutDate('${h.id}')">📅</button>
                         <button class="btn btn-secondary btn-sm" onclick="viewWorkoutDetail('${h.id}')">Detalhes</button>
-                        <button class="icon-btn" style="width:36px; height:36px;" onclick="deleteHistoryItem('${h.id}')">🗑️</button>
+                        <button class="icon-btn" style="width:36px; height:36px;" title="Excluir treino" onclick="deleteHistoryItem('${h.id}')">🗑️</button>
                     </div>
                 </div>`).join('');
         }
@@ -2129,11 +2144,17 @@
     window.viewWorkoutDetail = function (logId) {
         const log = db.history.find((h) => h.id === logId);
         if (!log) return;
+        const modal = document.getElementById('modal-detail');
+        const titleEl = modal?.querySelector('.modal-title');
+        if (titleEl) titleEl.textContent = 'Detalhes do Treino';
         const body = document.getElementById('detail-modal-body');
         body.innerHTML = `
             <div style="margin-bottom:14px;">
-                <span class="eyebrow">📅 ${fmtDateBR(log.date)} · ${log.durationMin || 45} min</span>
-                <h3 class="section-title" style="margin-top:2px;">${escapeHtml(log.splitName)}</h3>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                    <span class="eyebrow">📅 ${fmtDateBR(log.date)} · ${log.durationMin || 45} min</span>
+                    <button type="button" class="btn btn-secondary btn-sm" style="min-height:28px; padding:0 10px; font-size:11.5px;" onclick="openEditWorkoutDate('${log.id}')">✏️ Editar data</button>
+                </div>
+                <h3 class="section-title" style="margin-top:4px;">${escapeHtml(log.splitName)}</h3>
             </div>
             <div class="stat-row-3" style="margin-bottom:14px;">
                 <div class="stat-mini"><span class="stat-mini-val">${fmtInt(log.totalVolume)}</span><span class="stat-mini-lbl">Volume (kg)</span></div>
@@ -2153,7 +2174,57 @@
                 📸 Gerar Card p/ Stories / WhatsApp
             </button>
         `;
-        document.getElementById('modal-detail').classList.add('open');
+        modal?.classList.add('open');
+    };
+
+    window.openEditWorkoutDate = function (logId) {
+        if (!requireFullLicense('Editar Data do Treino')) return;
+        const log = db.history.find((h) => h.id === logId);
+        if (!log) return;
+        const modal = document.getElementById('modal-detail');
+        const titleEl = modal?.querySelector('.modal-title');
+        if (titleEl) titleEl.textContent = '📅 Editar Data do Treino';
+        const body = document.getElementById('detail-modal-body');
+        body.innerHTML = `
+            <form onsubmit="saveWorkoutDate(event, '${log.id}')">
+                <div style="margin-bottom:14px;">
+                    <span class="eyebrow">Data atual: ${fmtDateBR(log.date)}</span>
+                    <h3 class="section-title" style="margin-top:2px; font-size:16px;">${escapeHtml(log.splitName)}</h3>
+                </div>
+                <div class="field" style="margin-bottom:16px;">
+                    <label for="edit-workout-date-input">Nova data do treino</label>
+                    <input type="date" id="edit-workout-date-input" class="input" value="${escapeHtml(log.date || todayLocalISO())}" required>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <button type="submit" class="btn btn-primary btn-block">💾 Salvar Nova Data</button>
+                    <button type="button" class="btn btn-secondary btn-block" onclick="document.getElementById('modal-detail').classList.remove('open')">Cancelar</button>
+                </div>
+            </form>
+        `;
+        modal?.classList.add('open');
+    };
+
+    window.saveWorkoutDate = async function (event, logId) {
+        event.preventDefault();
+        if (!requireFullLicense('Editar Data do Treino')) return;
+        const log = db.history.find((h) => h.id === logId);
+        if (!log) return;
+        const input = document.getElementById('edit-workout-date-input');
+        const newDate = (input?.value || '').trim();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+            showToast('⚠️ Selecione uma data válida.');
+            return;
+        }
+        log.date = newDate;
+        saveDB();
+        document.getElementById('modal-detail')?.classList.remove('open');
+        renderEvolucao();
+        renderTreinos();
+        showToast(`📅 Data atualizada para ${fmtDateBR(newDate)}!`);
+        const synced = await syncNowToCloud();
+        if (synced) {
+            showToast(`☁️ Data ${fmtDateBR(newDate)} sincronizada com a nuvem!`);
+        }
     };
 
     window.deleteHistoryItem = function (logId) {
@@ -2210,7 +2281,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `gymprogress-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.download = `gymprogress-backup-${todayLocalISO()}.json`;
         a.click();
         URL.revokeObjectURL(url);
         showToast('💾 Backup JSON exportado!');
@@ -2563,7 +2634,7 @@
         if (!requireFullLicense('Salvar BF% no Gráfico de Evolução')) return;
         const val = parseFloat(bfVal);
         if (isNaN(val)) return;
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayLocalISO();
         const existingToday = db.measurements.find((m) => m.date === today);
         const curWeight = parseFloat(document.getElementById('bf-weight')?.value);
         const curWaist = parseFloat(document.getElementById('bf-waist')?.value);
